@@ -1,6 +1,10 @@
 package day6;
 
 public class InnerAnonymousClasses {
+    interface MyInterface {
+        void doSomething();
+    }
+
     public void myMethod() {
         MyInterface myInterface = new MyInterface() {
             @Override
@@ -15,8 +19,4 @@ public class InnerAnonymousClasses {
         InnerAnonymousClasses innerAnonymousClasses = new InnerAnonymousClasses();
         innerAnonymousClasses.myMethod();
     }
-}
-
-interface MyInterface {
-    void doSomething();
 }
