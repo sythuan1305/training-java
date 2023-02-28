@@ -14,7 +14,8 @@ public class TextBlockExample {
                         page with one paragraph.</p>
                     </body>
                 </html>      
-                """
+                """.stripIndent()
+                .replaceAll("\\s+", " ")
         );
     }
 }
