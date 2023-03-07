@@ -1,5 +1,3 @@
-package day4;
-
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -18,7 +16,7 @@ public class ThreadPoolingExample {
         // Đóng thread pool sau khi các công việc được hoàn thành
         executor.shutdown();
         
-        // Chờ cho đến khi tất cả các công việc được hoàn thành
+        // Chờ cho đến khi tất cả các công việc được hoàn thành và thread pool được đóng
         executor.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS);
 
         System.out.println("All tasks have been completed");
@@ -26,18 +24,22 @@ public class ThreadPoolingExample {
 }
 
 class WorkerThread implements Runnable {
+    // Tên của công việc
     private String taskName;
 
+    // 
     public WorkerThread(String taskName) {
         this.taskName = taskName;
     }
 
+    // Phương thức run() sẽ được gọi khi thread được khởi chạy
     public void run() {
         System.out.println(Thread.currentThread().getName() + " Start executing " + taskName);
         processTask();
         System.out.println(Thread.currentThread().getName() + " End executing " + taskName);
     }
 
+    // Phương thức này sẽ được gọi để thực hiện công việc
     private void processTask() {
         try {
             Thread.sleep(500);
