@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>UploadSuccess</title>
+</head>
+<body>
+<!--show mess-->
+<h1>Upload Success</h1>
+<!--Show Product Entity-->
+<p th:text="'Product Name: '  + ${product.getName()}" > </p>
+<p th:text="'Product Price: '  + ${product.getPrice()}"> </p>
+<p th:text="'Product Quantity: '  + ${product.getQuantity()}"> </p>
+<!--Show image-->
+<img th:src="${product.getImageUrl()}" alt="image" width="200" height="200" src="">
+</body>
+</html>

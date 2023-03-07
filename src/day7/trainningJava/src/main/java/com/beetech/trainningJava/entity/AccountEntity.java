@@ -37,4 +37,7 @@ public class AccountEntity {
     @Column(name = "role", nullable = false, length = 5)
     @Enumerated(EnumType.STRING)
     private Role role;
+
+    @Column(name = "cart_id", nullable = false)
+    private Integer cartId;
 }
