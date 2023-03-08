@@ -10,10 +10,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
-@Controller
+@Controller("mvcAuthenticationController")
 @RequestMapping("/auth")
 @Log4j2
-public class MvcAuthenticationController {
+public class AuthenticationController {
 
     @PostMapping("/login")
     public ModelAndView login() {

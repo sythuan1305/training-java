@@ -12,7 +12,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.web.HttpMediaTypeNotAcceptableException;
 import org.springframework.web.bind.annotation.*;
 
-@RestController
+@RestController("apiAuthenticationController")
 @RequestMapping("/api/auth")
 public class AuthenticationController {
 
