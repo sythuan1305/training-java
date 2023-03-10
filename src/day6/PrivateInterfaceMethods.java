@@ -15,6 +15,10 @@ public class PrivateInterfaceMethods {
             doSomethingPrivate();
         }
 
+        // phương thức doSomethingPrivate() là một phương thức private của interface
+        // được sử dụng trong phương thức default doSomethingElse()
+        // không thể được gọi bên ngoài interface
+        // không thể được override bởi các lớp implement interface 
         private void doSomethingPrivate() {
             System.out.println("Doing something privately...");
         }
