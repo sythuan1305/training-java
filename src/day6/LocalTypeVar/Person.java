@@ -1,5 +1,3 @@
-package day6.LocalTypeVar;
-
 public class Person {
     public String name;
     public String lastname;

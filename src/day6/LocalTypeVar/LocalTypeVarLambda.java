@@ -6,7 +6,6 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 public class LocalTypeVarLambda {
-    // Sử dụng Local Variable Type Inference:
     public void explicitTypes() {
         var Roland = new Person("Roland", "Deschain");
         var Susan = new Person("Susan", "Delgado");
@@ -16,7 +15,7 @@ public class LocalTypeVarLambda {
 
         List.of(Roland, Susan, Eddie, Detta, Jake)
                 .stream()
-                .filter((var x) -> x.name.contains("a"))
+                .filter((var x) -> x.name.contains("a")) // == .filter(x -> x.name.contains("a")) || .filter((Person x) -> x.name.contains("a"))
                 .collect(Collectors.toList()).forEach(p -> System.out.println(p.name));
     }
 

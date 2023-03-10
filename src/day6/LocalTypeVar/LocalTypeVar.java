@@ -1,5 +1,3 @@
-package day6.LocalTypeVar;
-
 import java.util.List;
 
 public class LocalTypeVar {
@@ -10,6 +8,7 @@ public class LocalTypeVar {
         var Detta = new Person("Detta", "Walker");
         var Jake = new Person("Jake", "Chambers");
 
+        // List<Person> persons = List.of(Roland, Susan, Eddie, Detta, Jake);
         var persons = List.of(Roland, Susan, Eddie, Detta, Jake);
 
         for (var person : persons) {
