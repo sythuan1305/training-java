@@ -1,4 +1,4 @@
-package day6;
+
 
 public class DefaultMethodExample {
     public static void main(String[] args) {
