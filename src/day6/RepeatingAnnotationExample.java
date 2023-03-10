@@ -1,5 +1,3 @@
-package day6;
-
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Repeatable;
 import java.lang.annotation.Retention;
@@ -7,17 +5,19 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 public class RepeatingAnnotationExample {
-    @Retention(RetentionPolicy.RUNTIME)
-    @Target({ ElementType.TYPE, ElementType.METHOD })
-    @Repeatable(Authors.class)
+    // 
+    @Retention(RetentionPolicy.RUNTIME) // RetentionPolicy.RUNTIME: Annotation được giữ lại trong thời gian chạy của chương trình 
+    // @Target({ ElementType.TYPE, ElementType.METHOD }) // ElementType.TYPE: Annotation được áp dụng cho class - ElementType.METHOD: Annotation được áp dụng cho method
+    @Repeatable(Authors.class) // Annotation có thể được lặp lại nhiều lần với container là Authors
+    // cho phép lặp lại nhiều lần annotation Author trên một element
     public @interface Author {
         String name();
     }
 
     @Retention(RetentionPolicy.RUNTIME)
-    @Target({ ElementType.TYPE, ElementType.METHOD })
+    // @Target({ ElementType.TYPE, ElementType.METHOD })
     public @interface Authors {
-        Author[] value();
+        Author[] value(); // danh sách các element có kiểu dữ liệu là Author trong container Authors
     }
 
     @Author(name = "John Doe")
