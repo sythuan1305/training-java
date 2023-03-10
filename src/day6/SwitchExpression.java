@@ -5,6 +5,7 @@ import java.time.Month;
 public class SwitchExpression {
 
     public static String getMessage(String lang, String key) {
+        // switch expression dùng để trả về giá trị của biến key tương ứng với giá trị của biến lang
         return switch (lang) {
             case "en" -> switch (key) {
                 case "title" -> "Title";
@@ -22,6 +23,7 @@ public class SwitchExpression {
 
     public static int getDays(Month month) {
 
+        // switch expression dùng để trả về số ngày của tháng tương ứng với giá trị của biến month
         int days = switch (month) {
             case JANUARY, MARCH, MAY, JULY, AUGUST, OCTOBER, DECEMBER -> {
                 System.out.println(month);
