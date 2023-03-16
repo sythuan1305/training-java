@@ -15,6 +15,10 @@ repositories {
 extra["snippetsDir"] = file("build/generated-snippets")
 
 dependencies {
+    implementation("org.thymeleaf:thymeleaf:3.1.1.RELEASE")
+    implementation("org.thymeleaf:thymeleaf-spring5:3.0.15.RELEASE")
+    implementation("nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect:2.4.1")
+
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.springframework.boot:spring-boot-starter-mail")
     implementation("org.springframework.boot:spring-boot-starter-security")

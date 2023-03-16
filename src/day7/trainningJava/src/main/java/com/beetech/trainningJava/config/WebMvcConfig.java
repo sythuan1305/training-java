@@ -1,9 +1,11 @@
 package com.beetech.trainningJava.config;
 
+import nz.net.ultraq.thymeleaf.LayoutDialect;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.ViewResolver;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.thymeleaf.spring6.SpringTemplateEngine;
@@ -19,7 +21,9 @@ public class WebMvcConfig implements WebMvcConfigurer {
     public void addViewControllers(ViewControllerRegistry registry) {
         registry.addViewController("/").setViewName("dashboard");
         registry.addViewController("/login").setViewName("auth/login");
+        registry.addViewController("/logout").setViewName("auth/login");
     }
+
     //render view
     @Bean
     public ViewResolver thymeleafViewResolver() {
@@ -27,13 +31,16 @@ public class WebMvcConfig implements WebMvcConfigurer {
         resolver.setTemplateEngine(thymeleafTemplateEngine());
         return resolver;
     }
+
     //reder template
     @Bean
     public SpringTemplateEngine thymeleafTemplateEngine() {
         SpringTemplateEngine engine = new SpringTemplateEngine();
         engine.setTemplateResolver(thymeleafTemplateResolver());
+        engine.addDialect(layoutDialect());
         return engine;
     }
+
     //load template
     @Bean
     public ITemplateResolver thymeleafTemplateResolver() {
@@ -42,5 +49,16 @@ public class WebMvcConfig implements WebMvcConfigurer {
         resolver.setSuffix(".html");
         resolver.setTemplateMode(TemplateMode.HTML);
         return resolver;
+    }
+
+    //layout
+    @Bean
+    public LayoutDialect layoutDialect() {
+        return new LayoutDialect();
+    }
+
+    @Override
+    public void addResourceHandlers(ResourceHandlerRegistry registry) {
+        registry.addResourceHandler("/static/**").addResourceLocations("classpath:/static/");
     }
 }
