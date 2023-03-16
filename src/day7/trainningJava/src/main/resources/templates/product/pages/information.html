@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{product/layout}">
+<body>
+<ma layout:fragment="content">
+    <h1>Information Product</h1>
+    <table>
+        <thead>
+        <tr>
+            <th>Name</th>
+            <th>Price</th>
+            <th>Quantity</th>
+            <th>Image URL</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td th:text="${product.getName()}"></td>
+            <td th:text="${product.getPrice()}"></td>
+            <td th:text="${product.getQuantity()}"></td>
+            <td><img th:src="${product.getImageUrl()}" alt="product_image"></td>
+        </tr>
+        </tbody>
+    </table>
+</ma>
+</body>
+</html>

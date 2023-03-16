@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{product/layout}">
+<head>
+    <meta charset="UTF-8">
+    <title>UploadSuccess</title>
+</head>
+<body layout:fragment="content">
+<!--show mess-->
+<h1>Upload Success</h1>
+<!--Show Product Entity-->
+<p th:text="'Product Name: '  + ${product.getName()}"></p>
+<p th:text="'Product Price: '  + ${product.getPrice()}"></p>
+<p th:text="'Product Quantity: '  + ${product.getQuantity()}"></p>
+<!--Show image-->
+<img th:src="${product.getImageUrl()}" alt="image" width="200" height="200" src="">
+</body>
+</html>
