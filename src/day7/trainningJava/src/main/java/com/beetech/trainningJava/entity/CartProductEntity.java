@@ -23,6 +23,9 @@ public class CartProductEntity {
     private BigDecimal price;
 
     @Column(name = "cart_id", nullable = false)
-    private Integer cart;
+    private Integer cartId;
+
+    @Column(name = "product_id", nullable = false)
+    private Integer productId;
 
 }

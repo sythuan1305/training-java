@@ -1,13 +1,11 @@
 package com.beetech.trainningJava.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
-import java.math.BigInteger;
 
 @Getter
 @Setter
@@ -20,7 +18,7 @@ public class ProductEntity {
     @Column(name = "id", nullable = false)
     private Integer id;
 
-    @Column(name = "name", nullable = false, length = 100, unique = true)
+    @Column(name = "name", nullable = false, length = 100)
     private String name;
 
     @Column(name = "price", nullable = false, precision = 10, scale = 2)
@@ -32,9 +30,9 @@ public class ProductEntity {
     @Column(name = "image_url", nullable = false)
     private String imageUrl;
 
-    public ProductEntity(String name, BigInteger price, Integer quantity, String imageUrl) {
+    public ProductEntity(String name, BigDecimal price, Integer quantity, String imageUrl) {
         this.name = name;
-        this.price = new BigDecimal(price);
+        this.price = new BigDecimal(String.valueOf(price));
         this.quantity = quantity;
         this.imageUrl = imageUrl;
     }

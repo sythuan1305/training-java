@@ -17,9 +17,12 @@ public class CartEntity {
     private Integer id;
 
     @Column(name = "total_price", nullable = false, precision = 10, scale = 2)
-    private BigDecimal totalPrice;
+    private BigDecimal totalPrice = new BigDecimal("0.00");
 
     @Column(name = "total_quantity", nullable = false)
-    private Integer totalQuantity;
+    private Integer totalQuantity = 0;
+
+    @Column(name = "account_id")
+    private Integer accountId;
 
 }
