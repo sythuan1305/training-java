@@ -33,7 +33,7 @@ public class WebSercurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-//                .csrf().disable()
+                .csrf().disable()
                 .authorizeHttpRequests(request -> request
                         .requestMatchers("/api/auth/**").permitAll()
                         .requestMatchers("/auth/**").permitAll()
@@ -45,6 +45,9 @@ public class WebSercurityConfig {
                         .loginProcessingUrl("/auth/login")
                         .failureUrl("/login?error=true")
                         .defaultSuccessUrl("/", true).permitAll());
+        http.
+                logout().logoutUrl("/logout").logoutSuccessUrl("/login").permitAll();
+
         http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
