@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org"
+      layout:decorate="~{layout}">
+<head>
+    <meta charset="UTF-8">
+    <title>Discount List</title>
+    <script>
+        // const localTimeZone = IIntl.DateTimeFormat().resolvedOptions().timeZone;
+        // console.log(Intl.DateTimeFormat().resolvedOptions().timeZone);
+        function ReloadSubmitBtn() {
+            // get radio elements is checked using jquery
+            var radios = document.querySelectorAll('input[name="discount"]:checked');
+            var submitBtn = document.getElementById('submitBtn');
+            submitBtn.disabled = radios.length === 0;
+
+
+            // get all radio elements with name 'discount'
+            // var radios = document.getElementsByName('discount');
+            // var submitBtn = document.getElementById('submitBtn');
+            // // check if the radio is checked using jquery
+            // if ($(radios).is(':checked')) {
+            //     submitBtn.disabled = false;
+            // } else {
+            //     submitBtn.disabled = true;
+            // }
+
+        }
+    </script>
+</head>
+<body layout:fragment="content" onload="ReloadSubmitBtn()">
+<h1>Discount Information</h1>
+<form action="/user/order/payment" method="post" onchange="ReloadSubmitBtn()">
+    <h2>Select Discount</h2>
+    <table class="table">
+        <tr>
+            <th>Select</th>
+            <th>Code</th>
+            <th>Discount Description</th>
+            <th>Max Uses Per Customer</th>
+            <th>Remaining Discount Number</th>
+            <th>List Condition</th>
+            <th>Start Date</th>
+            <th>End Date</th>
+        </tr>
+        <tr th:each="discount : ${discounts}">
+            <td>
+                <input type="radio" id="discount-1" name="discount" th:disabled="${!discount.isAbleToUse()}">
+                <label for="discount_id"></label><input type="number" class="form-control" id="discount_id"
+                                                        name="discountId"
+                                                        placeholder="discount Id" th:value="${discount.getId()}"
+                                                        > <!-- Do disabled nên không gửi đc-->
+            </td>
+            <td><label for="discount-1" th:value="${discount.getCode()}"></label></td>
+            <td th:text="${discount.getDescription()}"></td>
+            <td th:text="${discount.getMaxUsesPerCustomer()}">/td>
+            <td th:text="${discount.getMaxUses()}"></td>
+            <td>
+                <div th:each="condition : ${discount.getConditions().values()}">
+                    <p th:text="'* ' + ${condition.getDescription()}"></p>
+                </div>
+            </td>
+            <td>
+                <div>
+                    <p th:text="${discount.getStartDateZone().toLocalDate().toString()}"></p>
+                    <p th:text="${#temporals.format(discount.getStartDateZone().toLocalTime, 'HH:mm:ss')}"></p>
+                    <p th:text="${discount.getStartDateZone().getZone()}"></p>
+                </div>
+            </td>
+            <td>
+                <div>
+                    <p th:text="${discount.getEndDateZone().toLocalDate().toString()}"></p>
+                    <p th:text="${#temporals.format(discount.getEndDateZone().toLocalTime, 'HH:mm:ss')}"></p>
+                    <p th:text="${discount.getEndDateZone().getZone()}"></p>
+                </div>
+            </td>
+        </tr>
+    </table>
+    <br>
+    <div>
+        <div th:each="cartProductId: ${cartProductIds}">
+            <label>
+                <input type="number" name="cartProductId" th:value="${cartProductId}">
+            </label>
+        </div>
+    </div>
+    <input type="submit" value="Submit" id="submitBtn">
+</form>
+</body>
+</html>

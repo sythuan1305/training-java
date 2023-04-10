@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+    <meta charset="UTF-8">
+    <title>Cart Information</title>
+    <script>
+        let discount = "[[${discount}]]";
+        function ReloadSubmitBtn() {
+            let checkboxes = document.querySelectorAll('input[type="checkbox"]:checked');
+            let submitButton = document.getElementById("submit-button");
+            submitButton.disabled = checkboxes.length === 0;
+        }
+
+        function showCartOnTable() {
+            console.log("showCartOnTable");
+            // if (isAuthenticated === "false") {
+            //     let cart = getCartInSession() || [];
+            //     generateTable(cart);
+            // } else {
+            let cartProduct = "[[${cartProducts}]]";
+            // console.log("cartProduct: " + cartProduct);
+            decodedStringAndParseJson(cartProduct);
+            generateTable(decodedStringAndParseJson(cartProduct));
+            // }
+        }
+
+        function generateTable(cart) {
+
+            // let tbody = document.querySelector('#cart-table tbody');
+            let form = document.createElement('form'); // create form element
+            form.id = 'form-order'; // set form id
+            // add event onChange listener to form
+            form.addEventListener('change', function (event) {
+                // if (event.target.type === 'checkbox') {
+                ReloadSubmitBtn();
+                // }
+            });
+            let formDiv = document.getElementById('form-div');
+            form.method = 'post'; // set form method
+            form.action = '/user/order/payment'; // set form action
+
+            // create table
+            let table = document.createElement('table');
+            table.id = 'cart-table';
+            table.className = 'table';
+            let thead = document.createElement('thead');
+            let tr = document.createElement('tr');
+            let nameTh = document.createElement('th');
+            let priceTh = document.createElement('th');
+            let quantityTh = document.createElement('th');
+            let imageTh = document.createElement('th');
+            let checkboxTh = document.createElement('th');
+
+            nameTh.innerHTML = 'Name';
+            priceTh.innerHTML = 'Price';
+            quantityTh.innerHTML = 'Quantity';
+            imageTh.innerHTML = 'Image';
+            checkboxTh.innerHTML = 'Check';
+
+            tr.appendChild(nameTh);
+            tr.appendChild(priceTh);
+            tr.appendChild(quantityTh);
+            tr.appendChild(imageTh);
+            tr.appendChild(checkboxTh);
+            thead.appendChild(tr);
+            table.appendChild(thead);
+            var tbody = document.createElement('tbody');
+            table.appendChild(tbody);
+
+
+            for (var i = 0; i < cart.length; i++) {
+                // if (isAuthenticated === "false")
+                // {
+                //     var name = cart[i].name;
+                //     var price = cart[i].price;
+                //     var quantity = cart[i].quantity;
+                //     var imageUrls = cart[i].images;
+                // }
+                // else
+                // {
+                var cartProductId = cart[i].id
+                console.log("cartProductId: " + cart[i].id)
+                var name = cart[i].product.name;
+                var price = cart[i].price;
+                var quantity = cart[i].quantity;
+                var imageUrls = cart[i].productModel.images;
+                console.log("product: " + JSON.stringify(cart[i].productModel));
+                // var imageUrl = cart[i].product.image;
+                // }
+
+                // Tạo thẻ tr và các thẻ td tương ứng
+                let tr = document.createElement('tr');
+                let nameTd = document.createElement('td');
+                let priceTd = document.createElement('td');
+                let quantityTd = document.createElement('td');
+                let imageUrlTd = document.createElement('td');
+                let checkboxTd = document.createElement('td');
+                let checkbox = document.createElement('input');
+                checkbox.type = "checkbox";
+                checkbox.name = "cartProductId";
+                checkbox.value = cartProductId;
+                checkboxTd.appendChild(checkbox);
+
+
+                // Điền thông tin sản phẩm vào các ô trong bảng
+                nameTd.textContent = name;
+                priceTd.textContent = price;
+                quantityTd.textContent = quantity;
+
+                for (var j = 0; j < imageUrls.length; j++) {
+                    imageUrlTd.innerHTML += '<img src="data:image/png;base64,' + imageUrls[j] + '" alt="product_image" style="max-width: 100px">';
+                }
+                // imageUrls.forEach(function (imageUrl) {
+                //     imageUrlTd.innerHTML += '<img src="' + imageUrl + '" alt="product_image" style="max-width: 100px">';
+                // });
+                // imageUrlTd.innerHTML = '<img src="' + imageUrl + '" alt="product_image" style="max-width: 100px">';
+
+                // Thêm các thẻ td vào thẻ tr
+                tr.appendChild(nameTd);
+                tr.appendChild(priceTd);
+                tr.appendChild(quantityTd);
+                tr.appendChild(imageUrlTd);
+                tr.appendChild(checkboxTd);
+
+
+                // Thêm thẻ tr vào thẻ tbody
+                tbody.appendChild(tr);
+            }
+            form.appendChild(table); // append table to form
+
+            // create div_discount in form
+            let divDiscount = document.createElement('div');
+            divDiscount.id = "div-discount";
+            divDiscount.style = "overflow: auto";
+
+            if (discount.length !== 0)
+            {
+                let discountJson = decodedStringAndParseJson(discount);
+                // create tag show discount and inner tag show discount have 'a' tag which can click and show information discount in addDiscountDiv
+                let showDiscountDiv = document.createElement('div');
+                showDiscountDiv.id = "show-discount";
+                showDiscountDiv.style = "overflow: auto";
+                // create tag 'a' in showDiscountDiv
+                let showDiscountP = document.createElement('p');
+                showDiscountP.id = "show-discount-p";
+                // add  a tag which show information details discount and p tag which information to innerHTML to showDiscountP
+                showDiscountP.innerHTML += "<p>";
+                showDiscountP.innerHTML += "Code: " + discountJson.code;
+                showDiscountP.innerHTML += "<br>";
+                showDiscountP.innerHTML += "Description: " + discountJson.description;
+                showDiscountP.innerHTML += "</p>";
+                showDiscountP.innerHTML += "<a href='/user/discount/list'>Show Discount</a>";
+                // add class to showDiscountP
+                showDiscountP.className = "alert alert-info";
+                // anchor this button to the right of the screen
+                showDiscountP.style = "float: right";
+                // add tag 'p' to showDiscountDiv
+                showDiscountDiv.appendChild(showDiscountP);
+                // add input hidden to form
+                // let discountIdInput = document.createElement('input');
+                // discountIdInput.type = "hidden";
+                // discountIdInput.name = "discountId";
+                // discountIdInput.value = discountJson.id;
+                // // add discountIdInput to form
+                // form.appendChild(discountIdInput);
+                // add showDiscountDiv to divDiscount
+                divDiscount.appendChild(showDiscountDiv);
+            }
+
+            // // create addDiscountDiv-discount in form
+            // let addDiscountDiv = document.createElement('div');
+            // addDiscountDiv.id = "add-discount";
+            // addDiscountDiv.style = "overflow: auto";
+            // // create button add discount in addDiscountDiv
+            // let discountAdd = document.createElement('a');
+            // discountAdd.id = "discount-a";
+            // discountAdd.href = "/user/discount/list";
+            // discountAdd.innerHTML = "Add Discount";
+            // discountAdd.className = "btn btn-primary";
+            // // anchor this button to the right of the screen
+            // discountAdd.style = "float: right";
+            // // add tag 'a' to addDiscountDiv
+            // addDiscountDiv.appendChild(discountAdd);
+            // // add addDiscountDiv to divDiscount
+            // divDiscount.appendChild(addDiscountDiv);
+
+            form.appendChild(divDiscount); // append div_discount to form
+
+            // add submit button to form
+            let submitButton = document.createElement('input');
+            submitButton.id = "submit-button";
+            submitButton.type = "submit";
+            submitButton.value = "Order";
+            form.appendChild(submitButton);
+
+            // add form to body
+            formDiv.appendChild(form);
+        }
+    </script>
+</head>
+<body layout:fragment="content" onload="showCartOnTable(); ReloadSubmitBtn()">
+<h1>Cart Information</h1>
+<div id="form-div">
+
+    <!--    <table class="table" id="cart-table">-->
+    <!--        <thead>-->
+    <!--        <tr>-->
+    <!--            <th>Product Name</th>-->
+    <!--            <th>Product Price</th>-->
+    <!--            <th>Product Quantity</th>-->
+    <!--            <th>Product Image</th>-->
+    <!--            <th>Check</th>-->
+    <!--        </tr>-->
+    <!--        </thead>-->
+    <!--        <tbody>-->
+    <!--        &lt;!&ndash;    <tr th:each="product : ${cartProducts}">&ndash;&gt;-->
+    <!--        &lt;!&ndash;        <td th:text="${product.getProduct().getName()}"></td>&ndash;&gt;-->
+    <!--        &lt;!&ndash;        <td th:text="${product.getPrice()}"></td>&ndash;&gt;-->
+    <!--        &lt;!&ndash;        <td th:text="${product.getQuantity()}"></td>&ndash;&gt;-->
+    <!--        &lt;!&ndash;        <td><img th:src="${product.getProduct().getImageUrl()}" alt="product_image" style="max-width: 100px"></td>&ndash;&gt;-->
+    <!--        </tbody>-->
+    <!--    </table>-->
+</div>
+
+</body>
+</html>

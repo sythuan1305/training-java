@@ -1,14 +1,20 @@
 package com.beetech.trainningJava.config.model;
 
 import com.beetech.trainningJava.entity.AccountEntity;
+import com.beetech.trainningJava.entity.CartEntity;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 
+@Getter
+@Setter
 public class AccountModel implements UserDetails {
 
     private AccountEntity account;
+
     private Collection<RoleModel> roles;
 
     public AccountModel(AccountEntity account, Collection<RoleModel> roles) {

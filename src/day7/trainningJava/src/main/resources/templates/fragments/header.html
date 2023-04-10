@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <title>Header</title>
+</head>
+<body onload="checkCartIdInLocalStorage()">
+<header th:fragment="header">
+
+    <nav class="navbar navbar-dark bg-dark container-fluid">
+        <label class="navbar-brand mb-0 h1 px-3 col-xl-8"><a th:href="@{/}">Training Java</a></label>
+        <ul class="navbar-nav col container-fluid">
+            <li class="nav-item col ">
+                <a id="cart_id" class="nav-link" th:href="@{/user/cart/information}">Cart</a>
+            </li>
+            <li th:if="${isAuthenticated}" class="nav-item col-auto">
+                <a class="btn btn-warning" th:href="@{/logout}">Logout</a>
+            </li>
+            <li th:if="${!isAuthenticated}" class="nav-item col-auto">
+                <a class="btn btn-warning" th:href="@{/login}">Login</a>
+        </ul>
+    </nav>
+</header>
+</body>
+
+</html>

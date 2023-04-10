@@ -35,9 +35,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 String username = jwtTokenProvider.getUsernameFromJwt(jwt);
                 UserDetails userDetails = userDetailsService.loadUserByUsername(username);
                 if (userDetails != null) {
-                    UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-                    auth.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                    SecurityContextHolder.getContext().setAuthentication(auth);
+                    UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities()); // câu lệnh này dùng để tạo ra 1 đối tượng authentication
+                    auth.setDetails(new WebAuthenticationDetailsSource().buildDetails(request)); // câu lệnh này dùng để set thông tin cho đối tượng authentication
+                    SecurityContextHolder.getContext().setAuthentication(auth); // câu lệnh này dùng để set đối tượng authentication vào SecurityContext và để lưu trữ thông tin đăng nhập
                 }
             }
         } catch (Exception e) {

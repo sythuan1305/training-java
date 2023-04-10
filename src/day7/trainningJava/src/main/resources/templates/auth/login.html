@@ -3,17 +3,35 @@
 <head>
     <meta charset="UTF-8">
     <title>Login Page</title>
+    <script>
+        function onSubmit()
+        {
+            let cartProducts = document.getElementById("cartProducts");
+            let cart = JSON.parse(localStorage.getItem('cart')) || [];
+            cartProducts.value = JSON.stringify(cart);
+        }
+    </script>
 </head>
 <body>
 <h1>Login</h1>
-<form method="post" th:action="@{/auth/login}">
+<div th:if="${param.error}">
+    Invalid username and password.
+</div>
+<div th:if="${param.logout}">
+    You have been logged out.
+</div>
+<form method="post" th:action="@{/auth/login}" onsubmit="onSubmit()">
     <div>
         <label for="username">Username:</label>
-        <input type="text" id="username" name="username"  />
+        <input type="text" id="username" name="username"/>
     </div>
     <div>
         <label for="password">Password:</label>
-        <input type="password" id="password" name="password" />
+        <input type="password" id="password" name="password"/>
+    </div>
+    <div>
+        <label for="cartProducts">cart Product:</label>
+        <input type="text" id="cartProducts" name="cartProducts"/>
     </div>
     <button type="submit">Login</button>
 </form>

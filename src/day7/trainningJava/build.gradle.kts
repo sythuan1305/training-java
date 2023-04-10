@@ -29,12 +29,17 @@ dependencies {
     implementation("mysql:mysql-connector-java:8.0.32")
 //    implementation("com.liferay:javax.xml.bind:2.3.0.LIFERAY-PATCHED-2")
     implementation("javax.xml.bind:jaxb-api:2.4.0-b180830.0359")
+    implementation("com.google.code.gson:gson:2.10.1")
+    implementation("org.springframework.security:spring-security-config:6.0.2")
+    implementation("org.apache.tomcat:tomcat-util:10.1.7")
+    implementation("com.paypal.sdk:rest-api-sdk:1.14.0")
     developmentOnly("org.springframework.boot:spring-boot-devtools")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.springframework.restdocs:spring-restdocs-mockmvc")
     testImplementation("org.springframework.security:spring-security-test")
     compileOnly("org.projectlombok:lombok:1.18.26")
     annotationProcessor("org.projectlombok:lombok:1.18.26")
+//    implementation("org.springframework.boot:spring-boot-starter-aop:3.0.4")
 }
 
 tasks.withType<Test> {

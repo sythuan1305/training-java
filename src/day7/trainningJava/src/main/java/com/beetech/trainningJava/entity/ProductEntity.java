@@ -1,16 +1,21 @@
 package com.beetech.trainningJava.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 @Getter
 @Setter
 @Entity
 @NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "product")
 public class ProductEntity {
     @Id
@@ -27,13 +32,34 @@ public class ProductEntity {
     @Column(name = "quantity", nullable = false)
     private Integer quantity;
 
-    @Column(name = "image_url", nullable = false)
-    private String imageUrl;
 
-    public ProductEntity(String name, BigDecimal price, Integer quantity, String imageUrl) {
+    @OneToMany(mappedBy = "product")
+    @JsonBackReference
+    private Set<CartProductEntity> cartProducts = new LinkedHashSet<>();
+
+    @OneToMany(mappedBy = "product")
+    @JsonBackReference
+    private Set<ProductImageurlEntity> productImageurlEntities = new LinkedHashSet<>();
+
+    @OneToMany(mappedBy = "product")
+    @JsonBackReference
+    private Set<ProductDiscountConditionEntity> productDiscountConditions = new LinkedHashSet<>();
+
+    public ProductEntity(String name, BigDecimal price, Integer quantity) {
         this.name = name;
         this.price = new BigDecimal(String.valueOf(price));
         this.quantity = quantity;
-        this.imageUrl = imageUrl;
+    }
+
+    public ProductEntity(ProductEntity productEntity) {
+        this(
+                productEntity.getId(),
+                productEntity.getName(),
+                productEntity.getPrice(),
+                productEntity.getQuantity(),
+                productEntity.getCartProducts(),
+                productEntity.getProductImageurlEntities(),
+                productEntity.getProductDiscountConditions()
+        );
     }
 }

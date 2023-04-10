@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org"
+      layout:decorate="~{layout}">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Read CSV file with JS</title>
+</head>
+
+<body layout:fragment="content">
+<form method="post" id="testForm" th:src="@{/admin/product/uploadCsv}">
+    <input name="file" type="file" id="UploadFile" accept=".csv"/>
+    <br/>
+    <input name="fileCsvJson" type="text" id="file-csv-json">
+    <input id="btn-form" type="submit" value="submit"/>
+</form>
+<script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+<script>
+    const testForm = document.getElementById("testForm");
+    const csvDataFile = document.getElementById("UploadFile");
+    const fileCsvJson = document.getElementById("file-csv-json");
+
+    testForm.addEventListener("change", function () {
+        var file = csvDataFile.files[0];
+        var reader = new FileReader();
+        reader.onload = function (event) {
+            var csvString = event.target.result;
+            var data = d3.csvParseRows(csvString, function (d) {
+                return d.map(function (d) {
+                    return d.trim();
+                });
+            });
+            // data = d3.csvParse(data);
+            console.log(JSON.stringify(data));
+            let listRow = JSON.parse(JSON.stringify(data));
+            // for each row
+            for (let i = 0; i < listRow.length; i++) {
+                // for each column
+                for (let j = 3; j < listRow[i].length; j++) {
+                    console.log("listRow[i][j]" + listRow[i][j])
+                    listRow[i][j] = getImageFromPathAndChangeToBase64(listRow[i][j]);
+                    console.log("listRow[i][j]" + listRow[i][j])
+                }
+            }
+            // var csvFile = d3.csvFormat(data);
+            fileCsvJson.value = JSON.stringify(data);
+            //     // Create a Blob object from the CSV string
+            //     var blob = new Blob([csvFile], { type: "text/csv" });
+            //     // csvFile.value = csvFile;
+            //     // console.log(csvFile);
+            //
+            //     // Create a FormData object and append the Blob to it
+            //     var formData = new FormData();
+            //
+            //     formData.append("fileCsv", blob);
+            //
+            //       // create d3 xhr with formData
+            //       var xhr = d3
+            //         .xhr("http://localhost:8080/admin/product/uploadCsv")
+            //         .header("Content-Type", "multipart/form-data")
+            //         .post(formData, function(error, data) {
+            //           if (error) {
+            //             console.log(error);
+            //           } else {
+            //             console.log(data);
+            //           }
+            //         });
+            //     document.write(csvFile)
+        };
+        reader.readAsText(file);
+    });
+
+    // get image from path
+    function getImageFromPathAndChangeToBase64(path) {
+        var data = "";
+        var input = document.createElement("input");
+        input.type = "file";
+        input.accept = "image/*";
+        input.onchange = function(event) {
+            var file = event.target.files[0];
+            // Đọc tệp ảnh
+            var reader = new FileReader();
+            reader.onload = function() {
+                // Tạo mã Base64 từ tệp ảnh
+                var base64Image = reader.result.replace(/^data:image\/(png|jpeg|jpg);base64,/, "");
+                console.log(base64Image);
+                data = base64Image;
+            };
+            reader.readAsDataURL(file);
+        };
+        return data;
+    }
+
+</script>
+</body>
+
+</html>

@@ -1,5 +1,6 @@
 package com.beetech.trainningJava.service.imp;
 
+import com.beetech.trainningJava.config.model.AccountModel;
 import com.beetech.trainningJava.jwt.JwtTokenProvider;
 import com.beetech.trainningJava.model.JwtTokenModel;
 import com.beetech.trainningJava.service.IAuthService;
@@ -16,9 +17,12 @@ public class AuthServiceImp implements IAuthService {
 
     @Autowired
     private JwtTokenProvider jwtTokenProvider;
+
     @Override
     public JwtTokenModel login(String username, String password) {
         authManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
         return new JwtTokenModel(jwtTokenProvider.generateToken(username), jwtTokenProvider.getExpiredTime());
     }
+
+
 }

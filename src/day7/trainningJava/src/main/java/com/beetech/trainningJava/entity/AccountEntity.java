@@ -1,6 +1,7 @@
 package com.beetech.trainningJava.entity;
 
 import com.beetech.trainningJava.enums.Role;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -37,4 +38,9 @@ public class AccountEntity {
     @Column(name = "role", nullable = false, length = 5)
     @Enumerated(EnumType.STRING)
     private Role role;
+
+    @OneToOne(mappedBy = "account")
+    @JsonManagedReference
+    private CartEntity cart;
+
 }

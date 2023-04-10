@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org"
+      layout:decorate="~{layout}">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard</title>
+    <script>
+        function checkRadio() {
+            var radios = document.querySelectorAll('input[name="paymentMethod"]:checked');
+            var submitBtn = document.getElementById('btn-order');
+            console.log(radios.length === 0);
+            return radios.length > 0;
+        }
+
+        function onLoad() {
+            validateForm(document.getElementById('form-payment'), document.getElementById('btn-order'), checkRadio());
+        }
+    </script>
+</head>
+<body layout:fragment="content" onload="onLoad()">
+<form method="post" th:action="@{/user/discount/list}" id="form-discount" hidden="hidden"
+>
+    <div th:each="cartProduct: ${cartProducts}">
+        <label>
+            <input type="number" name="cartProductId" th:value="${cartProduct.getId()}">
+        </label>
+    </div>
+    <button id="btn-add-discount" class="btn btn-primary" type="submit">Add Discount</button>
+</form>
+<form method="post" th:action="@{/user/order/authorizePayment}" id="form-payment"
+      oninput="onLoad()">
+    <div class="card">
+        <!--        address-->
+        <h3 class="card-header">Shipping Address:</h3>
+        <div class="card-body">
+            <!--            input address-->
+            <div th:if="${isAuthenticated}">
+                <label>
+                    <input type="text" name="address" th:value="${cartProducts[0].getCart().getAccount().getUsername()}"
+                           disabled>
+                </label>
+            </div>
+            <div th:if="${!isAuthenticated}">
+                <label>
+                    <input type="text" name="address">
+                </label>
+            </div>
+        </div>
+    </div>
+    <div class="card">
+        <table class="table">
+            <thead>
+            <tr class="card-header">
+                <th>Product Name</th>
+                <th>Quantity</th>
+                <th>Price</th>
+                <th>Image</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="cartProduct : ${cartProducts}">
+                <td th:text="${cartProduct.getProduct().getName()}"></td>
+                <td th:text="${cartProduct.getPrice()}"></td>
+                <td th:text="${cartProduct.getQuantity()}"></td>
+                <td>
+                    <div th:each="image: ${cartProduct.getProductModel().getImages()}">
+                        *<img th:src="${'data:image/png;base64,' + image}" alt="product_image" style="max-width: 100px">
+                    </div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="card">
+        <h3 class="card-header">Payment Method:</h3>
+        <div class="card-body">
+            <!--           choose radio box -->
+            <!--            <input type="radio" id="standard" name="shipping-method" value="standard">-->
+            <input type="radio" id="paypal" name="paymentMethod" value="PAYPAL">
+            <label for="paypal">Paypal</label><br>
+        </div>
+    </div>
+
+    <div style="float: right">
+        <div style="text-align: left" class="card">
+            <h2 class="card-header" style="color: #005cbf">Discount Information:</h2>
+            <div class="card-body">
+                <table class="table" style="width: 100%">
+                    <tr th:if="${discountModel == null? false: true}">
+                        <th class="card-title">Discount Code</th>
+                        <td class="card-title" th:text="${discountModel.getCode()}"></td>
+                    </tr>
+                    <tr th:if="${discountModel == null? false: true}">
+                        <th class="card-title">Discount Description</th>
+                        <td class="card-text" th:text="${discountModel.getDescription()}"></td>
+                        <input type="number" name="discountId" th:value="${discountModel.getId()}" hidden="hidden">
+                    </tr>
+                    <tr th:if="${discountModel == null? false: true}" hidden="hidden">
+                        <th></th>
+                        <td><a class="btn btn-primary" href="/user/discount/list">Show
+                            Discount</a></td>
+                    </tr>
+                    <tr>
+                        <th></th>
+                        <td>
+                            <div th:each="cartProduct: ${cartProducts}" hidden="hidden">
+                                <label>
+                                    <input th:value="${cartProduct.getPrice()}">
+                                    <input type="number" name="cartProductId" th:value="${cartProduct.getId()}">
+                                </label>
+                            </div>
+                            <input style="float: right" type="button" class="btn btn-primary" value="Add Discount"
+                                   onclick="document.getElementById('btn-add-discount').click()">
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        <br>
+        <div style="" class="card">
+            <h2 class="card-header" style="color: #005cbf">Detail Payment:</h2>
+            <div class="card-body">
+                <div style="text-align: left">
+                    <table class="table card-columns">
+                        <tr>
+                            <th class="card-text">Total Product Price:</th>
+                            <td class="card-text" id="total-product-price" th:text="${orderModel.getTotalPrice()}"></td>
+                        </tr>
+                        <tr>
+                            <th class="card-text">Total discount:</th>
+                            <td class="card-text" id="total-discount" th:text="${orderModel.getTotalDiscount()}"></td>
+                        </tr>
+                        <tr>
+                            <th><h3 class="card-text">Total Order</h3></th>
+                            <td><h3 class="card-text" id="total-order" th:text="${orderModel.getTotalAmount()}"></h3>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <div style="text-align: right">
+                    <button id="btn-order" style="width: 100%" class="btn btn-primary" type="submit">Submit</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+</body>
+</html>

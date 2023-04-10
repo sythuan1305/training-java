@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+    <meta charset="UTF-8">
+    <title>Buy Product</title>
+    <script>
+
+
+        function checkQuantityMoreThanZero() {
+            let quantity = document.getElementById("product_quantity");
+            document.getElementById("add_product").disabled = quantity.value <= 0;
+        }
+
+        function calculateTotal() {
+            let quantity = document.getElementById("product_quantity");
+            let price_total = document.getElementById("product_price");
+            let price = "[[${product.getPrice()}]]"; // get var model in thymeleaf
+            price_total.value = price * quantity.value;
+        }
+
+        //---------------------
+        function addToCart(cart_product) {
+            console.log(cart_product);
+            let cart = getCartInSession() || [];
+
+            let index = -1;
+            if (cart.length > 0)
+                index = cart.findIndex(x => x.product_id === cart_product.product_id);
+
+            if (index !== -1) {
+                cart[index].quantity = +cart[index].quantity + parseInt(cart_product.quantity);
+                cart[index].price = +cart[index].price + parseFloat(cart_product.price);
+            } else {
+                cart.push(cart_product);
+            }
+            console.log("cart: " + cart);
+            console.log("cart: " + JSON.stringify(cart));
+            console.log("btoa: " + btoa(JSON.stringify(cart)));
+            setCookie('cart', btoa(JSON.stringify(cart)), 1);
+        }
+
+        function setCartProduct(cart_product) {
+            console.log("cart_product: " + JSON.stringify(cart_product));
+            document.getElementById("cart_product").value = JSON.stringify(cart_product);
+        }
+
+        function onSubmitForm() {
+            let cart_product = getCartProductFromForm();
+            if (isAuthenticated === "false")
+            {
+                addToCart(cart_product);
+            }
+            setCartProduct([cart_product]);
+        }
+
+        function getCartProductFromForm() {
+            let add_form = document.getElementById("add_form");
+            let cart_product =  {
+                // auto generate integer id unique
+                id: Date.now(),
+                product_id: add_form.elements["product_id"].value,
+                name: add_form.elements["product_name"].value,
+                price: add_form.elements["product_price"].value,
+                quantity: add_form.elements["product_quantity"].value,
+            };
+            // get all value in img tag with id = product_image
+            // let images = document.querySelectorAll("#product_image");
+            // for (let i = 0; i < images.length; i++) {
+            //     cart_product.images.push(images[i].getAttribute("value"));
+            // }
+
+            return cart_product;
+        }
+
+        function onLoad() {
+            let cart_product = getCartProductFromForm();
+            console.log(cart_product)
+            setCartProduct(cart_product);
+            validateForm(document.getElementById('add_form'), document.getElementById('btn_add_product'));
+        }
+
+        // for test only
+        // function onChange()
+        // {
+        //     let cart_product = getCartProductFromForm();
+        //     addToCart(cart_product); // bug add to cart when change quantity (WARNING)
+        //     setCartProduct(cart_product);
+        // }
+
+
+
+        // ---------------------
+    </script>
+</head>
+<body layout:fragment="content" onload="onLoad();">
+<h1>Add Product</h1>
+<form th:action="@{/user/cart/add}" method="POST" id="add_form"
+      oninput="validateForm(document.getElementById('add_form'), document.getElementById('btn_add_product')); calculateTotal(); checkQuantityMoreThanZero()"
+      onsubmit="onSubmitForm()"
+        >
+    <div class="form-group">
+        <label for="product_id">Product ID</label>
+        <input type="text" class="form-control" id="product_id" name="productId" placeholder="Product ID"
+               th:value="${product.getId()}" disabled="disabled">
+    </div>
+    <div class="form-group">
+        <label for="product_name">Product Name</label>
+        <input type="text" class="form-control" id="product_name" name="productName" placeholder="Product Name"
+               th:value="${product.getName()}" disabled="disabled">
+    </div>
+    <div class="form-group">
+        <label for="product_price">Price</label>
+        <input min="0" type="number" class="form-control" id="product_price" name="productPrice"
+               placeholder="Product Price" th:value="${product.getPrice()}" disabled="disabled">
+    </div>
+    <div class="form-group">
+        <label for="product_quantity">Product Quantity</label>
+        <input min="0" type="number" class="form-control" id="product_quantity" name="quantity"
+               placeholder="Product Quantity" value="1">
+    </div>
+    <div class="form-group">
+        <div th:each="image : ${product.getImages()}">
+            <img id="product_image" th:value="${image}" th:src="${'data:image/png;base64,' + image}" alt="product_image" style="max-width: 100px">
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="cart_product">Cart Product</label>
+        <input type="text" class="form-control" id="cart_product" name="cartProduct" placeholder="cartProducts">
+    </div>
+    <button id="btn_add_product" type="submit" class="btn btn-primary">Buy</button>
+</form>
+</body>
+</html>

@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="~{product/layout}">
+      layout:decorate="~{layout}">
 <head>
     <meta charset="UTF-8">
     <title>UploadSuccess</title>
@@ -12,7 +12,9 @@
 <p th:text="'Product Name: '  + ${product.getName()}"></p>
 <p th:text="'Product Price: '  + ${product.getPrice()}"></p>
 <p th:text="'Product Quantity: '  + ${product.getQuantity()}"></p>
-<!--Show image-->
-<img th:src="${product.getImageUrl()}" alt="image" width="200" height="200" src="">
+<p th:each="image : ${product.getImages()}">
+    <img th:src="${'data:image/png;base64,' + image}" style="max-width: 100px"/>
+<!--    <img th:src="@{'data:image/png;base64,' + #strings.encodeBase64(image)}" alt="product_image" style="max-width: 100px">-->
+</p>
 </body>
 </html>

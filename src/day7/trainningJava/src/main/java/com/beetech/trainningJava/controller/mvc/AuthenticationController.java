@@ -8,6 +8,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 @Controller("mvcAuthenticationController")
@@ -16,12 +17,17 @@ import org.springframework.web.servlet.ModelAndView;
 public class AuthenticationController {
 
     @PostMapping("/login")
-    public ModelAndView login() {
+    public ModelAndView login(@RequestParam("username") String username, @RequestParam("password") String password, @RequestParam("cartProducts") String cartProducts) {
+        System.out.println("username:" + username);
+        System.out.println("password:" + password);
+        System.out.println("cartProducts:" + cartProducts);
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+
         log.info("POST_LOGIN"  + auth.isAuthenticated());
         if (auth.isAuthenticated()) {
             return new ModelAndView("redirect:/");
         }
-        return new ModelAndView("/login");
+        return new ModelAndView("/auth/login");
     }
+
 }
