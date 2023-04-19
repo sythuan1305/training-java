@@ -39,6 +39,7 @@ dependencies {
     testImplementation("org.springframework.security:spring-security-test")
     compileOnly("org.projectlombok:lombok:1.18.26")
     annotationProcessor("org.projectlombok:lombok:1.18.26")
+    testImplementation("org.mockito:mockito-inline:4.6.1")
 //    implementation("org.springframework.boot:spring-boot-starter-aop:3.0.4")
 }
 
