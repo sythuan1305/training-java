@@ -10,10 +10,14 @@
         <label class="navbar-brand mb-0 h1 px-3 col-xl-8"><a th:href="@{/}">Training Java</a></label>
         <ul class="navbar-nav col container-fluid">
             <li class="nav-item col ">
-                <a id="cart_id" class="nav-link" th:href="@{/user/cart/information}">Cart</a>
+                <a id="cart_id" class="nav-link" th:href="@{/user/cart/information-cart}">Cart</a>
             </li>
             <li th:if="${isAuthenticated}" class="nav-item col-auto">
-                <a class="btn btn-warning" th:href="@{/logout}">Logout</a>
+                <form th:action="@{/logout}" method="post">
+<!--                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.getHeaderName()}"/>-->
+                    <button class="btn btn-warning" type="submit">Logout</button>
+                </form>
+<!--                <a class="btn btn-warning" th:href="@{/logout}">Logout</a>-->
             </li>
             <li th:if="${!isAuthenticated}" class="nav-item col-auto">
                 <a class="btn btn-warning" th:href="@{/login}">Login</a>

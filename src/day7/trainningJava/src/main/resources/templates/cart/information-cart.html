@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org"
+      layout:decorate="~{layout}">
+<head>
+    <meta charset="UTF-8">
+    <title>Information Cart</title>
+    <script>
+        function ReloadSubmitBtn() {
+            let checkboxes = document.querySelectorAll('input[type="checkbox"]:checked');
+            let submitButton = document.getElementById("submit-button");
+            submitButton.disabled = checkboxes.length === 0;
+        }
+    </script>
+</head>
+<body layout:fragment="content" onload="ReloadSubmitBtn()">
+
+<h1>Cart Information</h1>
+<form id="form-order" onchange="ReloadSubmitBtn()"
+      method="post" th:action="@{/user/order/payment}">
+    <table id='cart-table' class="table">
+        <thead>
+        <tr>
+            <th>Name</th>
+            <th>Price</th>
+            <th>Quantity</th>
+            <th>Image</th>
+            <th>Check</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="cartProduct: ${cartProducts}">
+            <td th:text="${cartProduct.getProduct().getName()}"></td>
+            <td th:text="${cartProduct.getPrice()}"></td>
+            <td th:text="${cartProduct.getQuantity()}"></td>
+            <td>
+                <div th:each="image : ${cartProduct.getProductModel().getImages()}">
+                    <img id="product_image" th:value="${image}" th:src="${'data:image/png;base64,' + image}"
+                         alt="product_image" style="max-width: 100px">
+                </div>
+            </td>
+            <td>
+                <label>
+                    <input type="checkbox" name="cartProductId" th:value="${cartProduct.getId()}">
+                </label>
+            </td>
+        </tbody>
+    </table>
+    <!--    submit button-->
+    <div class="form-group">
+        <button id="submit-button" type="submit" class="btn btn-primary">Order</button>
+    </div>
+</form>
+
+
+</body>
+</html>

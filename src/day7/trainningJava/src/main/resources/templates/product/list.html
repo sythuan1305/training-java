@@ -38,7 +38,10 @@
     </thead>
     <tbody>
     <tr th:each="product : ${page.getItems()}">
-        <td th:text="${product.getName()}"></td>
+        <td>
+            <h5 th:utext="${product.getName()}"></h5>
+            <h5 th:text="${product.getName()}"></h5>
+        </td>
         <td th:text="${product.getPrice()}"></td>
         <td th:text="${product.getQuantity()}"></td>
         <td>
