@@ -1,5 +1,7 @@
 package com.beetech.trainningJava.utils;
 
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;

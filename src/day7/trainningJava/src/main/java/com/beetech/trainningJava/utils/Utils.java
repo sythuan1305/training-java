@@ -10,6 +10,8 @@ import org.apache.tomcat.util.json.ParseException;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 public class Utils {
@@ -24,13 +26,18 @@ public class Utils {
         return null;
     }
 
-    public static List<Map<String, Object>> JsonParserListObjectWithEncodedBase64(String cookieValue) {
+    public static List<Map<String, Object>> JsonParserListObjectWithEncodedURL(String cookieValue) {
         if (cookieValue.equals("defaultCookieValue")) {
             return null;
         }
-        byte[] decodedBytes = Base64.getDecoder().decode(cookieValue);
+
+//        byte[] decodedBytes = Base64.getDecoder().decode(cookieValue);
+//        String decodeURL = URLDecoder.decode(new String(decodedBytes), StandardCharsets.UTF_8);
+        String decodeURL = URLDecoder.decode(cookieValue, StandardCharsets.UTF_8);
+        System.out.println("decodeURL: " + decodeURL);
         try {
-            return new ArrayList<>((List<Map<String, Object>>) new JSONParser(new String(decodedBytes)).parse());
+            return new ArrayList<>((List<Map<String, Object>>) new JSONParser(decodeURL).parse());
+//            return new ArrayList<>((List<Map<String, Object>>) new JSONParser(new String(decodedBytes)).parse());
         } catch (ParseException e) {
             System.out.println(e.getMessage());
         }
