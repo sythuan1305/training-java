@@ -17,4 +17,8 @@ public interface IProductService {
 
     List<ProductEntity> getProductListByDiscountId(Integer discountId);
 
+    ProductEntity findByProductName(String productName);
+
+    void TestMinusQuantity(Integer number);
+
 }

@@ -9,6 +9,9 @@ import java.util.Map;
 public interface ICartProductService {
 //    public PageModel<CartEntity> findAll();
 //    public CartIn4Model save(CartIn4Model cartIn4Model);
+    //for test
+    CartProductEntity findByCartProductEntity(CartProductEntity cartProductEntity);
+    CartProductEntity findByCartProductId(Integer cartProductId);
     public List<CartProductEntity> getLisCartProductByCartId(Integer cartId);
     public List<CartProductEntity> getListCartProductByCartIdAndIsBought(Integer cartId, boolean isBought);
     public List<CartProductInforModel> getListCartProductInfor(List<CartProductEntity> cartProductEntityList);

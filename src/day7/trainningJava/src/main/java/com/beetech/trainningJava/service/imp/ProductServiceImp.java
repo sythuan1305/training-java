@@ -87,4 +87,16 @@ public class ProductServiceImp implements IProductService {
     public List<ProductEntity> getProductListByDiscountId(Integer discountId) {
         return null;
     }
+
+    @Override
+    public ProductEntity findByProductName(String productName) {
+        return productRepository.findByName(productName);
+    }
+
+    @Override
+    @Transactional( propagation = Propagation.REQUIRED)
+    public void TestMinusQuantity(Integer number) {
+        ProductEntity productEntity = productRepository.getReferenceById(1);
+        productEntity.setQuantity(productEntity.getQuantity() - number);
+    }
 }

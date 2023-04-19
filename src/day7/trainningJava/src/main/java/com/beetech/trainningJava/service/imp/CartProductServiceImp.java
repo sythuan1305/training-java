@@ -35,6 +35,16 @@ public class CartProductServiceImp implements ICartProductService {
     private IAccountService accountService;
 
     @Override
+    public CartProductEntity findByCartProductEntity(CartProductEntity cartProductEntity) {
+        return cartProductEntity;
+    }
+
+    @Override
+    public CartProductEntity findByCartProductId(Integer cartProductId) {
+        return cartProductRepository.findById(cartProductId).orElse(null);
+    }
+
+    @Override
     public List<CartProductEntity> getLisCartProductByCartId(Integer cartId) {
         return cartProductRepository.findAllByCartId(cartId);
     }
@@ -113,6 +123,7 @@ public class CartProductServiceImp implements ICartProductService {
 
     @Override
     public List<CartProductInforModel> getListCartProductInforWithParser(List<Map<String, Object>> cartProductParserList) {
+        System.out.println("cartProductParserList.size(): " + cartProductParserList.size());
         return cartProductParserList.stream().map(this::getCartProductInforWithParser).toList();
     }
 
@@ -165,8 +176,8 @@ public class CartProductServiceImp implements ICartProductService {
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
     public void TestMinusQuantity() {
-        // lấy đối tượng đơn hàng đã tồn tại với id = 1
-        CartProductEntity cartProductEntity1 = cartProductRepository.getReferenceById(1);
+        // lấy đối tượng đơn hàng đã tồn tại với id = 32
+        CartProductEntity cartProductEntity1 = cartProductRepository.getReferenceById(32);
 
         // print CartProductEntity1
         System.out.println("CartProductEntity1: " + cartProductEntity1.getQuantity());
