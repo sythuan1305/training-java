@@ -35,7 +35,7 @@ public class DiscountController {
             cartProductInforModels = cartProductService.getListCartProductInforByCartIdAndIsBought(accountService.getCartEntity().getId(), false);
         } else {
             cartProductInforModels = cartProductService.getListCartProductInforWithParser(
-                    Utils.JsonParserListObjectWithEncodedBase64(cookieValue));
+                    Utils.JsonParserListObjectWithEncodedURL(cookieValue));
         }
         cartProductInforModels = cartProductService.getListCartProductInforWithCartProductArray(cartProductInforModels, cartProductId);
         List<DiscountModel> discountModels = discountProductService.getDiscountModels(cartProductInforModels);

@@ -1,6 +1,7 @@
 package com.beetech.trainningJava.controller.api.user;
 
 import com.beetech.trainningJava.service.ICartProductService;
+import com.beetech.trainningJava.service.IProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Propagation;
@@ -17,9 +18,19 @@ public class CartController {
     @Autowired
     ICartProductService cartProductService;
 
+    @Autowired
+    IProductService productService;
+
     @PostMapping("/testCase1")
     @Transactional(propagation = Propagation.REQUIRED)
-    public void testCase1() {
+    public void testCase1Post() {
+        cartProductService.TestMinusQuantity();
+        cartProductService.TestSave(false);
+    }
+
+    @GetMapping("/testCase1")
+    @Transactional(propagation = Propagation.REQUIRED)
+    public void testCase1Get() {
         cartProductService.TestMinusQuantity();
         cartProductService.TestSave(false);
     }
@@ -36,5 +47,12 @@ public class CartController {
     public void testException() throws Exception {
         throw new Exception("Test exception");
     }
+
+    @GetMapping("/testMinusQuantity")
+    public void testMinusQuantity() {
+        productService.TestMinusQuantity(10000);
+    }
+
+
 
 }

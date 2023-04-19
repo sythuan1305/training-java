@@ -7,6 +7,7 @@ import com.beetech.trainningJava.service.IAccountService;
 import com.beetech.trainningJava.service.IProductImageUrlService;
 import com.beetech.trainningJava.service.IProductService;
 import com.beetech.trainningJava.service.IFileService;
+import com.beetech.trainningJava.utils.BASE64DecodedMultipartFile;
 import jakarta.annotation.Nullable;
 import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;

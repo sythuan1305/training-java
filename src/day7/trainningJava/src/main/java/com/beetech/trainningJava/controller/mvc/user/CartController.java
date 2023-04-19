@@ -1,5 +1,7 @@
 package com.beetech.trainningJava.controller.mvc.user;
 
+import com.beetech.trainningJava.aspect.LoggingAspect;
+import com.beetech.trainningJava.aspect.annotation.Loggable;
 import com.beetech.trainningJava.entity.CartProductEntity;
 import com.beetech.trainningJava.model.CartProductInforModel;
 import com.beetech.trainningJava.model.DiscountModel;
@@ -19,7 +21,8 @@ import java.util.*;
 
 @Controller("mvcUserCartController")
 @RequestMapping("/user/cart")
-@PostAuthorize("hasPermission('ROLE_USER')")
+//@PostAuthorize("hasPermission('ROLE_USER')")
+@Loggable
 public class CartController {
 
     @Autowired
@@ -35,8 +38,9 @@ public class CartController {
     private IProductDiscountConditionService productDiscountConditionService;
 
     @GetMapping("/information")
-    public ModelAndView information(@CookieValue(value = "cart", defaultValue = "defaultCookieValue") String cookieValue,
-                                    @RequestParam(value = "discountId", required = false) Integer discountId) throws JsonProcessingException {
+    public ModelAndView information(@Loggable @CookieValue(value = "cart", defaultValue = "defaultCookieValue") String cookieValue,
+                                     @RequestParam(value = "discountId", required = false) Integer discountId) throws JsonProcessingException {
+        System.out.println("cookieValue: " + cookieValue + "cookieValue.length(): " + cookieValue.length());
         ModelAndView modelAndView = new ModelAndView("cart/information");
         List<CartProductInforModel> cartProductInforModels = new ArrayList<>();
         if (accountService.isLogin()) {
@@ -44,7 +48,7 @@ public class CartController {
             modelAndView.addObject("cartProducts", Utils.JsonParserString(cartProductInforModels));
         } else {
             if (!cookieValue.equals("defaultCookieValue")) {
-                cartProductInforModels = cartProductService.getListCartProductInforWithParser(Utils.JsonParserListObjectWithEncodedBase64(cookieValue));
+                cartProductInforModels = cartProductService.getListCartProductInforWithParser(Utils.JsonParserListObjectWithEncodedURL(cookieValue));
                 modelAndView.addObject("cartProducts", Utils.JsonParserString(cartProductInforModels));
             } else {
                 modelAndView.addObject("cartProducts", new ArrayList<CartProductEntity>());
@@ -70,8 +74,31 @@ public class CartController {
         return modelAndView;
     }
 
+//    @Loggable
+    @GetMapping("/information-cart")
+    public ModelAndView informationCart(@CookieValue(value = "cart", defaultValue = "defaultCookieValue") String cookieValue) throws JsonProcessingException {
+//        System.out.println("test: " + test);
+        System.out.println("cookieValue: " + cookieValue + "cookieValue.length(): " + cookieValue.length());
+        ModelAndView modelAndView = new ModelAndView("cart/information-cart");
+        // for test
+        cartProductService.findByCartProductEntity(new CartProductEntity());
+        // end for test
+        List<CartProductInforModel> cartProductInforModels = new ArrayList<>();
+        if (accountService.isLogin()) {
+            cartProductInforModels = cartProductService.getListCartProductInforByCartIdAndIsBought(accountService.getCartEntity().getId(), false);
+        } else {
+            if (!cookieValue.equals("defaultCookieValue")) {
+                cartProductInforModels = cartProductService.getListCartProductInforWithParser(Utils.JsonParserListObjectWithEncodedURL(cookieValue));
+            }
+        }
+        modelAndView.addObject("cartProducts", cartProductInforModels);
+        return modelAndView;
+    }
+
     @GetMapping("/add")
-    public ModelAndView add(@RequestParam("productId") Integer productId) {
+    public ModelAndView add(@RequestParam("productId") Integer productId,
+                            @CookieValue(value = "cart", defaultValue = "defaultCookieValue") String cookieValue) {
+        System.out.println("cookieValue: " + cookieValue + "cookieValue.length(): " + cookieValue.length());
         ModelAndView modelAndView = new ModelAndView("cart/add-product");
         modelAndView.addObject("product", productService.getProductInforModel(productId));
         return modelAndView;
@@ -80,10 +107,10 @@ public class CartController {
     @PostMapping("/add")
     public RedirectView add(@RequestParam("cartProduct") String cartProduct) throws ParseException {
         if (!accountService.isLogin()) {
-            return new RedirectView("/user/cart/information");
+            return new RedirectView("/user/cart/information-cart");
         }
         System.out.println("cartProduct: " + cartProduct);
         cartProductService.savesWithAuthenticated((List<Map<String, Object>>) new JSONParser(cartProduct).parse());
-        return new RedirectView("/user/cart/information");
+        return new RedirectView("/user/cart/information-cart");
     }
 }

@@ -3,15 +3,10 @@ package com.beetech.trainningJava.controller.mvc.admin;
 import com.beetech.trainningJava.entity.ProductEntity;
 import com.beetech.trainningJava.entity.ProductImageurlEntity;
 import com.beetech.trainningJava.model.ProductInforModel;
-import com.beetech.trainningJava.service.IAccountService;
-import com.beetech.trainningJava.service.IProductImageUrlService;
-import com.beetech.trainningJava.service.IProductService;
-import com.beetech.trainningJava.service.IFileService;
-import jakarta.annotation.Nullable;
+import com.beetech.trainningJava.service.*;
 import org.apache.tomcat.util.json.JSONParser;
 import org.apache.tomcat.util.json.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -19,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.view.RedirectView;
 
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -42,6 +38,9 @@ public class ProductController {
     @Autowired
     private IAccountService accountService;
 
+    @Autowired
+    private ICSVService csvService;
+
     @GetMapping("/upload")
     public ModelAndView uploadProduct() {
         System.out.println("upload");
@@ -63,16 +62,17 @@ public class ProductController {
     }
 
     @PostMapping("/uploadCsv")
-    public ModelAndView uploadProductCsv(@RequestParam("fileCsvJson") String fileCsvJson) throws IOException, ParseException {
-        ModelAndView modelAndView = new ModelAndView("product/test");
-        System.out.println(fileCsvJson);
-        System.out.println(new JSONParser(fileCsvJson).parse().toString());
-        return modelAndView;
+    public String uploadProductCsv(@RequestParam("fileCsv") MultipartFile fileCsv) throws IOException, ParseException {
+//        RedirectView redirectView = new RedirectView("user/product/list");
+        List <ProductInforModel> productInforModels = csvService.csvtoListObject(fileCsv);
+        System.out.println(fileCsv);
+        System.out.println(fileCsv.getOriginalFilename());
+        return "redirect:/user/product/list";
     }
-
-    @GetMapping("/uploadCsv")
-    public ModelAndView uploadProductCsv() {
-        System.out.println("uploadCsv");
-        return new ModelAndView("product/test");
-    }
+//
+//    @GetMapping("/uploadCsv")
+//    public ModelAndView uploadProductCsv() {
+//        System.out.println("uploadCsv");
+//        return new ModelAndView("product/test");
+//    }
 }

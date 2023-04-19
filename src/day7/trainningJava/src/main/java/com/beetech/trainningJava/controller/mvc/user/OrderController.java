@@ -55,6 +55,8 @@ public class OrderController {
     public ModelAndView pay(@RequestParam("cartProductId") Integer[] cartProductId,
                             @RequestParam(value = "discountId", required = false) Integer discountId,
                             @CookieValue(value = "cart", defaultValue = "defaultCookieValue") String cookieValue) {
+        System.out.println("cartProductId.length" + cartProductId.length);
+        System.out.println(("cart" + cookieValue));
         ModelAndView modelAndView = new ModelAndView("order/payment");
         List<CartProductInforModel> cartProductInforModels = new ArrayList<>();
         DiscountModel discountModel = null;
@@ -62,7 +64,7 @@ public class OrderController {
             cartProductInforModels = cartProductService.getListCartProductInforByCartIdAndIsBought(accountService.getCartEntity().getId(), false);
         } else {
             cartProductInforModels = cartProductService.getListCartProductInforWithParser(
-                    Utils.JsonParserListObjectWithEncodedBase64(cookieValue));
+                    Utils.JsonParserListObjectWithEncodedURL(cookieValue));
         }
 //        Arrays.stream(cartProductId).forEach(cartProductIdItem -> {
 //                    System.out.println("cartProductIdItem" + cartProductIdItem);
@@ -99,7 +101,7 @@ public class OrderController {
             cartProductInforModels = cartProductService.getListCartProductInforByCartIdAndIsBought(accountService.getCartEntity().getId(), false);
         } else {
             cartProductInforModels = cartProductService.getListCartProductInforWithParser(
-                    Utils.JsonParserListObjectWithEncodedBase64(cookieValue));
+                    Utils.JsonParserListObjectWithEncodedURL(cookieValue));
         }
         cartProductInforModels = cartProductService.getListCartProductInforWithCartProductArray(cartProductInforModels, cartProductId);
         //
