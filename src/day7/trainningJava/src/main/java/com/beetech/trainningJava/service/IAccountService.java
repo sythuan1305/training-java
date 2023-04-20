@@ -14,5 +14,4 @@ public interface IAccountService {
     AccountEntity save(AccountEntity accountEntity);
 
     boolean isLogin();
-
 }

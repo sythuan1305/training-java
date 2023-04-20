@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class AuthServiceImp implements IAuthService {
-
     @Autowired
     private AuthenticationManager authManager;
 
@@ -19,10 +18,8 @@ public class AuthServiceImp implements IAuthService {
     private JwtTokenProvider jwtTokenProvider;
 
     @Override
-    public JwtTokenModel login(String username, String password) {
+    public JwtTokenModel getJwtTokenModelAfterAuthen(String username, String password) {
         authManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
         return new JwtTokenModel(jwtTokenProvider.generateToken(username), jwtTokenProvider.getExpiredTime());
     }
-
-
 }

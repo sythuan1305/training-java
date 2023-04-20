@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class ConditionServiceImp implements IConditionService {
     @Override
-    public ConditionModel getConditionModelByCartProductInforModel(CartProductInforModel cartProductInforModel, ConditionEntity conditionEntity) {
+    public ConditionModel getConditionModelByCartProductInforModelAndConditionEntity(CartProductInforModel cartProductInforModel, ConditionEntity conditionEntity) {
         ConditionModel conditionModel = new ConditionModel(conditionEntity, false, cartProductInforModel.getProduct());
         // check condition
         if (ConditionType.TOTAL_AMOUNT.equals(conditionEntity.getConditionType())) {

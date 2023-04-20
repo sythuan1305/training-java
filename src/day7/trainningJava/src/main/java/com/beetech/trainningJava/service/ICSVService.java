@@ -6,5 +6,5 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 
 public interface ICSVService {
-    List<ProductInforModel> csvtoListObject(MultipartFile file);
+    List<ProductInforModel> csvToProductInforModelList(MultipartFile file);
 }

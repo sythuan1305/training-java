@@ -5,5 +5,5 @@ import com.beetech.trainningJava.model.CartProductInforModel;
 import com.beetech.trainningJava.model.ConditionModel;
 
 public interface IConditionService {
-    ConditionModel getConditionModelByCartProductInforModel(CartProductInforModel cartProductInforModel, ConditionEntity conditionEntity);
+    ConditionModel getConditionModelByCartProductInforModelAndConditionEntity(CartProductInforModel cartProductInforModel, ConditionEntity conditionEntity);
 }

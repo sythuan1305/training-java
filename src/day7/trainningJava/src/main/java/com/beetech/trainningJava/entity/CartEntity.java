@@ -25,7 +25,6 @@ public class CartEntity {
     @Column(name = "total_quantity", nullable = false)
     private Integer totalQuantity = 0;
 
-
     @OneToMany(mappedBy = "cart")
     @JsonBackReference
     private Set<CartProductEntity> cartProducts = new LinkedHashSet<>();
@@ -38,9 +37,4 @@ public class CartEntity {
     @OneToMany(mappedBy = "cart")
     @JsonBackReference
     private Set<OrderEntity> orders = new LinkedHashSet<>();
-
-
-//    @Column(name = "account_id")
-//    private Integer accountId;
-
 }

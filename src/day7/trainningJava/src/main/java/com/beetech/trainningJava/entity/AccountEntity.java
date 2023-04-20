@@ -42,5 +42,4 @@ public class AccountEntity {
     @OneToOne(mappedBy = "account")
     @JsonManagedReference
     private CartEntity cart;
-
 }

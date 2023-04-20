@@ -20,8 +20,6 @@ import java.util.Map;
 
 @Service
 public class CartProductServiceImp implements ICartProductService {
-
-
     @Autowired
     private ICartService cartService;
 
@@ -35,37 +33,32 @@ public class CartProductServiceImp implements ICartProductService {
     private IAccountService accountService;
 
     @Override
-    public CartProductEntity findByCartProductEntity(CartProductEntity cartProductEntity) {
+    public CartProductEntity findCartProductEntityByCartProductEntity(CartProductEntity cartProductEntity) {
         return cartProductEntity;
     }
 
     @Override
-    public CartProductEntity findByCartProductId(Integer cartProductId) {
-        return cartProductRepository.findById(cartProductId).orElse(null);
-    }
-
-    @Override
-    public List<CartProductEntity> getLisCartProductByCartId(Integer cartId) {
+    public List<CartProductEntity> getCartProductListById(Integer cartId) {
         return cartProductRepository.findAllByCartId(cartId);
     }
 
     @Override
-    public List<CartProductEntity> getListCartProductByCartIdAndIsBought(Integer cartId, boolean isBought) {
+    public List<CartProductEntity> getCartProductListByCartIdAndIsBought(Integer cartId, boolean isBought) {
         return cartProductRepository.findAllByCartIdAndIsBought(cartId, isBought);
     }
 
     @Override
-    public List<CartProductInforModel> getListCartProductInfor(List<CartProductEntity> cartProductEntityList) {
+    public List<CartProductInforModel> getCartProductInforListByCartProductEntityList(List<CartProductEntity> cartProductEntityList) {
         return cartProductEntityList.stream().map(
                         cartProductEntity -> new CartProductInforModel(
                                 cartProductEntity,
-                                productService.getProductInforModel(cartProductEntity.getProduct().getId())))
+                                productService.getProductInforModelById(cartProductEntity.getProduct().getId())))
                 .toList();
     }
 
 
     @Override
-    public CartProductEntity saveWithAuthenticated(Map<String, Object> cartProductParser) {
+    public CartProductEntity saveCartProductEntityWithAuthenticatedByCartProductParserList(Map<String, Object> cartProductParser) {
         int productId = Integer.parseInt(cartProductParser.get("product_id").toString());
         int quantity = Integer.parseInt(cartProductParser.get("quantity").toString());
         BigDecimal price = BigDecimal.valueOf(Double.parseDouble(cartProductParser.get("price").toString()));
@@ -83,7 +76,7 @@ public class CartProductServiceImp implements ICartProductService {
 
         // create new cart product if product not exist in cart
         cartProductEntity = new CartProductEntity();
-        ProductEntity productEntity = productService.getOne(productId);
+        ProductEntity productEntity = productService.getProductEntityById(productId);
         cartProductEntity.setCart(accountService.getCartEntity());
         cartProductEntity.setProduct(productEntity);
         cartProductEntity.setQuantity(quantity);
@@ -93,58 +86,48 @@ public class CartProductServiceImp implements ICartProductService {
 
 
     @Override
-    public List<CartProductEntity> savesWithAuthenticated(List<Map<String, Object>> cartProductParserList) {
+    public List<CartProductEntity> saveCartProductEntityListWithAuthenticatedByCartProductParserList(List<Map<String, Object>> cartProductParsers) {
         //Reference to instance method 'save' requires an enclosing instance of type 'CartProductServiceImpl'
-        return cartProductParserList.stream().map(this::saveWithAuthenticated).toList();
+        return cartProductParsers.stream().map(this::saveCartProductEntityWithAuthenticatedByCartProductParserList).toList();
     }
 
 
     @Override
-    public CartProductEntity saveWithUnAuth(CartProductEntity cartProductEntity) {
+    public CartProductEntity saveCartProductEntityWithUnAuthByCartProductEntity(CartProductEntity cartProductEntity) {
         return cartProductRepository.save(cartProductEntity);
     }
 
+
     @Override
-    public CartProductEntity savesWithUnAuth(List<CartProductEntity> cartProductEntityList) {
-        return cartProductRepository.saveAll(cartProductEntityList).get(0);
+    public List<CartProductInforModel> getCartProductInforListByCartIdAndIsBought(Integer cartId, boolean isBought) {
+        List<CartProductEntity> cartProductEntities = getCartProductListByCartIdAndIsBought(cartId, isBought);
+        return getCartProductInforListByCartProductEntityList(cartProductEntities);
     }
 
     @Override
-    public List<CartProductInforModel> getLisCartProductInforByCartId(Integer cartId) {
-        List<CartProductEntity> cartProductEntities = getLisCartProductByCartId(accountService.getCartEntity().getId());
-        return getListCartProductInfor(cartProductEntities);
-    }
-
-    @Override
-    public List<CartProductInforModel> getListCartProductInforByCartIdAndIsBought(Integer cartId, boolean isBought) {
-        List<CartProductEntity> cartProductEntities = getListCartProductByCartIdAndIsBought(cartId, isBought);
-        return getListCartProductInfor(cartProductEntities);
-    }
-
-    @Override
-    public List<CartProductInforModel> getListCartProductInforWithParser(List<Map<String, Object>> cartProductParserList) {
+    public List<CartProductInforModel> getCartProductInforListByCartProductParserList(List<Map<String, Object>> cartProductParserList) {
         System.out.println("cartProductParserList.size(): " + cartProductParserList.size());
-        return cartProductParserList.stream().map(this::getCartProductInforWithParser).toList();
+        return cartProductParserList.stream().map(this::getCartProductInforByCartProductParser).toList();
     }
 
     @Override
-    public CartProductInforModel getCartProductInforWithParser(Map<String, Object> cartProductParser) {
+    public CartProductInforModel getCartProductInforByCartProductParser(Map<String, Object> cartProductParser) {
         CartProductEntity cartProductEntity = new CartProductEntity(
                 (int) Long.parseLong(cartProductParser.get("id").toString()), // generate random id unique
                 Integer.parseInt(cartProductParser.get("quantity").toString()),
                 BigDecimal.valueOf(Double.parseDouble(cartProductParser.get("price").toString())),
                 null, // null cart
-                productService.getOne(Integer.parseInt(cartProductParser.get("product_id").toString())),
+                productService.getProductEntityById(Integer.parseInt(cartProductParser.get("product_id").toString())),
                 null, // null order,
                 false
         );
-        ProductInforModel productInforModel = productService.getProductInforModel(cartProductEntity.getProduct().getId());
+        ProductInforModel productInforModel = productService.getProductInforModelById(cartProductEntity.getProduct().getId());
         return new CartProductInforModel(cartProductEntity, productInforModel);
     }
 
     @Override
-    public List<CartProductInforModel> getListCartProductInforWithCartProductArray(List<CartProductInforModel> cartProductInforModelList,
-                                                                                   Integer[] cartProductIds) {
+    public List<CartProductInforModel> getCartProductInforListByCartProductModelListAndCartProductArray(List<CartProductInforModel> cartProductInforModelList,
+                                                                                                        Integer[] cartProductIds) {
         return cartProductInforModelList.stream().filter(cartProductInforModel -> {
             for (Integer cartProductId : cartProductIds) {
                 if (cartProductInforModel.getId().equals(cartProductId)) {
@@ -156,16 +139,16 @@ public class CartProductServiceImp implements ICartProductService {
     }
 
     @Override
-    public List<CartProductEntity> saveCartProductInforModelList(List<CartProductInforModel> cartProductInforModelList) {
+    public List<CartProductEntity> saveCartProductEntityListByCartProductModelList(List<CartProductInforModel> cartProductInforModelList) {
         return cartProductInforModelList.stream().map(cartProductInforModel -> {
             cartProductInforModel.setId(null);
             CartProductEntity cartProductEntity = new CartProductEntity(cartProductInforModel);
-            return saveWithUnAuth(cartProductEntity);
+            return saveCartProductEntityWithUnAuthByCartProductEntity(cartProductEntity);
         }).toList();
     }
 
     @Override
-    public List<CartProductEntity> changeCartProductInforToCartProductEntity(List<CartProductInforModel> cartProductInforModelList) {
+    public List<CartProductEntity> changeCartProductInforModelListToCartProductEntityList(List<CartProductInforModel> cartProductInforModelList) {
         return cartProductInforModelList.stream().map(cartProductInforModel -> {
             CartProductEntity cartProductEntity = new CartProductEntity(cartProductInforModel);
             return cartProductEntity;
@@ -193,8 +176,8 @@ public class CartProductServiceImp implements ICartProductService {
     public void TestSave(boolean isException) {
         // khởi tạo đối tượng đơn hàng
         CartProductEntity cartProductEntity = new CartProductEntity();
-        ProductEntity productEntity = productService.getOne(1);
-        cartProductEntity.setCart(cartService.getOne(1));
+        ProductEntity productEntity = productService.getProductEntityById(1);
+        cartProductEntity.setCart(cartService.getCartEntityById(1));
         cartProductEntity.setProduct(productEntity);
         cartProductEntity.setQuantity(10);
         cartProductEntity.setPrice(BigDecimal.ONE);
@@ -204,6 +187,4 @@ public class CartProductServiceImp implements ICartProductService {
         // lưu đối tượng đơn hàng vào database
 //        cartProductRepository.save(cartProductEntity);
     }
-
-
 }

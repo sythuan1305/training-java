@@ -17,7 +17,6 @@ import java.util.concurrent.atomic.AtomicReference;
 
 @Service
 public class PaypalService {
-
     @Autowired
     private IAccountService accountService;
 
@@ -65,8 +64,6 @@ public class PaypalService {
 
     private List<Transaction> getTransactionInformation(OrderModel orderModel) {
         final String[] deviation = {Utils.ChangeVndToUsd(orderModel.getTotalAmount().toString())};
-//        System.out.println("deviation: " + deviation[0]);
-//        System.out.println("Utils.ChangeVndToUsd(orderModel.getTotalAmount().toString()): " + Utils.ChangeVndToUsd(orderModel.getTotalAmount().toString()));
         Details details = new Details();
         details.setSubtotal(Utils.ChangeVndToUsd(orderModel.getTotalAmount().toString()));
 
@@ -87,12 +84,6 @@ public class PaypalService {
                     .setCurrency("USD")
                     .setPrice(Utils.ChangeVndToUsd(cartProductInforModel.getProduct().getPrice().toString()))
                     .setQuantity(cartProductInforModel.getQuantity().toString());
-//        System.out.println("item.getPrice(): " + item.getPrice());
-//        System.out.println("cartProductInforModel.getQuantity().toString(): " + item.getQuantity());
-//        System.out.println("Double.parseDouble(deviation[0]): " + Double.parseDouble(deviation[0]));
-//        System.out.println("String.valueOf(Double.parseDouble(deviation.get()) -\n" +
-//                "                    Double.parseDouble(item.getPrice()) * Integer.parseInt(item.getQuantity()))" + Double.parseDouble(deviation[0]) + "-" + Double.parseDouble(item.getPrice()) + "*" + Integer.parseInt(item.getQuantity()) + "=" + (Utils.checkRoundDirection(BigDecimal.valueOf(Double.parseDouble(deviation[0]) -
-//                Double.parseDouble(item.getPrice()) * Integer.parseInt(item.getQuantity()))).toString()));
         deviation[0] = (Utils.checkRoundDirection(BigDecimal.valueOf(Double.parseDouble(deviation[0]) -
                 Double.parseDouble(item.getPrice()) * Integer.parseInt(item.getQuantity())
         )).toString());
@@ -107,17 +98,9 @@ public class PaypalService {
                 .setPrice("-" + Utils.ChangeVndToUsd(orderModel.getTotalDiscount().toString()))
                 .setQuantity("1");
         itemList.add(item);
-//        System.out.println("item.getPrice(): " + item.getPrice());
-//        System.out.println("cartProductInforModel.getQuantity().toString(): " + item.getQuantity());
-//        System.out.println("Double.parseDouble(deviation[0]): " + Double.parseDouble(deviation[0]));
-//        System.out.println("String.valueOf(Double.parseDouble(deviation.get()) -\n" +
-//                "                    Double.parseDouble(item.getPrice()) * Integer.parseInt(item.getQuantity()))" + Double.parseDouble(deviation[0]) + "-" + Double.parseDouble(item.getPrice()) + "*" + Integer.parseInt(item.getQuantity()) + "=" + (Utils.checkRoundDirection(BigDecimal.valueOf(Double.parseDouble(deviation[0]) -
-//                Double.parseDouble(item.getPrice()) * Integer.parseInt(item.getQuantity()))).toString()));
         deviation[0] = (Utils.checkRoundDirection(BigDecimal.valueOf(Double.parseDouble(deviation[0]) -
                 Double.parseDouble(item.getPrice()) * Integer.parseInt(item.getQuantity()))).toString());
 
-//        System.out.println("discount: " + item.getPrice());
-//        System.out.println("deviation: " + deviation[0]);
         if (deviation[0].compareTo("0.00") > 0) {
             System.out.println("deviation[0].compareTo(\"0.00\") > 0");
 
@@ -126,10 +109,8 @@ public class PaypalService {
                     .setCurrency("USD")
                     .setPrice(deviation[0])
                     .setQuantity("1");
-//            System.out.println("Utils.checkRoundDirection(new BigDecimal(deviation[0])).toString(): " + Utils.checkRoundDirection(new BigDecimal(deviation[0])).toString());
             itemList.add(itemTmp);
         } else if (deviation[0].compareTo("0.00") < 0) {
-//            System.out.println("deviation[0].compareTo(\"0.00\") < 0");
             Item itemTmp = new Item();
             itemTmp.setName("Deviation")
                     .setCurrency("USD")

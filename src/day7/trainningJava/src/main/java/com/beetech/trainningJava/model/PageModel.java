@@ -13,6 +13,8 @@ import java.util.List;
 @Builder
 public class PageModel<T> {
     private List<T> items;
+
     private int pageNumber;
+
     private int totalPages;
 }

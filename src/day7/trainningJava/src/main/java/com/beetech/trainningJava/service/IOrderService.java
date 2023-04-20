@@ -5,9 +5,9 @@ import com.beetech.trainningJava.model.OrderModel;
 
 public interface IOrderService {
 
-    OrderEntity save(OrderEntity orderEntity);
+    OrderEntity saveOrderEntityByEntity(OrderEntity orderEntity);
 
-    OrderEntity findById(Integer id);
+    OrderEntity findOrderEntityById(Integer id);
 
-    OrderEntity save(OrderModel orderModel);
+    OrderEntity saveOrderEntityByModel(OrderModel orderModel);
 }

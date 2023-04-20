@@ -7,6 +7,7 @@ import lombok.Setter;
 @Setter
 public class JwtTokenModel {
     private String token;
+
     private long expiredTime;
 
     public JwtTokenModel(String token, long expiredTime) {

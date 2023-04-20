@@ -24,6 +24,7 @@ public class PaypalConfig {
     public APIContext apiContext() {
         return new APIContext(clientId, clientSecret, mode);
     }
+
     @Bean
     public RedirectUrls getRedirectURLs() {
         RedirectUrls redirectUrls = new RedirectUrls();

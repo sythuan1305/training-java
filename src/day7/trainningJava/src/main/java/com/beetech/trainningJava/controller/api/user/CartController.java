@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController("apiCartController")
 @RequestMapping("/api/user/cart")
 public class CartController {
-
     @Autowired
     ICartProductService cartProductService;
 
@@ -52,7 +51,4 @@ public class CartController {
     public void testMinusQuantity() {
         productService.TestMinusQuantity(10000);
     }
-
-
-
 }

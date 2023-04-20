@@ -7,35 +7,33 @@ import java.util.List;
 import java.util.Map;
 
 public interface ICartProductService {
-//    public PageModel<CartEntity> findAll();
-//    public CartIn4Model save(CartIn4Model cartIn4Model);
     //for test
-    CartProductEntity findByCartProductEntity(CartProductEntity cartProductEntity);
-    CartProductEntity findByCartProductId(Integer cartProductId);
-    public List<CartProductEntity> getLisCartProductByCartId(Integer cartId);
-    public List<CartProductEntity> getListCartProductByCartIdAndIsBought(Integer cartId, boolean isBought);
-    public List<CartProductInforModel> getListCartProductInfor(List<CartProductEntity> cartProductEntityList);
+    CartProductEntity findCartProductEntityByCartProductEntity(CartProductEntity cartProductEntity);
 
-    public List<CartProductEntity> savesWithAuthenticated(List<Map<String, Object>> cartProductParser);
+    List<CartProductEntity> getCartProductListById(Integer cartId);
 
-    public CartProductEntity saveWithAuthenticated(Map<String, Object> cartProductParser);
+    List<CartProductEntity> getCartProductListByCartIdAndIsBought(Integer cartId, boolean isBought);
 
-    public CartProductEntity saveWithUnAuth(CartProductEntity cartProductEntity);
+    List<CartProductInforModel> getCartProductInforListByCartProductEntityList(List<CartProductEntity> cartProductEntityList);
 
-    public CartProductEntity savesWithUnAuth(List<CartProductEntity> cartProductEntityList);
+    List<CartProductEntity> saveCartProductEntityListWithAuthenticatedByCartProductParserList(List<Map<String, Object>> cartProductParsers);
 
-    List<CartProductInforModel> getLisCartProductInforByCartId(Integer cartId);
+    CartProductEntity saveCartProductEntityWithAuthenticatedByCartProductParserList(Map<String, Object> cartProductParser);
 
-    List<CartProductInforModel> getListCartProductInforByCartIdAndIsBought(Integer cartId, boolean isBought);
+    CartProductEntity saveCartProductEntityWithUnAuthByCartProductEntity(CartProductEntity cartProductEntity);
 
-    List<CartProductInforModel> getListCartProductInforWithParser(List<Map<String, Object>> cartProductParserList);
+    List<CartProductInforModel> getCartProductInforListByCartIdAndIsBought(Integer cartId, boolean isBought);
 
-    CartProductInforModel getCartProductInforWithParser(Map<String, Object> cartProductParser);
+    List<CartProductInforModel> getCartProductInforListByCartProductParserList(List<Map<String, Object>> cartProductParserList);
 
-    List<CartProductInforModel> getListCartProductInforWithCartProductArray(List<CartProductInforModel> cartProductInforModelList, Integer[] cartProducts);
-    List<CartProductEntity> saveCartProductInforModelList(List<CartProductInforModel> cartProductInforModelList);
+    CartProductInforModel getCartProductInforByCartProductParser(Map<String, Object> cartProductParser);
 
-    List<CartProductEntity> changeCartProductInforToCartProductEntity(List<CartProductInforModel> cartProductInforModelList);
+    List<CartProductInforModel> getCartProductInforListByCartProductModelListAndCartProductArray(List<CartProductInforModel> cartProductInforModelList, Integer[] cartProducts);
+
+    List<CartProductEntity> saveCartProductEntityListByCartProductModelList(List<CartProductInforModel> cartProductInforModelList);
+
+    List<CartProductEntity> changeCartProductInforModelListToCartProductEntityList(List<CartProductInforModel> cartProductInforModelList);
+
     void TestMinusQuantity();
 
     void TestSave(boolean isException);

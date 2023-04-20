@@ -15,23 +15,4 @@ import org.springframework.web.servlet.ModelAndView;
 @RequestMapping("/auth")
 @Log4j2
 public class AuthenticationController {
-
-//    @PostMapping("/login")
-//    public ModelAndView login(@RequestParam("username") String username, @RequestParam("password") String password, @RequestParam("cartProducts") String cartProducts) {
-//        System.out.println("username:" + username);
-//        System.out.println("password:" + password);
-//        System.out.println("cartProducts:" + cartProducts);
-//        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-//
-//        log.info("POST_LOGIN"  + auth.isAuthenticated());
-//        if (auth.isAuthenticated()) {
-//            return new ModelAndView("redirect:/");
-//        }
-//        return new ModelAndView("/auth/login");
-//    }
-    @GetMapping("/login")
-    public ModelAndView login() {
-        return new ModelAndView("/auth/login");
-    }
-
 }

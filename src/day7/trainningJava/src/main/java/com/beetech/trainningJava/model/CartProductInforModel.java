@@ -12,7 +12,6 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class CartProductInforModel extends CartProductEntity {
-
     ProductInforModel productModel;
 
     public CartProductInforModel(CartProductEntity cartProductEntity, ProductInforModel productModel) {

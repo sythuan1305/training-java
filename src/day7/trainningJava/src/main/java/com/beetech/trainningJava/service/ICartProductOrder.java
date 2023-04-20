@@ -7,10 +7,13 @@ import com.beetech.trainningJava.entity.OrderEntity;
 import java.util.List;
 
 public interface ICartProductOrder {
+    CartProductOrderEntity saveCartProductOrderEntityByEntity(CartProductOrderEntity cartProductOrderEntity);
 
-    CartProductOrderEntity save(CartProductOrderEntity cartProductOrderEntity);
-    List<CartProductOrderEntity> updateCartProductOrderAfterBought(OrderEntity orderEntity);
-    List<CartProductOrderEntity> findAllByOrder(OrderEntity orderEntity);
-    List<CartProductOrderEntity> saveAll(List<CartProductOrderEntity> cartProductOrderEntities);
-    List<CartProductOrderEntity> saveAll(List<CartProductEntity> cartProductEntities, OrderEntity orderEntity);
+    List<CartProductOrderEntity> updateCartProductOrderEntityListAfterBoughtByOrderEntity(OrderEntity orderEntity);
+
+    List<CartProductOrderEntity> findCartProductOrderEntityListByOrderEntity(OrderEntity orderEntity);
+
+    List<CartProductOrderEntity> saveCartProductOrderEntityListByEntityList(List<CartProductOrderEntity> cartProductOrderEntities);
+
+    List<CartProductOrderEntity> saveCartProductOrderEntityListByEntityListAndOrderEntity(List<CartProductEntity> cartProductEntities, OrderEntity orderEntity);
 }

@@ -21,12 +21,9 @@ public class AccountController {
     @Autowired
     private AccountRepository accountRepository;
 
-
     @GetMapping("/test")
     public ResponseEntity<ApiResponse> getAccountByUserName(@RequestParam(value = "username") String username) {
         List<AccountEntity> accountEntities = accountRepository.findAllByUsernameNative(username);
-        System.out.println("accountEntities = " + accountEntities);
         return ResponseEntity.ok(new ApiResponse(true ,accountEntities));
     }
-
 }

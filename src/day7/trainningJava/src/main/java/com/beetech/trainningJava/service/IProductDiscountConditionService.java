@@ -1,6 +1,5 @@
 package com.beetech.trainningJava.service;
 
-import com.beetech.trainningJava.entity.DiscountEntity;
 import com.beetech.trainningJava.entity.ProductDiscountConditionEntity;
 import com.beetech.trainningJava.model.CartProductInforModel;
 import com.beetech.trainningJava.model.DiscountModel;
@@ -11,9 +10,9 @@ import java.util.List;
 public interface IProductDiscountConditionService {
     List<ProductsDiscountConditionsModel> getProductDiscountConditionList();
 
-    List<ProductDiscountConditionEntity> getListProductDiscountConditionByProductId(Integer productId);
+    List<ProductDiscountConditionEntity> getProductDiscountConditionListByProductId(Integer productId);
 
-    List<DiscountModel> getDiscountModels(List<CartProductInforModel> cartProductInforModels);
+    List<DiscountModel> getDiscountModelListByCartProductInforModelList(List<CartProductInforModel> cartProductInforModels);
 
-    DiscountModel getDiscountModel(Integer discountId, List<CartProductInforModel> cartProductInforModels);
+    DiscountModel getDiscountModelByCartProductInforList(Integer discountId, List<CartProductInforModel> cartProductInforModels);
 }

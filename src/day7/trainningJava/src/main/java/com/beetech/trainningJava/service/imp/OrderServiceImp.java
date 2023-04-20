@@ -1,8 +1,6 @@
 package com.beetech.trainningJava.service.imp;
 
 import com.beetech.trainningJava.entity.OrderEntity;
-import com.beetech.trainningJava.enums.PaymentMethod;
-import com.beetech.trainningJava.enums.PaymentStatus;
 import com.beetech.trainningJava.model.OrderModel;
 import com.beetech.trainningJava.repository.OrderRepository;
 import com.beetech.trainningJava.service.IOrderService;
@@ -17,19 +15,19 @@ public class OrderServiceImp implements IOrderService {
 
 
     @Override
-    public OrderEntity save(OrderEntity orderEntity) {
+    public OrderEntity saveOrderEntityByEntity(OrderEntity orderEntity) {
         return orderRepository.save(orderEntity);
     }
 
     @Override
-    public OrderEntity findById(Integer id) {
+    public OrderEntity findOrderEntityById(Integer id) {
         return orderRepository.findById(id).orElse(null);
     }
 
     @Override
-    public OrderEntity save(OrderModel orderModel) {
+    public OrderEntity saveOrderEntityByModel(OrderModel orderModel) {
         OrderEntity orderEntity = new OrderEntity(orderModel);
-        orderEntity = save(orderEntity);
+        orderEntity = saveOrderEntityByEntity(orderEntity);
         orderModel.setId(orderEntity.getId());
         return orderEntity;
     }

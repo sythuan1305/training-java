@@ -1,22 +1,13 @@
 package com.beetech.trainningJava.config;
 
 import com.beetech.trainningJava.enums.Role;
-import com.beetech.trainningJava.filter.CustomAuthenticationFilter;
 import com.beetech.trainningJava.jwt.JwtAuthenticationFilter;
-import org.apache.tomcat.util.http.CookieProcessor;
-import org.apache.tomcat.util.http.Rfc6265CookieProcessor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.web.embedded.tomcat.TomcatContextCustomizer;
-import org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory;
-import org.springframework.boot.web.server.WebServerFactoryCustomizer;
 import org.springframework.boot.web.servlet.server.CookieSameSiteSupplier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
-import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -33,14 +24,11 @@ import java.util.List;
 
 @Configuration
 @EnableWebSecurity
-//@EnableAspectJAutoProxy
 //@EnableMethodSecurity(prePostEnabled = false, securedEnabled = true, jsr250Enabled = true)
 public class WebSercurityConfig {
-
     @Autowired
     private JwtAuthenticationFilter jwtAuthenticationFilter;
 
-    // password encoder
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
@@ -51,30 +39,20 @@ public class WebSercurityConfig {
         return http.getSharedObject(AuthenticationManagerBuilder.class).userDetailsService(userDetailsService).passwordEncoder(passwordEncoder()).and().build();
     }
 
-//    @Bean
-//    public CookieSameSiteSupplier applicationCookieSameSiteSupplier() {
-//        return CookieSameSiteSupplier.ofStrict();
-//    }
+    @Bean
+    public CookieSameSiteSupplier applicationCookieSameSiteSupplier() {
+        return CookieSameSiteSupplier.ofStrict();
+    }
 
-
-//    @Bean
-//    public WebServerFactoryCustomizer<TomcatServletWebServerFactory> cookieProcessorCustomizer() {
-//        return tomcatServletWebServerFactory -> tomcatServletWebServerFactory.addContextCustomizers(
-//                 context -> {
-//            context.setCookieProcessor(new Rfc6265CookieProcessor());
-//        });
-//    }
-//
-//    @Bean
-//    public CorsConfigurationSource corsConfigurationSource() {
-//        CorsConfiguration configuration = new CorsConfiguration();
-//        configuration.setAllowedOrigins(List.of("http://localhost:8080"));
-//        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE"));
-//        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-//        source.registerCorsConfiguration("/**", configuration);
-//        return source;
-//    }
-
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.setAllowedOrigins(List.of("http://localhost:8080"));
+        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE"));
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
+    }
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -95,8 +73,6 @@ public class WebSercurityConfig {
 
                 )
                 .csrf().ignoringRequestMatchers("/api/**").and()
-//
-//.csrf().disable()
                 .cors().and()
                 .authorizeHttpRequests(request -> request
                         .requestMatchers("/admin/**").hasAuthority(Role.ADMIN.name())
@@ -117,10 +93,7 @@ public class WebSercurityConfig {
                         .defaultSuccessUrl("/", true).permitAll());
         http.
                 logout().logoutUrl("/logout").logoutSuccessUrl("/login?logout=true").permitAll();
-
         http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
-//        http.addFilterBefore(customAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
-
         return http.build();
     }
 }

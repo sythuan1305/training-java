@@ -2,13 +2,8 @@ package com.beetech.trainningJava.service.imp;
 
 import com.beetech.trainningJava.service.IFileService;
 import com.beetech.trainningJava.utils.BASE64DecodedMultipartFile;
-import jakarta.persistence.Convert;
-import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.io.InputStreamResource;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StreamUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.imageio.ImageIO;
@@ -26,7 +21,7 @@ public class FileServiceImp implements IFileService {
     String path;
 
     @Override
-    public String uploadFile(MultipartFile file, Integer productId) {
+    public String uploadImageByProductId(MultipartFile file, Integer productId) {
         try {
             if (file.isEmpty()) {
                 throw new Exception("Failed to store empty file " + file.getName());
@@ -55,16 +50,16 @@ public class FileServiceImp implements IFileService {
     }
 
     @Override
-    public List<String> uploadMultipleFiles(List<MultipartFile> files, Integer productId) {
+    public List<String> uploadMultipleImagesByProductId(List<MultipartFile> files, Integer productId) {
         List<String> list = new ArrayList<>();
         for (MultipartFile file : files) {
-            list.add(uploadFile(file, productId));
+            list.add(uploadImageByProductId(file, productId));
         }
         return list;
     }
 
     @Override
-    public String getImage(String path) throws IOException {
+    public String getImageByPath(String path) throws IOException {
         File file = new File(path);
         BufferedImage img = ImageIO.read(file);
         if (img == null) {
@@ -78,10 +73,10 @@ public class FileServiceImp implements IFileService {
     }
 
     @Override
-    public List<String> getImages(List<String> paths) throws IOException {
+    public List<String> getImageListByPathLists(List<String> paths) throws IOException {
         List<String> images = new ArrayList<>();
         for (String path : paths) {
-            images.add(getImage(path));
+            images.add(getImageByPath(path));
         }
         return images;
     }

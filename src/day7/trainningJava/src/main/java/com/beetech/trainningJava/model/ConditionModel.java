@@ -12,12 +12,17 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ConditionModel{
+public class ConditionModel {
     boolean isEnoughCondition;
+
     ProductEntity product;
+
     ConditionEntity conditionEntity;
+
     String description;
+
     String id;
+
     public ConditionModel(ConditionEntity conditionEntity, boolean isEnoughCondition, ProductEntity product) {
         this.id = conditionEntity.getId().toString() + "-" + product.getId().toString();
         this.isEnoughCondition = isEnoughCondition;
@@ -34,6 +39,6 @@ public class ConditionModel{
     void ReloadDescription() {
         this.description = conditionEntity.getDescription() + "của sản phẩm " + product.getName() + " " +
                 (isEnoughCondition ? "đã đủ" : "chưa đủ") +
-                " (điều kiện " + (conditionEntity.getLogicalOperator() == LogicalOperator.OR ? "đủ": "cần") + ")";
+                " (điều kiện " + (conditionEntity.getLogicalOperator() == LogicalOperator.OR ? "đủ" : "cần") + ")";
     }
 }

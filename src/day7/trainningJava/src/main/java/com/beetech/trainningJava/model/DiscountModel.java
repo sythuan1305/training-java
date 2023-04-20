@@ -20,10 +20,12 @@ import java.util.Set;
 @AllArgsConstructor
 public class DiscountModel extends DiscountEntity {
     Hashtable<String, ConditionModel> conditions;
+
     boolean isAbleToUse;
 
     @JsonBackReference
     ZonedDateTime startDateZone;
+
     @JsonBackReference
     ZonedDateTime endDateZone;
 

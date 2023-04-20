@@ -16,5 +16,6 @@ import java.util.List;
 @NoArgsConstructor
 public class ProductsDiscountConditionsModel {
     DiscountEntity discount;
+
     Hashtable<Integer, ConditionDetailModel> conditionDetailModels;
 }

@@ -7,18 +7,18 @@ import com.beetech.trainningJava.model.ProductInforModel;
 import java.util.List;
 
 public interface IProductService {
-    ProductEntity save(ProductEntity productEntity);
-    PageModel<ProductEntity> findAll(Integer page, Integer size, String sort);
+    ProductEntity saveProductEntity(ProductEntity productEntity);
 
-    PageModel<ProductInforModel> findAllModel(Integer page, Integer size, String sort);
-    ProductEntity getOne(Integer id);
+    PageModel<ProductEntity> findPageModelByProductEntityIndex(Integer pageIndex, Integer size, String sort);
 
-    ProductInforModel getProductInforModel(Integer id);
+    PageModel<ProductInforModel> findPageModelByProductInforModelIndex(Integer pageIndex, Integer size, String sort);
+    ProductEntity getProductEntityById(Integer id);
 
-    List<ProductEntity> getProductListByDiscountId(Integer discountId);
+    ProductInforModel getProductInforModelById(Integer id);
 
-    ProductEntity findByProductName(String productName);
+    List<ProductEntity> getProductEntityListByDiscountId(Integer discountId);
+
+    ProductEntity findProductEntityByProductName(String productName);
 
     void TestMinusQuantity(Integer number);
-
 }

@@ -15,6 +15,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 public class Utils {
+    public final static String DEFAULT_COOKIE_VALUE = "defaultCookieValue";
 
     public static Map<String, Object> JsonParserObjectWithEncodedBase64(String cookieValue) {
         byte[] decodedBytes = Base64.getDecoder().decode(cookieValue);
@@ -31,19 +32,15 @@ public class Utils {
             return null;
         }
 
-//        byte[] decodedBytes = Base64.getDecoder().decode(cookieValue);
-//        String decodeURL = URLDecoder.decode(new String(decodedBytes), StandardCharsets.UTF_8);
         String decodeURL = URLDecoder.decode(cookieValue, StandardCharsets.UTF_8);
         System.out.println("decodeURL: " + decodeURL);
         try {
             return new ArrayList<>((List<Map<String, Object>>) new JSONParser(decodeURL).parse());
-//            return new ArrayList<>((List<Map<String, Object>>) new JSONParser(new String(decodedBytes)).parse());
         } catch (ParseException e) {
             System.out.println(e.getMessage());
         }
         return null;
     }
-
     //---------
 
     public static String JsonParserString(Object object) {
@@ -58,20 +55,6 @@ public class Utils {
     }
     //---------
 
-//    public static List<String> JsonParserListString(String ) {
-//        if (cookieValue.equals("defaultCookieValue")) {
-//            return null;
-//        }
-//        byte[] decodedBytes = Base64.getDecoder().decode(cookieValue);
-//        try {
-//            return new ArrayList<>((List<String>) new JSONParser(new String(decodedBytes)).parse());
-//        } catch (ParseException e) {
-//            System.out.println(e.getMessage());
-//        }
-//        return null;
-//    }
-
-    //---------
     public static String ChangeVndToUsd(String vnd) {
         return checkRoundDirection(BigDecimal.valueOf(Double.parseDouble(vnd) / 23000)).toString();
     }
@@ -85,6 +68,7 @@ public class Utils {
             return roundedUp;
         }
     }
+
     //---------
     public static void deleteCookie(String name, HttpServletResponse response)
     {

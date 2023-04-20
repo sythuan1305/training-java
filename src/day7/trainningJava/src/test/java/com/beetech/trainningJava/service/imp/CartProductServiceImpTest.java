@@ -18,9 +18,6 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
-import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.nio.file.Files;
@@ -61,8 +58,8 @@ class CartProductServiceImpTest {
     void save( boolean isException) {
         // kh??i ta?o ???i t???ng ??n ha?ng
         CartProductEntity cartProductEntity = new CartProductEntity();
-        ProductEntity productEntity = productService.getOne(1);
-        cartProductEntity.setCart(cartService.getOne(1));
+        ProductEntity productEntity = productService.getProductEntityById(1);
+        cartProductEntity.setCart(cartService.getCartEntityById(1));
         cartProductEntity.setProduct(productEntity);
         cartProductEntity.setQuantity(10);
         cartProductEntity.setPrice(BigDecimal.ONE);
@@ -120,13 +117,13 @@ class CartProductServiceImpTest {
         ConditionModel conditionModel1 = new ConditionModel();
         conditionModel1.setId("1");
         conditionModel1.setEnoughCondition(true);
-        conditionModel1.setProduct(productService.getOne(1));
+        conditionModel1.setProduct(productService.getProductEntityById(1));
         conditionModel1.setConditionEntity(conditionRepository.getReferenceById(1));
 
         ConditionModel conditionModel2 = new ConditionModel();
         conditionModel2.setId("1");
         conditionModel2.setEnoughCondition(true);
-        conditionModel2.setProduct(productService.getOne(1));
+        conditionModel2.setProduct(productService.getProductEntityById(1));
         conditionModel2.setConditionEntity(conditionRepository.getReferenceById(1));
 
         conditionModel.add(conditionModel1);
@@ -169,7 +166,6 @@ class CartProductServiceImpTest {
         }
         MultipartFile result = new MockMultipartFile(name, originalFileName, contentType, content);
 
-        csvService.csvtoListObject(result);
-
+        csvService.csvToProductInforModelList(result);
     }
 }

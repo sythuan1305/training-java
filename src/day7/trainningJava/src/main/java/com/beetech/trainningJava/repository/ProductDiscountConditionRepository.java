@@ -7,5 +7,6 @@ import java.util.List;
 
 public interface ProductDiscountConditionRepository extends JpaRepository<ProductDiscountConditionEntity, Integer> {
     List<ProductDiscountConditionEntity> findAllByProductId(Integer productId);
+
     List<ProductDiscountConditionEntity> findAllByDiscountId(Integer discountId);
 }

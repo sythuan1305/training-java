@@ -21,40 +21,40 @@ public class CartProductOrderImp implements ICartProductOrder {
     private ICartProductService cartProductService;
 
     @Override
-    public CartProductOrderEntity save(CartProductOrderEntity cartProductOrderEntity) {
+    public CartProductOrderEntity saveCartProductOrderEntityByEntity(CartProductOrderEntity cartProductOrderEntity) {
         return cartProductOrderRepository.save(cartProductOrderEntity);
     }
 
     @Override
-    public List<CartProductOrderEntity> updateCartProductOrderAfterBought(OrderEntity orderEntity) {
+    public List<CartProductOrderEntity> updateCartProductOrderEntityListAfterBoughtByOrderEntity(OrderEntity orderEntity) {
         orderEntity.setPaymentStatus(PaymentStatus.PAID);
-        List<CartProductOrderEntity> cartProductOrderEntities = findAllByOrder(orderEntity);
+        List<CartProductOrderEntity> cartProductOrderEntities = findCartProductOrderEntityListByOrderEntity(orderEntity);
         return cartProductOrderEntities.stream().map(cartProductOrderEntity -> {
             cartProductOrderEntity.setOrder(orderEntity);
             CartProductEntity cartProductEntity = cartProductOrderEntity.getCartProduct();
             cartProductEntity.setBought(true);
-            return save(cartProductOrderEntity);
+            return saveCartProductOrderEntityByEntity(cartProductOrderEntity);
         }).toList();
     }
 
     @Override
-    public List<CartProductOrderEntity> findAllByOrder(OrderEntity orderEntity) {
+    public List<CartProductOrderEntity> findCartProductOrderEntityListByOrderEntity(OrderEntity orderEntity) {
         return cartProductOrderRepository.findAllByOrderId(orderEntity.getId());
     }
 
     @Override
-    public List<CartProductOrderEntity> saveAll(List<CartProductOrderEntity> cartProductOrderEntities) {
+    public List<CartProductOrderEntity> saveCartProductOrderEntityListByEntityList(List<CartProductOrderEntity> cartProductOrderEntities) {
         return cartProductOrderRepository.saveAll(cartProductOrderEntities);
     }
 
     @Override
-    public List<CartProductOrderEntity> saveAll(List<CartProductEntity> cartProductEntities, OrderEntity orderEntity) {
+    public List<CartProductOrderEntity> saveCartProductOrderEntityListByEntityListAndOrderEntity(List<CartProductEntity> cartProductEntities, OrderEntity orderEntity) {
         List<CartProductOrderEntity> cartProductOrderEntities = cartProductEntities.stream().map(cartProductEntity -> {
             CartProductOrderEntity cartProductOrderEntity = new CartProductOrderEntity();
             cartProductOrderEntity.setCartProduct(cartProductEntity);
             cartProductOrderEntity.setOrder(orderEntity);
             return cartProductOrderEntity;
         }).toList();
-        return saveAll(cartProductOrderEntities);
+        return saveCartProductOrderEntityListByEntityList(cartProductOrderEntities);
     }
 }

@@ -14,12 +14,12 @@ public class DiscountServiceImp implements IDiscountService {
     private DiscountRepository discountRepository;
 
     @Override
-    public List<DiscountEntity> getAll() {
+    public List<DiscountEntity> getDistcountEntityList() {
         return discountRepository.findAll();
     }
 
     @Override
-    public DiscountEntity getOne(Integer id) {
+    public DiscountEntity getDiscountEntity(Integer id) {
         return discountRepository.getReferenceById(id);
     }
 

@@ -6,13 +6,8 @@ import com.beetech.trainningJava.entity.CartEntity;
 import java.util.List;
 
 public interface ICartService {
-    public CartEntity save(CartEntity cartEntity);
-    public CartEntity getOne(Integer cartId);
-    public List<CartEntity> findAll();
-    public CartEntity update(CartEntity cartEntity);
-    public void delete(Integer cartId);
+    public CartEntity saveCartEntity(CartEntity cartEntity);
 
-    public CartEntity checkCartIdNullAndCreateNewIfNull(Integer cartId);
+    public CartEntity getCartEntityById(Integer cartId);
 
-    public void saveAccountToCart(AccountEntity accountEntity, CartEntity cartEntity);
 }

@@ -15,6 +15,7 @@ import java.util.List;
 @NoArgsConstructor
 public class ConditionDetailModel extends ConditionEntity {
     List<ProductEntity> products;
+
     public ConditionDetailModel(ConditionEntity conditionEntity, List<ProductEntity> products) {
         super(conditionEntity);
         this.products = products;

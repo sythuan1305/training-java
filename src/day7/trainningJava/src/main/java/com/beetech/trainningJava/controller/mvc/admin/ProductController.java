@@ -4,8 +4,6 @@ import com.beetech.trainningJava.entity.ProductEntity;
 import com.beetech.trainningJava.entity.ProductImageurlEntity;
 import com.beetech.trainningJava.model.ProductInforModel;
 import com.beetech.trainningJava.service.*;
-import org.apache.tomcat.util.json.JSONParser;
-import org.apache.tomcat.util.json.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,7 +12,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.view.RedirectView;
 
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -25,7 +22,6 @@ import java.util.Set;
 @RequestMapping("/admin/product")
 //@PreAuthorize("hasRole('ROLE_ADMIN')")
 public class ProductController {
-
     @Autowired
     private IProductService productService;
 
@@ -34,9 +30,6 @@ public class ProductController {
 
     @Autowired
     private IProductImageUrlService productImageurlService;
-
-    @Autowired
-    private IAccountService accountService;
 
     @Autowired
     private ICSVService csvService;
@@ -52,27 +45,20 @@ public class ProductController {
                                       @RequestParam("quantity") Integer quantity,
                                       @RequestParam(value = "files", required = false) MultipartFile[] files) throws IOException {
         ModelAndView modelAndView = new ModelAndView("product/uploadSuccess");
-        ProductEntity productEntity = productService.save(new ProductEntity(name, price, quantity));
-        Set<ProductImageurlEntity> productImageurlEntities = productImageurlService.saves(
-                fileService.uploadMultipleFiles(List.of(files), productEntity.getId()),
+        ProductEntity productEntity = productService.saveProductEntity(new ProductEntity(name, price, quantity));
+        Set<ProductImageurlEntity> productImageurlEntities = productImageurlService.saveEntityList(
+                fileService.uploadMultipleImagesByProductId(List.of(files), productEntity.getId()),
                 productEntity.getId());
-        List<String> images = fileService.getImages(productImageurlEntities.stream().map(ProductImageurlEntity::getImageUrl).toList());
+        List<String> images = fileService.getImageListByPathLists(productImageurlEntities.stream().map(ProductImageurlEntity::getImageUrl).toList());
         modelAndView.addObject("product", new ProductInforModel(productEntity, images));
         return modelAndView;
     }
 
     @PostMapping("/uploadCsv")
-    public String uploadProductCsv(@RequestParam("fileCsv") MultipartFile fileCsv) throws IOException, ParseException {
-//        RedirectView redirectView = new RedirectView("user/product/list");
-        List <ProductInforModel> productInforModels = csvService.csvtoListObject(fileCsv);
+    public String uploadProductCsv(@RequestParam("fileCsv") MultipartFile fileCsv) {
+        List<ProductInforModel> productInforModels = csvService.csvToProductInforModelList(fileCsv);
         System.out.println(fileCsv);
         System.out.println(fileCsv.getOriginalFilename());
         return "redirect:/user/product/list";
     }
-//
-//    @GetMapping("/uploadCsv")
-//    public ModelAndView uploadProductCsv() {
-//        System.out.println("uploadCsv");
-//        return new ModelAndView("product/test");
-//    }
 }

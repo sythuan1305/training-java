@@ -20,6 +20,7 @@ import java.util.Set;
 @NoArgsConstructor
 public class OrderModel extends OrderEntity {
     private BigDecimal totalPrice = BigDecimal.ZERO;
+
     private BigDecimal totalDiscount = BigDecimal.ZERO;
 
     private DiscountModel discountModel;
@@ -35,7 +36,6 @@ public class OrderModel extends OrderEntity {
             this.totalPrice = this.totalPrice.add(cartProductInforModel.getPrice());
         });
         if (discountModel != null) {
-            System.out.println("discountModel.getDiscountType()" + discountModel.getDiscountType());
             this.totalDiscount = switch (discountModel.getDiscountType())
             {
                 case PERCENT -> this.totalPrice.multiply(
@@ -47,7 +47,6 @@ public class OrderModel extends OrderEntity {
         this.setTotalAmount(this.totalPrice.subtract(this.totalDiscount));
         this.cartProductInforModelList = cartProductInforModelList;
 
-        System.out.println("ZonedDateTime.now().toString()" + ZonedDateTime.now().toString());
         super.setOrderDate(ZonedDateTime.now().toString());
         super.setPaymentMethod(paymentMethod);
         super.setPaymentStatus(paymentStatus);

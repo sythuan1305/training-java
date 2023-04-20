@@ -30,7 +30,6 @@ public class ProductEntity {
     @Column(name = "quantity", nullable = false)
     private Integer quantity;
 
-
     @OneToMany(mappedBy = "product")
     @JsonBackReference
     private Set<CartProductEntity> cartProducts = new LinkedHashSet<>();

@@ -1,7 +1,6 @@
 package com.beetech.trainningJava.intergration;
 
 import com.beetech.trainningJava.entity.ProductEntity;
-import com.beetech.trainningJava.entity.ProductImageurlEntity;
 import com.beetech.trainningJava.model.PageModel;
 import com.beetech.trainningJava.model.ProductInforModel;
 import com.beetech.trainningJava.service.IProductService;
@@ -45,7 +44,7 @@ public class TestIntegration {
     void testGetListIntegration() throws Exception {
         // given
         Integer pageNumber = 0;
-        PageModel<ProductInforModel> pageModel = productService.findAllModel(pageNumber, 5, "name");
+        PageModel<ProductInforModel> pageModel = productService.findPageModelByProductInforModelIndex(pageNumber, 5, "name");
 
         // when
         ResultActions resultActions = mockMvc.perform(get("/user/product/list").param("pageNumber", pageNumber.toString()));
@@ -77,8 +76,8 @@ public class TestIntegration {
     @Transactional
     void testGetInformationIntegration() throws Exception {
         //given
-        ProductEntity productEntity = productService.save(new ProductEntity("name123", BigDecimal.TEN, 10));
-        ProductInforModel productInforModel = productService.getProductInforModel(productEntity.getId());
+        ProductEntity productEntity = productService.saveProductEntity(new ProductEntity("name123", BigDecimal.TEN, 10));
+        ProductInforModel productInforModel = productService.getProductInforModelById(productEntity.getId());
 
         //when
         ResultActions resultActions = mockMvc.perform(get("/user/product/information").param("id", productInforModel.getId().toString()));

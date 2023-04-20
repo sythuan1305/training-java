@@ -29,7 +29,7 @@ public class CSVServiceImp implements ICSVService {
     private IProductImageUrlService productImageUrlService;
 
     @Override
-    public List<ProductInforModel> csvtoListObject(MultipartFile file) {
+    public List<ProductInforModel> csvToProductInforModelList(MultipartFile file) {
         List<ProductInforModel> productInforModels = new ArrayList<>();
         try (BufferedReader br = new BufferedReader(new InputStreamReader(file.getInputStream(), StandardCharsets.UTF_8))) {
             String line;
@@ -37,14 +37,14 @@ public class CSVServiceImp implements ICSVService {
 
                 String[] values = line.split(",");
                 // check product name is exist
-                if (productService.findByProductName(values[0]) != null) {
+                if (productService.findProductEntityByProductName(values[0]) != null) {
                     continue;
                 }
                 ProductEntity productEntity = new ProductEntity();
                 productEntity.setName(values[0]);
                 productEntity.setPrice(Utils.checkRoundDirection(BigDecimal.valueOf(Double.parseDouble(values[1]))));
                 productEntity.setQuantity(Integer.parseInt(values[2]));
-                productEntity = productService.save(productEntity);
+                productEntity = productService.saveProductEntity(productEntity);
                 Set<ProductImageurlEntity> productImageurlEntities = new HashSet<>();
 //                if (values.length > 3) {
 //                    List<String> list = Arrays.asList(values).subList(3, values.length);
@@ -54,7 +54,7 @@ public class CSVServiceImp implements ICSVService {
 //                            productEntity.getId());
 //
 //                }
-                List<String> images = fileService.getImages(productImageurlEntities.stream().map(ProductImageurlEntity::getImageUrl).toList());
+                List<String> images = fileService.getImageListByPathLists(productImageurlEntities.stream().map(ProductImageurlEntity::getImageUrl).toList());
                 productInforModels.add(new ProductInforModel(productEntity, images));
             }
             return productInforModels;

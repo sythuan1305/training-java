@@ -34,28 +34,28 @@ public class ProductServiceImp implements IProductService {
 
     @Override
     @Transactional( propagation = Propagation.REQUIRED)
-    public ProductEntity save(ProductEntity productEntity) {
+    public ProductEntity saveProductEntity(ProductEntity productEntity) {
         return productRepository.save(productEntity);
     }
 
     @Override
-    public PageModel<ProductEntity> findAll(Integer page, Integer size, String sort) {
-        PageRequest pageRequest =  PageRequest.of(page < 0 ? 0 : page, size, Sort.by(sort));
+    public PageModel<ProductEntity> findPageModelByProductEntityIndex(Integer pageIndex, Integer size, String sort) {
+        PageRequest pageRequest =  PageRequest.of(pageIndex < 0 ? 0 : pageIndex, size, Sort.by(sort));
         Page<ProductEntity> paging = productRepository.findAll(pageRequest);
 
         return new PageModel<>(paging.getContent(), pageRequest.getPageNumber(), paging.getTotalPages());
     }
 
     @Override
-    public PageModel<ProductInforModel> findAllModel(Integer page, Integer size, String sort) {
-        PageRequest pageRequest =  PageRequest.of(page < 0 ? 0 : page, size, Sort.by(sort));
+    public PageModel<ProductInforModel> findPageModelByProductInforModelIndex(Integer pageIndex, Integer size, String sort) {
+        PageRequest pageRequest =  PageRequest.of(pageIndex < 0 ? 0 : pageIndex, size, Sort.by(sort));
         Page<ProductEntity> paging = productRepository.findAll(pageRequest);
         List<ProductInforModel> productInforModels = new ArrayList<>();
         for (ProductEntity productEntity : paging.getContent()) {
-            List<ProductImageurlEntity> productImageurlEntities = productImageUrlService.findByProductId(productEntity.getId());
+            List<ProductImageurlEntity> productImageurlEntities = productImageUrlService.findEntityByProductId(productEntity.getId());
             List<String> images = new ArrayList<>();
             try {
-                images = fileService.getImages(productImageurlEntities.stream().map(ProductImageurlEntity::getImageUrl).toList());
+                images = fileService.getImageListByPathLists(productImageurlEntities.stream().map(ProductImageurlEntity::getImageUrl).toList());
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -65,31 +65,31 @@ public class ProductServiceImp implements IProductService {
     }
 
     @Override
-    public ProductEntity getOne(Integer productId) {
+    public ProductEntity getProductEntityById(Integer productId) {
         if (productId == null)
             throw new RuntimeException("productId is null");
         return productRepository.getReferenceById(productId);
     }
 
     @Override
-    public ProductInforModel getProductInforModel(Integer id) {
-        List<ProductImageurlEntity> productImageurlEntities = productImageUrlService.findByProductId(id);
+    public ProductInforModel getProductInforModelById(Integer id) {
+        List<ProductImageurlEntity> productImageurlEntities = productImageUrlService.findEntityByProductId(id);
         List<String> images = new ArrayList<>();
         try {
-            images = fileService.getImages(productImageurlEntities.stream().map(ProductImageurlEntity::getImageUrl).toList());
+            images = fileService.getImageListByPathLists(productImageurlEntities.stream().map(ProductImageurlEntity::getImageUrl).toList());
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        return new ProductInforModel(getOne(id), images);
+        return new ProductInforModel(getProductEntityById(id), images);
     }
 
     @Override
-    public List<ProductEntity> getProductListByDiscountId(Integer discountId) {
+    public List<ProductEntity> getProductEntityListByDiscountId(Integer discountId) {
         return null;
     }
 
     @Override
-    public ProductEntity findByProductName(String productName) {
+    public ProductEntity findProductEntityByProductName(String productName) {
         return productRepository.findByName(productName);
     }
 

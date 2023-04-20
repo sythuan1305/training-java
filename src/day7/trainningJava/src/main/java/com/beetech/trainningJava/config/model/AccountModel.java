@@ -12,7 +12,6 @@ import java.util.Collection;
 @Getter
 @Setter
 public class AccountModel implements UserDetails {
-
     private AccountEntity account;
 
     private Collection<RoleModel> roles;
@@ -22,7 +21,6 @@ public class AccountModel implements UserDetails {
         this.account = account;
         this.roles = roles;
     }
-
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

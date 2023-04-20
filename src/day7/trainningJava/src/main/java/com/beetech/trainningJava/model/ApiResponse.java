@@ -9,12 +9,14 @@ import lombok.Setter;
 @Setter
 public class ApiResponse {
     int code;
+
     boolean success;
+
     String message;
+
     Object data;
 
-
-public ApiResponse(boolean success, Object data) {
+    public ApiResponse(boolean success, Object data) {
         this.success = success;
         this.data = data;
     }

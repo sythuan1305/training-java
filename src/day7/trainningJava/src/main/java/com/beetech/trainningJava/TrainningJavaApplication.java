@@ -19,38 +19,5 @@ public class TrainningJavaApplication {
 
 	public static void main(String[] args) {
 		ConfigurableApplicationContext context = SpringApplication.run(TrainningJavaApplication.class, args);
-////
-//		AccountEntity account = new AccountEntity();
-//		CartEntity cart = new CartEntity();
-//		PasswordEncoder passwordEncoder = context.getBean(PasswordEncoder.class);
-//		AccountRepository accountRepository = context.getBean(AccountRepository.class);
-//		CartRepository cartRepository = context.getBean(CartRepository.class);
-////////
-//		account.setUsername("admin");
-//		account.setPassword(passwordEncoder.encode("123456"));
-//		account.setEmail("thuanbui1305@gmail.com");
-//		account.setVerify(true);
-//		account.setBlocked(false);
-//		account.setRole(Role.ADMIN);
-//		account = accountRepository.save(account);
-//		cart.setAccount(account);
-//		cartRepository.save(cart);
-
-//		////
-//		AccountEntity account = new AccountEntity();
-//		CartEntity cart = new CartEntity();
-//		PasswordEncoder passwordEncoder = context.getBean(PasswordEncoder.class);
-//		AccountRepository accountRepository = context.getBean(AccountRepository.class);
-//		CartRepository cartRepository = context.getBean(CartRepository.class);
-////////
-//		account.setUsername("user");
-//		account.setPassword(passwordEncoder.encode("123456"));
-//		account.setEmail("thuanbui130520@gmail.com");
-//		account.setVerify(true);
-//		account.setBlocked(false);
-//		account.setRole(Role.USER);
-//		account = accountRepository.save(account);
-//		cart.setAccount(account);
-//		cartRepository.save(cart);
 	}
 }

@@ -6,9 +6,9 @@ import java.util.List;
 import java.util.Set;
 
 public interface IProductImageUrlService {
-    public ProductImageurlEntity save(ProductImageurlEntity productImageurlEntity);
+    public ProductImageurlEntity saveEntity(ProductImageurlEntity productImageurlEntity);
 
-    public Set<ProductImageurlEntity> saves(List<String> productImageurls, Integer productId);
+    public Set<ProductImageurlEntity> saveEntityList(List<String> productImageurls, Integer productId);
 
-    public List<ProductImageurlEntity> findByProductId(Integer productId);
+    public List<ProductImageurlEntity> findEntityByProductId(Integer productId);
 }

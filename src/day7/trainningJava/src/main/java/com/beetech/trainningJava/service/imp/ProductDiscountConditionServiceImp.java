@@ -28,7 +28,7 @@ public class ProductDiscountConditionServiceImp implements IProductDiscountCondi
 
     @Override
     public List<ProductsDiscountConditionsModel> getProductDiscountConditionList() {
-        List<DiscountEntity> discountEntityList = discountService.getAll();
+        List<DiscountEntity> discountEntityList = discountService.getDistcountEntityList();
         Hashtable<Integer, ProductsDiscountConditionsModel> productsDiscountConditionsModelHashtable = new Hashtable<>();
         discountEntityList.forEach(discountEntity -> { // for each discount
             List<ProductDiscountConditionEntity> productDiscountConditionEntityList = productDiscountConditionRepository.findAllByDiscountId(discountEntity.getId());
@@ -76,17 +76,17 @@ public class ProductDiscountConditionServiceImp implements IProductDiscountCondi
     }
 
     @Override
-    public List<ProductDiscountConditionEntity> getListProductDiscountConditionByProductId(Integer productId) {
+    public List<ProductDiscountConditionEntity> getProductDiscountConditionListByProductId(Integer productId) {
         return productDiscountConditionRepository.findAllByProductId(productId);
     }
 
 
     @Override
-    public List<DiscountModel> getDiscountModels(List<CartProductInforModel> cartProductInforModelList) {
+    public List<DiscountModel> getDiscountModelListByCartProductInforModelList(List<CartProductInforModel> cartProductInforModelList) {
         Hashtable<Integer, DiscountModel> discountModelHashtable = new Hashtable<>();
         cartProductInforModelList.forEach(cartProductInforModel -> {
             // get all product discount condition by product id
-            List<ProductDiscountConditionEntity> productDiscountConditionEntityList = getListProductDiscountConditionByProductId(cartProductInforModel.getProduct().getId());
+            List<ProductDiscountConditionEntity> productDiscountConditionEntityList = getProductDiscountConditionListByProductId(cartProductInforModel.getProduct().getId());
             // for each product discount condition
             productDiscountConditionEntityList.forEach(productDiscountConditionEntity -> {
                 System.out.println(productDiscountConditionEntity.getDiscount().getCode());
@@ -95,7 +95,7 @@ public class ProductDiscountConditionServiceImp implements IProductDiscountCondi
                     DiscountModel discountModel = discountModelHashtable.get(productDiscountConditionEntity.getDiscount().getId());
                     ConditionEntity conditionEntity = productDiscountConditionEntity.getCondition();
                     // check condition enough
-                    ConditionModel conditionModel = conditionService.getConditionModelByCartProductInforModel(cartProductInforModel, conditionEntity);
+                    ConditionModel conditionModel = conditionService.getConditionModelByCartProductInforModelAndConditionEntity(cartProductInforModel, conditionEntity);
                     if (conditionModel.isEnoughCondition() && LogicalOperator.OR.equals(conditionModel.getConditionEntity().getLogicalOperator())) {
                         discountModel.setAbleToUse(true);
                     }
@@ -108,7 +108,7 @@ public class ProductDiscountConditionServiceImp implements IProductDiscountCondi
                     // create new condition model
                     ConditionEntity conditionEntity = productDiscountConditionEntity.getCondition();
                     // check condition
-                    ConditionModel conditionModel = conditionService.getConditionModelByCartProductInforModel(cartProductInforModel, conditionEntity);
+                    ConditionModel conditionModel = conditionService.getConditionModelByCartProductInforModelAndConditionEntity(cartProductInforModel, conditionEntity);
                     if (conditionModel.isEnoughCondition() && LogicalOperator.OR.equals(conditionModel.getConditionEntity().getLogicalOperator())) {
                         discountModel.setAbleToUse(true);
                     }
@@ -122,11 +122,11 @@ public class ProductDiscountConditionServiceImp implements IProductDiscountCondi
     }
 
     @Override
-    public DiscountModel getDiscountModel(Integer discountId, List<CartProductInforModel> cartProductInforModels) {
+    public DiscountModel getDiscountModelByCartProductInforList(Integer discountId, List<CartProductInforModel> cartProductInforModels) {
         if (discountId == null) {
             return null;
         }
-        List<DiscountModel> discountModels = getDiscountModels(cartProductInforModels);
+        List<DiscountModel> discountModels = getDiscountModelListByCartProductInforModelList(cartProductInforModels);
         for (DiscountModel discountModel : discountModels) {
             if (discountModel.getId().equals(discountId)) {
                 return discountModel;

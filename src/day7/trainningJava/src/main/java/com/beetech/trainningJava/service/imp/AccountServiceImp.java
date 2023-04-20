@@ -12,9 +12,9 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class AccountServiceImp implements IAccountService {
-
     @Autowired
     private AccountRepository accountRepository;
+
     @Override
     public AccountModel getAccountModel() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();

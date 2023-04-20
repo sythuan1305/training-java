@@ -32,22 +32,15 @@ public class DiscountController {
         ModelAndView modelAndView = new ModelAndView("discount/list1");
         List<CartProductInforModel> cartProductInforModels = new ArrayList<>();
         if (accountService.isLogin()) {
-            cartProductInforModels = cartProductService.getListCartProductInforByCartIdAndIsBought(accountService.getCartEntity().getId(), false);
+            cartProductInforModels = cartProductService.getCartProductInforListByCartIdAndIsBought(accountService.getCartEntity().getId(), false);
         } else {
-            cartProductInforModels = cartProductService.getListCartProductInforWithParser(
+            cartProductInforModels = cartProductService.getCartProductInforListByCartProductParserList(
                     Utils.JsonParserListObjectWithEncodedURL(cookieValue));
         }
-        cartProductInforModels = cartProductService.getListCartProductInforWithCartProductArray(cartProductInforModels, cartProductId);
-        List<DiscountModel> discountModels = discountProductService.getDiscountModels(cartProductInforModels);
+        cartProductInforModels = cartProductService.getCartProductInforListByCartProductModelListAndCartProductArray(cartProductInforModels, cartProductId);
+        List<DiscountModel> discountModels = discountProductService.getDiscountModelListByCartProductInforModelList(cartProductInforModels);
         modelAndView.addObject("discounts", discountModels);
         modelAndView.addObject("cartProductIds", Arrays.asList(cartProductId));
         return modelAndView;
     }
-
-//    @PostMapping("/choose")
-//    public RedirectView choose(@RequestParam("discountId") Integer discountId) {
-//        RedirectView redirectView = new RedirectView("/user/order/");
-//        redirectView.addStaticAttribute("discountId", discountId);
-//        return redirectView;
-//    }
 }
