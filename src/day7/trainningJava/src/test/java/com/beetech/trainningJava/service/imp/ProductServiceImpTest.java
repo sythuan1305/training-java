@@ -25,7 +25,7 @@ class ProductServiceImpTest {
     private ProductRepository productRepository;
 
     @InjectMocks
-    private IProductService productService;
+    private ProductServiceImp productService;
 
     @BeforeEach
     void setUp() {
@@ -33,7 +33,7 @@ class ProductServiceImpTest {
     }
 
     @Test
-    void TestSaveAndGetOne() {
+    void TestGetOne() {
         // given
         ProductEntity productEntity = ProductEntity.builder()
                 .id(1)
@@ -41,15 +41,16 @@ class ProductServiceImpTest {
                 .price(BigDecimal.TEN)
                 .quantity(10)
                 .build();
-        given(productRepository.save(productEntity)).willReturn(productEntity);
         given(productService.getOne(productEntity.getId())).willReturn(productEntity);
 
         // when
-        ProductEntity productEntitySaveWithService = productService.save(productEntity);
-        ProductEntity productEntity2 = productService.getOne(productEntitySaveWithService.getId());
+        ProductEntity productEntity2 = productService.getOne(productEntity.getId());
 
         // then
         assertEquals(productEntity.getId(), productEntity2.getId(), "Id is not equal");
+        assertEquals(productEntity.getName(), productEntity2.getName(), "Name is not equal");
+        assertEquals(productEntity.getPrice(), productEntity2.getPrice(), "Price is not equal");
+        assertEquals(productEntity.getQuantity(), productEntity2.getQuantity(), "Quantity is not equal");
     }
 
     @AfterEach

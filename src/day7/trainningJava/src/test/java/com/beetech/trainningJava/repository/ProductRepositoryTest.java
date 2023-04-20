@@ -24,31 +24,41 @@ class ProductRepositoryTest {
 
     @BeforeEach
     void setUp() {
-        // given
-         productEntity = ProductEntity.builder()
-                .id(1)
-                .name("name")
-                .price(BigDecimal.TEN)
-                .quantity(10)
-                .build();
     }
 
     @Test
     @Order(1)
     void TestSave() {
+        // given
+        productEntity = ProductEntity.builder()
+//                .id(1000) // id tự tăng nên không cần set
+                .name("name")
+                .price(BigDecimal.TEN)
+                .quantity(10)
+                .build();
         // when
-        productRepository.save(productEntity);
+        ProductEntity productEntity1 = productRepository.save(productEntity); // id tự tăng
         // then
-        assertNotNull(productEntity.getId(), "Id is null");
+//        assertEquals(productEntity.getId(), productEntity1.getId()); wrong
+        assertEquals(productEntity.getName(), productEntity1.getName());
+        assertEquals(productEntity.getPrice(), productEntity1.getPrice());
+        assertEquals(productEntity.getQuantity(), productEntity1.getQuantity());
+
+        productEntity = productEntity1;
     }
 
     @Test
     @Order(2)
     void TestGetOne() {
+        // given
+        TestSave();
         // when
-        ProductEntity productEntity2 = productRepository.getOne(productEntity.getId());
+        ProductEntity productEntity1 = productRepository.getOne(productEntity.getId());
         // then
-        assertEquals(productEntity.getId(), productEntity2.getId(), "Id is not equal");
+        assertEquals(productEntity.getId(), productEntity1.getId());
+        assertEquals(productEntity.getName(), productEntity1.getName());
+        assertEquals(productEntity.getPrice(), productEntity1.getPrice());
+        assertEquals(productEntity.getQuantity(), productEntity1.getQuantity());
     }
 
     @AfterEach

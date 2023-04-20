@@ -1,5 +1,7 @@
 package com.beetech.trainningJava.intergration;
 
+import com.beetech.trainningJava.entity.ProductEntity;
+import com.beetech.trainningJava.entity.ProductImageurlEntity;
 import com.beetech.trainningJava.model.PageModel;
 import com.beetech.trainningJava.model.ProductInforModel;
 import com.beetech.trainningJava.service.IProductService;
@@ -15,6 +17,8 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
+
+import java.math.BigDecimal;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -40,10 +44,11 @@ public class TestIntegration {
     @Test
     void testGetListIntegration() throws Exception {
         // given
-        PageModel<ProductInforModel> pageModel = productService.findAllModel(0, 5, "name");
+        Integer pageNumber = 0;
+        PageModel<ProductInforModel> pageModel = productService.findAllModel(pageNumber, 5, "name");
 
         // when
-        ResultActions resultActions = mockMvc.perform(get("/user/product/list"));
+        ResultActions resultActions = mockMvc.perform(get("/user/product/list").param("pageNumber", pageNumber.toString()));
 
         // then
         resultActions.andExpectAll(
@@ -55,20 +60,28 @@ public class TestIntegration {
         ).andDo(print());
         //
         MvcResult res = resultActions.andReturn();
-        PageModel<ProductInforModel> pageModel1 = (PageModel<ProductInforModel>) res.getModelAndView().getModel().get("page");
-        assertEquals(pageModel1.getTotalPages(), pageModel.getTotalPages());
-        assertEquals(pageModel1.getPageNumber(), pageModel.getPageNumber());
-        assertEquals(pageModel1.getItems().size(), pageModel.getItems().size());
+        PageModel<ProductInforModel> pageModelRes = (PageModel<ProductInforModel>) res.getModelAndView().getModel().get("page");
+        assertEquals(pageModelRes.getTotalPages(), pageModel.getTotalPages());
+        assertEquals(pageModelRes.getPageNumber(), pageModel.getPageNumber());
+        assertEquals(pageModelRes.getItems().size(), pageModel.getItems().size());
+
+        for (int i = 0; i < pageModelRes.getItems().size(); i++) {
+            assertEquals(pageModelRes.getItems().get(i).getId(), pageModel.getItems().get(i).getId());
+            assertEquals(pageModelRes.getItems().get(i).getName(), pageModel.getItems().get(i).getName());
+            assertEquals(pageModelRes.getItems().get(i).getPrice(), pageModel.getItems().get(i).getPrice());
+            assertEquals(pageModelRes.getItems().get(i).getQuantity(), pageModel.getItems().get(i).getQuantity());
+        }
     }
 
     @Test
     @Transactional
     void testGetInformationIntegration() throws Exception {
         //given
-        ProductInforModel productInforModel = productService.getProductInforModel(1);
+        ProductEntity productEntity = productService.save(new ProductEntity("name123", BigDecimal.TEN, 10));
+        ProductInforModel productInforModel = productService.getProductInforModel(productEntity.getId());
 
         //when
-        ResultActions resultActions = mockMvc.perform(get("/user/product/information").param("id", "1"));
+        ResultActions resultActions = mockMvc.perform(get("/user/product/information").param("id", productInforModel.getId().toString()));
 
         //then
         resultActions.andExpectAll(
