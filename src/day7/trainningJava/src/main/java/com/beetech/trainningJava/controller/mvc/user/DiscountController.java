@@ -27,18 +27,22 @@ public class DiscountController {
     private IAccountService accountService;
 
     @PostMapping("/list")
-    public ModelAndView information(@CookieValue(value = "cart", defaultValue = "defaultCookieValue") String cookieValue,
-                                    @RequestParam("cartProductId") Integer[] cartProductId) throws JsonProcessingException {
+    public ModelAndView information(
+            @CookieValue(value = "cart", defaultValue = Utils.DEFAULT_COOKIE_VALUE) String cookieValue,
+            @RequestParam("cartProductId") Integer[] cartProductId) throws JsonProcessingException {
         ModelAndView modelAndView = new ModelAndView("discount/list1");
         List<CartProductInforModel> cartProductInforModels = new ArrayList<>();
         if (accountService.isLogin()) {
-            cartProductInforModels = cartProductService.getCartProductInforListByCartIdAndIsBought(accountService.getCartEntity().getId(), false);
+            cartProductInforModels = cartProductService
+                    .getCartProductInforListByCartIdAndIsBought(accountService.getCartEntity().getId(), false);
         } else {
             cartProductInforModels = cartProductService.getCartProductInforListByCartProductParserList(
                     Utils.JsonParserListObjectWithEncodedURL(cookieValue));
         }
-        cartProductInforModels = cartProductService.getCartProductInforListByCartProductModelListAndCartProductArray(cartProductInforModels, cartProductId);
-        List<DiscountModel> discountModels = discountProductService.getDiscountModelListByCartProductInforModelList(cartProductInforModels);
+        cartProductInforModels = cartProductService.getCartProductInforListByCartProductModelListAndCartProductArray(
+                cartProductInforModels, cartProductId);
+        List<DiscountModel> discountModels = discountProductService
+                .getDiscountModelListByCartProductInforModelList(cartProductInforModels);
         modelAndView.addObject("discounts", discountModels);
         modelAndView.addObject("cartProductIds", Arrays.asList(cartProductId));
         return modelAndView;

@@ -34,7 +34,6 @@ import java.util.Set;
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE) //su dung database thuc
 //@Rollback(false)
 class CartProductServiceImpTest {
-
     @Autowired
     ICSVService csvService;
 
@@ -83,7 +82,6 @@ class CartProductServiceImpTest {
         System.out.println("CartProductEntity1: " + cartProductEntity1.getQuantity());
 
     }
-
 
     @Test
     @Transactional(propagation = Propagation.REQUIRED)

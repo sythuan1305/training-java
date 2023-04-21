@@ -28,7 +28,7 @@ public class Utils {
     }
 
     public static List<Map<String, Object>> JsonParserListObjectWithEncodedURL(String cookieValue) {
-        if (cookieValue.equals("defaultCookieValue")) {
+        if (Utils.DEFAULT_COOKIE_VALUE.equals(cookieValue)) {
             return null;
         }
 
@@ -41,19 +41,19 @@ public class Utils {
         }
         return null;
     }
-    //---------
+    // ---------
 
     public static String JsonParserString(Object object) {
         ObjectMapper mapper = new ObjectMapper();
         mapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
         try {
             return mapper.writeValueAsString(object);
-        } catch ( JsonProcessingException e) {
+        } catch (JsonProcessingException e) {
             System.out.println(e.getMessage());
         }
         return null;
     }
-    //---------
+    // ---------
 
     public static String ChangeVndToUsd(String vnd) {
         return checkRoundDirection(BigDecimal.valueOf(Double.parseDouble(vnd) / 23000)).toString();
@@ -69,9 +69,8 @@ public class Utils {
         }
     }
 
-    //---------
-    public static void deleteCookie(String name, HttpServletResponse response)
-    {
+    // ---------
+    public static void deleteCookie(String name, HttpServletResponse response) {
         Cookie cookie = new Cookie("cart", "");
         cookie.setMaxAge(0); // Đặt thời gian hết hạn của cookie vào quá khứ
         cookie.setPath("/"); // Đảm bảo cookie được gửi đến tất cả các đường dẫn trên trang web

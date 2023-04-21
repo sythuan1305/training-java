@@ -26,10 +26,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 @SpringBootTest
 @AutoConfigureWebMvc
 public class TestIntegration {
-
-
     @Autowired
     private IProductService productService;
+
     @Autowired
     private WebApplicationContext context;
 

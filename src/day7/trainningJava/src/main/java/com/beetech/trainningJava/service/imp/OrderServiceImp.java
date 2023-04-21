@@ -9,10 +9,8 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class OrderServiceImp implements IOrderService {
-
     @Autowired
     private OrderRepository orderRepository;
-
 
     @Override
     public OrderEntity saveOrderEntityByEntity(OrderEntity orderEntity) {
@@ -31,6 +29,4 @@ public class OrderServiceImp implements IOrderService {
         orderModel.setId(orderEntity.getId());
         return orderEntity;
     }
-
-
 }

@@ -8,8 +8,6 @@ import com.beetech.trainningJava.model.ProductsDiscountConditionsModel;
 import java.util.List;
 
 public interface IProductDiscountConditionService {
-    List<ProductsDiscountConditionsModel> getProductDiscountConditionList();
-
     List<ProductDiscountConditionEntity> getProductDiscountConditionListByProductId(Integer productId);
 
     List<DiscountModel> getDiscountModelListByCartProductInforModelList(List<CartProductInforModel> cartProductInforModels);

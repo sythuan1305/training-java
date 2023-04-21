@@ -16,7 +16,6 @@ import java.util.*;
 
 @Service
 public class FileServiceImp implements IFileService {
-
     @Value("${upload.path}")
     String path;
 

@@ -2,8 +2,6 @@ package com.beetech.trainningJava.service.imp;
 
 import com.beetech.trainningJava.entity.ConditionEntity;
 import com.beetech.trainningJava.enums.ConditionType;
-import com.beetech.trainningJava.enums.LogicalOperator;
-import com.beetech.trainningJava.enums.Operator;
 import com.beetech.trainningJava.model.CartProductInforModel;
 import com.beetech.trainningJava.model.ConditionModel;
 import com.beetech.trainningJava.service.IConditionService;
@@ -43,6 +41,7 @@ public class ConditionServiceImp implements IConditionService {
                     }
                 }
                 default -> {
+                    // DO NOTHING
                 }
             }
         } else if (ConditionType.TOTAL_QUANTITY.equals(conditionEntity.getConditionType())) {
@@ -73,12 +72,10 @@ public class ConditionServiceImp implements IConditionService {
                     }
                 }
                 default -> {
+                    // DO NOTHING
                 }
             }
         }
-        System.out.println("conditionModel.isEnoughCondition() " + conditionModel.isEnoughCondition() + " " +
-                "conditionModel.getConditionType()" + conditionModel.getConditionEntity().getConditionType() + " " +
-                "cartProductInforModel.getProduct().getName()" + cartProductInforModel.getProduct().getName());
         return conditionModel;
     }
 }

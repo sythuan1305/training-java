@@ -18,9 +18,9 @@ public class HomeController {
     private IAccountService accountService;
 
     @GetMapping("/")
-    public RedirectView readCartCookie(@CookieValue(value = "cart", defaultValue = "defaultCookieValue") String cartCookieValue,
+    public RedirectView readCartCookie(@CookieValue(value = "cart", defaultValue = Utils.DEFAULT_COOKIE_VALUE) String cartCookieValue,
                                    HttpServletResponse response) {
-        if (accountService.isLogin() && !cartCookieValue.equals("defaultCookieValue")) {
+        if (accountService.isLogin() && !Utils.DEFAULT_COOKIE_VALUE.equals(cartCookieValue)) {
             cartProductService.saveCartProductEntityListWithAuthenticatedByCartProductParserList(Utils.JsonParserListObjectWithEncodedURL(cartCookieValue));
             // Xóa cookie
             Utils.deleteCookie("cart", response);

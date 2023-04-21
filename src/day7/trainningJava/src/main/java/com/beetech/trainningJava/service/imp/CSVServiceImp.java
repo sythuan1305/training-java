@@ -34,26 +34,21 @@ public class CSVServiceImp implements ICSVService {
         try (BufferedReader br = new BufferedReader(new InputStreamReader(file.getInputStream(), StandardCharsets.UTF_8))) {
             String line;
             while ((line = br.readLine()) != null) {
-
                 String[] values = line.split(",");
                 // check product name is exist
                 if (productService.findProductEntityByProductName(values[0]) != null) {
                     continue;
                 }
+
+                // save product
                 ProductEntity productEntity = new ProductEntity();
                 productEntity.setName(values[0]);
                 productEntity.setPrice(Utils.checkRoundDirection(BigDecimal.valueOf(Double.parseDouble(values[1]))));
                 productEntity.setQuantity(Integer.parseInt(values[2]));
                 productEntity = productService.saveProductEntity(productEntity);
+
+                // save product image url
                 Set<ProductImageurlEntity> productImageurlEntities = new HashSet<>();
-//                if (values.length > 3) {
-//                    List<String> list = Arrays.asList(values).subList(3, values.length);
-//                    List<MultipartFile> multipartFiles = fileService.convertBase64ImageListToMultipartFileList(list);
-//                    productImageurlEntities = productImageUrlService.saves(
-//                            fileService.uploadMultipleFiles(multipartFiles, productEntity.getId()),
-//                            productEntity.getId());
-//
-//                }
                 List<String> images = fileService.getImageListByPathLists(productImageurlEntities.stream().map(ProductImageurlEntity::getImageUrl).toList());
                 productInforModels.add(new ProductInforModel(productEntity, images));
             }

@@ -39,28 +39,31 @@ public class OrderController {
     private IOrderService orderService;
 
     @Autowired
-    private ICartProductOrder  cartProductOrderService;
+    private ICartProductOrder cartProductOrderService;
 
     @Autowired
     private PaypalService paypalService;
 
     @PostMapping("/payment")
     public ModelAndView pay(@RequestParam("cartProductId") Integer[] cartProductId,
-                            @RequestParam(value = "discountId", required = false) Integer discountId,
-                            @CookieValue(value = "cart", defaultValue = "defaultCookieValue") String cookieValue) {
+            @RequestParam(value = "discountId", required = false) Integer discountId,
+            @CookieValue(value = "cart", defaultValue = Utils.DEFAULT_COOKIE_VALUE) String cookieValue) {
         ModelAndView modelAndView = new ModelAndView("order/payment");
         List<CartProductInforModel> cartProductInforModels = new ArrayList<>();
         DiscountModel discountModel = null;
         if (accountService.isLogin()) {
-            cartProductInforModels = cartProductService.getCartProductInforListByCartIdAndIsBought(accountService.getCartEntity().getId(), false);
+            cartProductInforModels = cartProductService
+                    .getCartProductInforListByCartIdAndIsBought(accountService.getCartEntity().getId(), false);
         } else {
             cartProductInforModels = cartProductService.getCartProductInforListByCartProductParserList(
                     Utils.JsonParserListObjectWithEncodedURL(cookieValue));
         }
 
-        cartProductInforModels = cartProductService.getCartProductInforListByCartProductModelListAndCartProductArray(cartProductInforModels, cartProductId);
+        cartProductInforModels = cartProductService.getCartProductInforListByCartProductModelListAndCartProductArray(
+                cartProductInforModels, cartProductId);
         if (discountId != null) {
-            discountModel = productDiscountConditionService.getDiscountModelByCartProductInforList(discountId, cartProductInforModels);
+            discountModel = productDiscountConditionService.getDiscountModelByCartProductInforList(discountId,
+                    cartProductInforModels);
         }
         OrderModel orderModel = new OrderModel(cartProductInforModels, discountModel,
                 accountService.getCartEntity(), PaymentMethod.PAYPAL, PaymentStatus.PENDING);
@@ -72,35 +75,40 @@ public class OrderController {
 
     @PostMapping("/authorizePayment")
     public RedirectView payment(@RequestParam("cartProductId") Integer[] cartProductId,
-                                @RequestParam(value = "discountId", required = false) Integer discountId,
-                                @RequestParam(value = "paymentMethod") String paymentMethod,
-                                @CookieValue(value = "cart", defaultValue = "defaultCookieValue") String cookieValue) {
+            @RequestParam(value = "discountId", required = false) Integer discountId,
+            @RequestParam(value = "paymentMethod") String paymentMethod,
+            @CookieValue(value = "cart", defaultValue = Utils.DEFAULT_COOKIE_VALUE) String cookieValue) {
         List<CartProductInforModel> cartProductInforModels = new ArrayList<>();
         DiscountModel discountModel = null;
         if (accountService.isLogin()) {
-            cartProductInforModels = cartProductService.getCartProductInforListByCartIdAndIsBought(accountService.getCartEntity().getId(), false);
+            cartProductInforModels = cartProductService
+                    .getCartProductInforListByCartIdAndIsBought(accountService.getCartEntity().getId(), false);
         } else {
             cartProductInforModels = cartProductService.getCartProductInforListByCartProductParserList(
                     Utils.JsonParserListObjectWithEncodedURL(cookieValue));
         }
-        cartProductInforModels = cartProductService.getCartProductInforListByCartProductModelListAndCartProductArray(cartProductInforModels, cartProductId);
+        cartProductInforModels = cartProductService.getCartProductInforListByCartProductModelListAndCartProductArray(
+                cartProductInforModels, cartProductId);
         //
         List<CartProductEntity> cartProductEntities = new ArrayList<>();
-        if (!accountService.isLogin())
-        {
-            cartProductEntities = cartProductService.saveCartProductEntityListByCartProductModelList(cartProductInforModels);
-        }
-        else {
-            cartProductEntities = cartProductService.changeCartProductInforModelListToCartProductEntityList(cartProductInforModels);
+        if (!accountService.isLogin()) {
+            cartProductEntities = cartProductService
+                    .saveCartProductEntityListByCartProductModelList(cartProductInforModels);
+        } else {
+            cartProductEntities = cartProductService
+                    .changeCartProductInforModelListToCartProductEntityList(cartProductInforModels);
         }
         //
         if (discountId != null) {
-            discountModel = productDiscountConditionService.getDiscountModelByCartProductInforList(discountId, cartProductInforModels);
+            discountModel = productDiscountConditionService.getDiscountModelByCartProductInforList(discountId,
+                    cartProductInforModels);
         }
-        OrderModel orderModel = new OrderModel(cartProductInforModels, discountModel, accountService.getCartEntity(), PaymentMethod.PAYPAL, PaymentStatus.PENDING);
+        OrderModel orderModel = new OrderModel(cartProductInforModels, discountModel, accountService.getCartEntity(),
+                PaymentMethod.PAYPAL, PaymentStatus.PENDING);
         OrderEntity orderEntity = orderService.saveOrderEntityByModel(orderModel);
 
-        List<CartProductOrderEntity> cartProductOrderEntities = cartProductOrderService.saveCartProductOrderEntityListByEntityListAndOrderEntity(cartProductEntities, orderEntity);
+        List<CartProductOrderEntity> cartProductOrderEntities = cartProductOrderService
+                .saveCartProductOrderEntityListByEntityListAndOrderEntity(cartProductEntities, orderEntity);
 
         String approvalLink = paypalService.authorizePayment(orderModel);
 
@@ -111,19 +119,21 @@ public class OrderController {
     public ModelAndView cancelPaymentGet() {
         return new ModelAndView("payment/paypal/cancel");
     }
+
     @GetMapping("/executePayment")
-    public String executePaymentGet(@RequestParam("paymentId") String paymentId, @RequestParam("PayerID") String payerId,
-                                          @CookieValue(value = "cart", defaultValue = "defaultCookieValue") String cookieValue,
-                                          HttpServletResponse response) {
+    public String executePaymentGet(@RequestParam("paymentId") String paymentId,
+            @RequestParam("PayerID") String payerId,
+            @CookieValue(value = "cart", defaultValue = Utils.DEFAULT_COOKIE_VALUE) String cookieValue,
+            HttpServletResponse response) {
         return executePaymentPost(paymentId, payerId, cookieValue, response);
     }
 
     @PostMapping("/executePayment")
-    public String executePaymentPost(@RequestParam("paymentId") String paymentId, @RequestParam("PayerID") String payerId,
-                                           @CookieValue(value = "cart", defaultValue = "defaultCookieValue") String cookieValue,
-                                           HttpServletResponse response) {
-        if (!accountService.isLogin())
-        {
+    public String executePaymentPost(@RequestParam("paymentId") String paymentId,
+            @RequestParam("PayerID") String payerId,
+            @CookieValue(value = "cart", defaultValue = Utils.DEFAULT_COOKIE_VALUE) String cookieValue,
+            HttpServletResponse response) {
+        if (!accountService.isLogin()) {
             Utils.deleteCookie("cart", response);
         }
         Payment payment = paypalService.executePayment(paymentId, payerId);
@@ -132,7 +142,8 @@ public class OrderController {
 
         OrderEntity orderEntity = orderService.findOrderEntityById(Integer.parseInt(transaction.getInvoiceNumber()));
 
-        List<CartProductOrderEntity> cartProductOrderEntities = cartProductOrderService.updateCartProductOrderEntityListAfterBoughtByOrderEntity(orderEntity);
+        List<CartProductOrderEntity> cartProductOrderEntities = cartProductOrderService
+                .updateCartProductOrderEntityListAfterBoughtByOrderEntity(orderEntity);
         return "payment/paypal/success";
     }
 }

@@ -56,7 +56,6 @@ public class CartProductServiceImp implements ICartProductService {
                 .toList();
     }
 
-
     @Override
     public CartProductEntity saveCartProductEntityWithAuthenticatedByCartProductParserList(Map<String, Object> cartProductParser) {
         int productId = Integer.parseInt(cartProductParser.get("product_id").toString());
@@ -84,19 +83,16 @@ public class CartProductServiceImp implements ICartProductService {
         return cartProductRepository.save(cartProductEntity);
     }
 
-
     @Override
     public List<CartProductEntity> saveCartProductEntityListWithAuthenticatedByCartProductParserList(List<Map<String, Object>> cartProductParsers) {
         //Reference to instance method 'save' requires an enclosing instance of type 'CartProductServiceImpl'
         return cartProductParsers.stream().map(this::saveCartProductEntityWithAuthenticatedByCartProductParserList).toList();
     }
 
-
     @Override
     public CartProductEntity saveCartProductEntityWithUnAuthByCartProductEntity(CartProductEntity cartProductEntity) {
         return cartProductRepository.save(cartProductEntity);
     }
-
 
     @Override
     public List<CartProductInforModel> getCartProductInforListByCartIdAndIsBought(Integer cartId, boolean isBought) {
@@ -155,7 +151,6 @@ public class CartProductServiceImp implements ICartProductService {
         }).toList();
     }
 
-
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
     public void TestMinusQuantity() {
@@ -167,9 +162,7 @@ public class CartProductServiceImp implements ICartProductService {
         // trừ số lượng
         cartProductEntity1.setQuantity(cartProductEntity1.getQuantity() + 1000);
 //        throw new RuntimeException("Test Exception");
-
     }
-
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED)

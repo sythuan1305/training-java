@@ -6,7 +6,7 @@ import org.springframework.security.core.GrantedAuthority;
 public class RoleModel implements GrantedAuthority {
     private Role roleId;
 
-    private final String roleName;
+    private String roleName;
 
     public RoleModel(Role roleId) {
         this.roleId = roleId;

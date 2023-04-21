@@ -34,29 +34,35 @@ public class CartController {
     private IProductDiscountConditionService productDiscountConditionService;
 
     @GetMapping("/information")
-    public ModelAndView information(@Loggable @CookieValue(value = "cart", defaultValue = "defaultCookieValue") String cookieValue,
-                                     @RequestParam(value = "discountId", required = false) Integer discountId) throws JsonProcessingException {
+    public ModelAndView information(
+            @Loggable @CookieValue(value = "cart", defaultValue = Utils.DEFAULT_COOKIE_VALUE) String cookieValue,
+            @RequestParam(value = "discountId", required = false) Integer discountId) throws JsonProcessingException {
         System.out.println("cookieValue: " + cookieValue + "cookieValue.length(): " + cookieValue.length());
         ModelAndView modelAndView = new ModelAndView("cart/information");
         List<CartProductInforModel> cartProductInforModels = new ArrayList<>();
         if (accountService.isLogin()) {
-            cartProductInforModels = cartProductService.getCartProductInforListByCartIdAndIsBought(accountService.getCartEntity().getId(), false);
+            cartProductInforModels = cartProductService
+                    .getCartProductInforListByCartIdAndIsBought(accountService.getCartEntity().getId(), false);
             modelAndView.addObject("cartProducts", Utils.JsonParserString(cartProductInforModels));
         } else {
-            if (!cookieValue.equals("defaultCookieValue")) {
-                cartProductInforModels = cartProductService.getCartProductInforListByCartProductParserList(Utils.JsonParserListObjectWithEncodedURL(cookieValue));
+            if (!Utils.DEFAULT_COOKIE_VALUE.equals(cookieValue)) {
+                cartProductInforModels = cartProductService.getCartProductInforListByCartProductParserList(
+                        Utils.JsonParserListObjectWithEncodedURL(cookieValue));
                 modelAndView.addObject("cartProducts", Utils.JsonParserString(cartProductInforModels));
             } else {
                 modelAndView.addObject("cartProducts", new ArrayList<CartProductEntity>());
             }
         }
-        DiscountModel discountModel = productDiscountConditionService.getDiscountModelByCartProductInforList(discountId, cartProductInforModels);
+        DiscountModel discountModel = productDiscountConditionService.getDiscountModelByCartProductInforList(discountId,
+                cartProductInforModels);
         modelAndView.addObject("discount", discountModel == null ? null : Utils.JsonParserString(discountModel));
         return modelAndView;
     }
 
     @GetMapping("/information-cart")
-    public ModelAndView informationCart(@CookieValue(value = "cart", defaultValue = "defaultCookieValue") String cookieValue) throws JsonProcessingException {
+    public ModelAndView informationCart(
+            @CookieValue(value = "cart", defaultValue = Utils.DEFAULT_COOKIE_VALUE) String cookieValue)
+            throws JsonProcessingException {
         System.out.println("cookieValue: " + cookieValue + "cookieValue.length(): " + cookieValue.length());
         ModelAndView modelAndView = new ModelAndView("cart/information-cart");
         // for test
@@ -64,10 +70,12 @@ public class CartController {
         // end for test
         List<CartProductInforModel> cartProductInforModels = new ArrayList<>();
         if (accountService.isLogin()) {
-            cartProductInforModels = cartProductService.getCartProductInforListByCartIdAndIsBought(accountService.getCartEntity().getId(), false);
+            cartProductInforModels = cartProductService
+                    .getCartProductInforListByCartIdAndIsBought(accountService.getCartEntity().getId(), false);
         } else {
-            if (!cookieValue.equals("defaultCookieValue")) {
-                cartProductInforModels = cartProductService.getCartProductInforListByCartProductParserList(Utils.JsonParserListObjectWithEncodedURL(cookieValue));
+            if (!Utils.DEFAULT_COOKIE_VALUE.equals(cookieValue)) {
+                cartProductInforModels = cartProductService.getCartProductInforListByCartProductParserList(
+                        Utils.JsonParserListObjectWithEncodedURL(cookieValue));
             }
         }
         modelAndView.addObject("cartProducts", cartProductInforModels);
@@ -76,7 +84,7 @@ public class CartController {
 
     @GetMapping("/add")
     public ModelAndView add(@RequestParam("productId") Integer productId,
-                            @CookieValue(value = "cart", defaultValue = "defaultCookieValue") String cookieValue) {
+            @CookieValue(value = "cart", defaultValue = Utils.DEFAULT_COOKIE_VALUE) String cookieValue) {
         System.out.println("cookieValue: " + cookieValue + "cookieValue.length(): " + cookieValue.length());
         ModelAndView modelAndView = new ModelAndView("cart/add-product");
         modelAndView.addObject("product", productService.getProductInforModelById(productId));
@@ -89,7 +97,8 @@ public class CartController {
             return new RedirectView("/user/cart/information-cart");
         }
         System.out.println("cartProduct: " + cartProduct);
-        cartProductService.saveCartProductEntityListWithAuthenticatedByCartProductParserList((List<Map<String, Object>>) new JSONParser(cartProduct).parse());
+        cartProductService.saveCartProductEntityListWithAuthenticatedByCartProductParserList(
+                (List<Map<String, Object>>) new JSONParser(cartProduct).parse());
         return new RedirectView("/user/cart/information-cart");
     }
 }

@@ -7,12 +7,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 @SpringBootTest
 @AutoConfigureMockMvc
 class TrainningJavaApplicationTests {
-
-
-
-
 	@Test
 	void contextLoads() {
 	}
-
 }
