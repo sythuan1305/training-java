@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicReference;
 
 @Service
 public class PaypalService {
@@ -25,6 +24,8 @@ public class PaypalService {
 
     @Autowired
     RedirectUrls redirectUrls;
+
+    private static final String currency = "USD";
 
     public String authorizePayment(OrderModel orderModel) {
         Payer payer = getPayerInformation();
@@ -68,7 +69,7 @@ public class PaypalService {
         details.setSubtotal(Utils.ChangeVndToUsd(orderModel.getTotalAmount().toString()));
 
         Amount amount = new Amount();
-        amount.setCurrency("USD");
+        amount.setCurrency(currency);
         amount.setDetails(details);
         amount.setTotal(Utils.ChangeVndToUsd(orderModel.getTotalAmount().toString()));
 
@@ -81,20 +82,18 @@ public class PaypalService {
         orderModel.getCartProductInforModelList().forEach(cartProductInforModel -> {
             Item item = new Item();
             item.setName(cartProductInforModel.getProduct().getName())
-                    .setCurrency("USD")
+                    .setCurrency(currency)
                     .setPrice(Utils.ChangeVndToUsd(cartProductInforModel.getProduct().getPrice().toString()))
                     .setQuantity(cartProductInforModel.getQuantity().toString());
         deviation[0] = (Utils.checkRoundDirection(BigDecimal.valueOf(Double.parseDouble(deviation[0]) -
                 Double.parseDouble(item.getPrice()) * Integer.parseInt(item.getQuantity())
         )).toString());
-            System.out.println("deviation: " + deviation[0]);
             itemList.add(item);
         });
 
-        System.out.println("deviation: " + deviation[0]);
         Item item = new Item();
         item.setName("Discount")
-                .setCurrency("USD")
+                .setCurrency(currency)
                 .setPrice("-" + Utils.ChangeVndToUsd(orderModel.getTotalDiscount().toString()))
                 .setQuantity("1");
         itemList.add(item);
@@ -102,18 +101,16 @@ public class PaypalService {
                 Double.parseDouble(item.getPrice()) * Integer.parseInt(item.getQuantity()))).toString());
 
         if (deviation[0].compareTo("0.00") > 0) {
-            System.out.println("deviation[0].compareTo(\"0.00\") > 0");
-
             Item itemTmp = new Item();
             itemTmp.setName("Deviation")
-                    .setCurrency("USD")
+                    .setCurrency(currency)
                     .setPrice(deviation[0])
                     .setQuantity("1");
             itemList.add(itemTmp);
         } else if (deviation[0].compareTo("0.00") < 0) {
             Item itemTmp = new Item();
             itemTmp.setName("Deviation")
-                    .setCurrency("USD")
+                    .setCurrency(currency)
                     .setPrice(deviation[0])
                     .setQuantity("1");
             itemList.add(itemTmp);

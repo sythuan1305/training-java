@@ -13,6 +13,7 @@ import org.springframework.web.servlet.ModelAndView;
 public class AuthInterceptor implements HandlerInterceptor {
     @Autowired
     private IAccountService accountService;
+
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         return HandlerInterceptor.super.preHandle(request, response, handler);
