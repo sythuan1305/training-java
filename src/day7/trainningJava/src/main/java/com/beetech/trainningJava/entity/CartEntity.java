@@ -9,6 +9,9 @@ import java.math.BigDecimal;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
+/**
+ * Entity này dùng để lưu thông tin giỏ hàng
+ */
 @Getter
 @Setter
 @Entity

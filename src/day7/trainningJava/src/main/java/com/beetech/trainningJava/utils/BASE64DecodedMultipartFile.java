@@ -30,6 +30,7 @@ public class BASE64DecodedMultipartFile implements MultipartFile {
 
     @Override
     public String getContentType() {
+        String a;
         // TODO - implementation depends on your requirements
         return null;
     }

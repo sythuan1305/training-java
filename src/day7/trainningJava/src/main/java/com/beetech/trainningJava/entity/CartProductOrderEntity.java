@@ -6,6 +6,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+/**
+ * Entity này dùng để lưu thông tin của từng sản phẩm trong đơn hàng
+ */
 @Getter
 @Setter
 @Entity

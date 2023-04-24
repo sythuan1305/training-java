@@ -8,12 +8,22 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+/**
+ * Controller này dùng để xử lý các request đến những api liên quan đến authentication
+ */
 @RestController("apiAuthenticationController")
 @RequestMapping("/api/auth")
 public class AuthenticationController {
     @Autowired
     private IAuthService authService;
 
+    /**
+     * Xử lý request đến api login
+     * @param username tên đăng nhập
+     * @param password mật khẩu
+     * @return response entity chứa ApiResponse <br>
+     * ApiResponse chứa JwtTokenModel
+     */
     @PostMapping("/login")
     public ResponseEntity<ApiResponse> login(@RequestParam("username") String username, @RequestParam("password") String password) {
         JwtTokenModel jwtTokenProvider = authService.getJwtTokenModelAfterAuthen(username, password);

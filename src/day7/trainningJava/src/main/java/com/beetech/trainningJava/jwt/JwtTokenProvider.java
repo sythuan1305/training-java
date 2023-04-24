@@ -1,6 +1,5 @@
 package com.beetech.trainningJava.jwt;
 
-import java.security.Key;
 import java.util.Date;
 
 import io.jsonwebtoken.Claims;
@@ -8,7 +7,9 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.stereotype.Component;
 
-
+/**
+ * Class này dùng để tạo token và kiểm tra token
+ */
 @Component
 public class JwtTokenProvider {
     private final String JWT_SECRET_KEY = "7we4rfbhka9";

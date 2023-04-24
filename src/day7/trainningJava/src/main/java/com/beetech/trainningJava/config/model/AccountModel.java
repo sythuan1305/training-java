@@ -1,7 +1,6 @@
 package com.beetech.trainningJava.config.model;
 
 import com.beetech.trainningJava.entity.AccountEntity;
-import com.beetech.trainningJava.entity.CartEntity;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
@@ -9,6 +8,11 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 
+/**
+ * Class này dùng để tạo ra đối tượng UserDetails từ AccountEntity. <br>
+ * UserDetails chứa thông tin của user và quyền của user
+ * @see UserDetails
+ */
 @Getter
 @Setter
 public class AccountModel implements UserDetails {

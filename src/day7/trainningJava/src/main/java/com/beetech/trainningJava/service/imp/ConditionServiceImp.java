@@ -12,7 +12,7 @@ public class ConditionServiceImp implements IConditionService {
     @Override
     public ConditionModel getConditionModelByCartProductInforModelAndConditionEntity(CartProductInforModel cartProductInforModel, ConditionEntity conditionEntity) {
         ConditionModel conditionModel = new ConditionModel(conditionEntity, false, cartProductInforModel.getProduct());
-        // check condition
+        // check condition type
         if (ConditionType.TOTAL_AMOUNT.equals(conditionEntity.getConditionType())) {
             switch (conditionEntity.getOperator()) {
                 case GREATER_THAN -> {

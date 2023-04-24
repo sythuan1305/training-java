@@ -4,6 +4,9 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+/**
+ * Entity này dùng để lưu các ảnh của sản phẩm
+ */
 @Getter
 @Setter
 @Entity

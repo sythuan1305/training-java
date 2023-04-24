@@ -22,5 +22,4 @@ public class DiscountServiceImp implements IDiscountService {
     public DiscountEntity getDiscountEntity(Integer id) {
         return discountRepository.getReferenceById(id);
     }
-
 }

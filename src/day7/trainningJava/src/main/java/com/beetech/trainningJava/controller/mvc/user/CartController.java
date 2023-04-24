@@ -17,6 +17,9 @@ import org.springframework.web.servlet.view.RedirectView;
 
 import java.util.*;
 
+/**
+ * Controller này dùng để xử lý các request liên quan đến giỏ hàng
+ */
 @Controller("mvcUserCartController")
 @RequestMapping("/user/cart")
 @Loggable
@@ -33,12 +36,21 @@ public class CartController {
     @Autowired
     private IProductDiscountConditionService productDiscountConditionService;
 
+    /**
+     * Chuyển đến trang xem thông tin giỏ hàng
+     *
+     * @param cookieValue giá trị của cookie cart
+     * @return trang xem thông tin giỏ hàng
+     * @deprecated được thay thế bởi {@link #informationCart(String)}
+     */
+    @Deprecated
     @GetMapping("/information")
     public ModelAndView information(
             @Loggable @CookieValue(value = "cart", defaultValue = Utils.DEFAULT_COOKIE_VALUE) String cookieValue,
             @RequestParam(value = "discountId", required = false) Integer discountId) throws JsonProcessingException {
-        System.out.println("cookieValue: " + cookieValue + "cookieValue.length(): " + cookieValue.length());
         ModelAndView modelAndView = new ModelAndView("cart/information");
+
+        // Lấy thông tin giỏ hàng từ cookie hoặc database
         List<CartProductInforModel> cartProductInforModels = new ArrayList<>();
         if (accountService.isLogin()) {
             cartProductInforModels = cartProductService
@@ -53,50 +65,67 @@ public class CartController {
                 modelAndView.addObject("cartProducts", new ArrayList<CartProductEntity>());
             }
         }
-        DiscountModel discountModel = productDiscountConditionService.getDiscountModelByCartProductInforList(discountId,
+
+        // Lấy thông tin giảm giá
+        DiscountModel discountModel = productDiscountConditionService.getDiscountModelByDiscountIdAndCartProductInforList(discountId,
                 cartProductInforModels);
+
         modelAndView.addObject("discount", discountModel == null ? null : Utils.JsonParserString(discountModel));
         return modelAndView;
     }
 
+    /**
+     * Chuyển đến trang xem thông tin giỏ hàng
+     *
+     * @param cookieValue giá trị của cookie cart
+     * @return trang xem thông tin giỏ hàng
+     */
     @GetMapping("/information-cart")
     public ModelAndView informationCart(
-            @CookieValue(value = "cart", defaultValue = Utils.DEFAULT_COOKIE_VALUE) String cookieValue)
-            throws JsonProcessingException {
-        System.out.println("cookieValue: " + cookieValue + "cookieValue.length(): " + cookieValue.length());
-        ModelAndView modelAndView = new ModelAndView("cart/information-cart");
+            @CookieValue(value = "cart", defaultValue = Utils.DEFAULT_COOKIE_VALUE) String cookieValue) {
         // for test
         cartProductService.findCartProductEntityByCartProductEntity(new CartProductEntity());
         // end for test
-        List<CartProductInforModel> cartProductInforModels = new ArrayList<>();
-        if (accountService.isLogin()) {
-            cartProductInforModels = cartProductService
-                    .getCartProductInforListByCartIdAndIsBought(accountService.getCartEntity().getId(), false);
-        } else {
-            if (!Utils.DEFAULT_COOKIE_VALUE.equals(cookieValue)) {
-                cartProductInforModels = cartProductService.getCartProductInforListByCartProductParserList(
-                        Utils.JsonParserListObjectWithEncodedURL(cookieValue));
-            }
-        }
+
+        // Lấy thông tin giỏ hàng từ cookie hoặc database
+        List<CartProductInforModel> cartProductInforModels = cartProductService.createCartProductInforListWithLoginOrNotWithCartProductParserList(
+                Utils.JsonParserListObjectWithEncodedURL(cookieValue)
+        );
+
+        // Tạo model and view cho trang thông tin giỏ hàng
+        ModelAndView modelAndView = new ModelAndView("cart/information-cart");
         modelAndView.addObject("cartProducts", cartProductInforModels);
         return modelAndView;
     }
 
+    /**
+     * Chuyển đến trang thêm sản phẩm vào giỏ hàng với phương thức GET
+     *
+     * @param productId id của sản phẩm
+     * @return trang thêm sản phẩm vào giỏ hàng
+     */
     @GetMapping("/add")
-    public ModelAndView add(@RequestParam("productId") Integer productId,
-            @CookieValue(value = "cart", defaultValue = Utils.DEFAULT_COOKIE_VALUE) String cookieValue) {
-        System.out.println("cookieValue: " + cookieValue + "cookieValue.length(): " + cookieValue.length());
+    public ModelAndView add(@RequestParam("productId") Integer productId) {
         ModelAndView modelAndView = new ModelAndView("cart/add-product");
         modelAndView.addObject("product", productService.getProductInforModelById(productId));
         return modelAndView;
     }
 
+    /**
+     * Chuyển hướng đến trang thông tin giỏ hàng sau khi thêm sản phẩm vào giỏ hàng
+     *
+     * @param cartProduct giá trị của cart json
+     * @return trang thông tin giỏ hàng
+     */
     @PostMapping("/add")
     public RedirectView add(@RequestParam("cartProduct") String cartProduct) throws ParseException {
+        // Nếu chưa đăng nhập thì chuyển hướng đến trang thông tin giỏ hàng
+        // và lưu giá trị của cart json vào cookie
         if (!accountService.isLogin()) {
             return new RedirectView("/user/cart/information-cart");
         }
-        System.out.println("cartProduct: " + cartProduct);
+
+        // Nếu đã đăng nhập thì lưu giá trị của cart json vào database
         cartProductService.saveCartProductEntityListWithAuthenticatedByCartProductParserList(
                 (List<Map<String, Object>>) new JSONParser(cartProduct).parse());
         return new RedirectView("/user/cart/information-cart");

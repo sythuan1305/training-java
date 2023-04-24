@@ -20,9 +20,12 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Class này dùng để implement interface IProductService
+ * @see IProductService
+ */
 @Service
 public class ProductServiceImp implements IProductService {
-
     @Autowired
     private ProductRepository productRepository;
 
@@ -33,34 +36,38 @@ public class ProductServiceImp implements IProductService {
     private IFileService fileService;
 
     @Override
-    @Transactional( propagation = Propagation.REQUIRED)
+    @Transactional(propagation = Propagation.REQUIRED)
     public ProductEntity saveProductEntity(ProductEntity productEntity) {
         return productRepository.save(productEntity);
     }
 
+
     @Override
-    public PageModel<ProductEntity> findPageModelByProductEntityIndex(Integer pageIndex, Integer size, String sort) {
-        PageRequest pageRequest =  PageRequest.of(pageIndex < 0 ? 0 : pageIndex, size, Sort.by(sort));
+    public PageModel<ProductEntity> findPageModeProductEntitylByPageIndex(Integer pageIndex, Integer size, String sort) {
+        // lấy page product entity theo page index, size, sort
+        PageRequest pageRequest = PageRequest.of(pageIndex < 0 ? 0 : pageIndex, size, Sort.by(sort));
         Page<ProductEntity> paging = productRepository.findAll(pageRequest);
 
+        // trả về page model product entity
         return new PageModel<>(paging.getContent(), pageRequest.getPageNumber(), paging.getTotalPages());
     }
 
     @Override
-    public PageModel<ProductInforModel> findPageModelByProductInforModelIndex(Integer pageIndex, Integer size, String sort) {
+    public PageModel<ProductInforModel> findPageModelProductInforModelByPageIndex(Integer pageIndex, Integer size, String sort) {
+        // lấy page product entity theo page index, size, sort
         PageRequest pageRequest =  PageRequest.of(pageIndex < 0 ? 0 : pageIndex, size, Sort.by(sort));
         Page<ProductEntity> paging = productRepository.findAll(pageRequest);
+
+        // tạo list product infor model
         List<ProductInforModel> productInforModels = new ArrayList<>();
         for (ProductEntity productEntity : paging.getContent()) {
-            List<ProductImageurlEntity> productImageurlEntities = productImageUrlService.findEntityByProductId(productEntity.getId());
-            List<String> images = new ArrayList<>();
-            try {
-                images = fileService.getImageListByPathLists(productImageurlEntities.stream().map(ProductImageurlEntity::getImageUrl).toList());
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            productInforModels.add(new ProductInforModel(productEntity, images));
+            // tạo product infor model từ product entity
+            ProductInforModel productInforModel = getProductInforModelById(productEntity.getId());
+            // thêm product infor model vào list product infor model
+            productInforModels.add(productInforModel);
         }
+
+        // trả về page model product infor model
         return new PageModel<>(productInforModels, pageRequest.getPageNumber(), paging.getTotalPages());
     }
 
@@ -73,19 +80,18 @@ public class ProductServiceImp implements IProductService {
 
     @Override
     public ProductInforModel getProductInforModelById(Integer id) {
+        // lấy list image url entity theo product id
         List<ProductImageurlEntity> productImageurlEntities = productImageUrlService.findEntityByProductId(id);
         List<String> images = new ArrayList<>();
         try {
-            images = fileService.getImageListByPathLists(productImageurlEntities.stream().map(ProductImageurlEntity::getImageUrl).toList());
+            // tạo ảnh dạng base64 từ danh sách path
+            List<String> pathList = productImageurlEntities.stream().map(ProductImageurlEntity::getImageUrl).toList();
+            images = fileService.getImageListByPathLists(pathList);
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
         }
+        // trả về product infor model
         return new ProductInforModel(getProductEntityById(id), images);
-    }
-
-    @Override
-    public List<ProductEntity> getProductEntityListByDiscountId(Integer discountId) {
-        return null;
     }
 
     @Override
@@ -94,7 +100,7 @@ public class ProductServiceImp implements IProductService {
     }
 
     @Override
-    @Transactional( propagation = Propagation.REQUIRED)
+    @Transactional(propagation = Propagation.REQUIRED)
     public void TestMinusQuantity(Integer number) {
         ProductEntity productEntity = productRepository.getReferenceById(1);
         productEntity.setQuantity(productEntity.getQuantity() - number);

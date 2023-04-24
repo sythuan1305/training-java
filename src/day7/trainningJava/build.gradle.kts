@@ -45,3 +45,10 @@ tasks.withType<Test> {
     useJUnitPlatform()
 }
 
+// for jar build
+tasks.bootJar {
+    archiveClassifier.set("")
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+}
+//
+

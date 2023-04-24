@@ -5,8 +5,10 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.Value;
 
+/**
+ * Entity này dùng để lưu thông tin tài khoản
+ */
 @Getter
 @Setter
 @Entity

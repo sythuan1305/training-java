@@ -7,6 +7,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+/**
+ * Class này bao gồm thông tin của sản phẩm trong giỏ hàng
+ * @extends CartProductEntity
+ */
 @Getter
 @Setter
 @NoArgsConstructor

@@ -7,6 +7,7 @@ import org.springframework.boot.web.servlet.server.CookieSameSiteSupplier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -22,6 +23,9 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * Cấu hình bảo mật cho ứng dụng
+ */
 @Configuration
 @EnableWebSecurity
 //@EnableMethodSecurity(prePostEnabled = false, securedEnabled = true, jsr250Enabled = true)
@@ -29,70 +33,93 @@ public class WebSercurityConfig {
     @Autowired
     private JwtAuthenticationFilter jwtAuthenticationFilter;
 
+    // Khởi tạo bean password encoder để mã hóa mật khẩu
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
+    // Khởi tạo bean authentication manager để quản lý authentication
     @Bean
     public AuthenticationManager authManager(HttpSecurity http, UserDetailsService userDetailsService) throws Exception {
-        return http.getSharedObject(AuthenticationManagerBuilder.class).userDetailsService(userDetailsService).passwordEncoder(passwordEncoder()).and().build();
+        return http.getSharedObject(AuthenticationManagerBuilder.class)
+                .userDetailsService(userDetailsService)
+                .passwordEncoder(passwordEncoder()).and().build();
     }
 
+    // Khởi tạo bean cookie same site supplier để cấu hình cookie
+    // ngăn chặn tấn công CSRF
     @Bean
     public CookieSameSiteSupplier applicationCookieSameSiteSupplier() {
         return CookieSameSiteSupplier.ofStrict();
     }
 
+    // Khởi tạo bean cors configuration source để cấu hình CORS
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("http://localhost:8080"));
+        configuration.setAllowedOrigins(List.of("http://localhost:8081"));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE"));
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;
     }
 
+    // Khởi tạo bean security filter chain để lọc các request
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http
-                .headers(
-                        headers -> headers
-                                .xssProtection()
-                                .and()
-                                .contentSecurityPolicy("form-action 'self'; " +
-                                        "img-src 'self' data:; " +
-                                        "default-src 'self'; " +
-                                        "script-src " +
-                                        "https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js " +
-                                        "https://cdn.jsdelivr.net/npm/papaparse@5.3.2/papaparse.min.js " +
-                                        "https://unpkg.com/read-excel-file@5.x/bundle/read-excel-file.min.js " +
-                                        "'unsafe-inline'; " +
-                                        "style-src https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css 'unsafe-inline'")
+        // Cấu hình header
+        http.headers(
+                headers -> headers
+                        .xssProtection()
+                        .and()
+                        // cấu hình header content security policy
+                        // để ngăn chặn tấn công XSS
+                        // cho phép những script nào được load
+                        .contentSecurityPolicy("" +
+//                                "form-action 'self'; " +
+                                "img-src 'self' data:; " +
+                                "default-src 'self'; " +
+                                "script-src " +
+                                "https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js " +
+                                "https://cdn.jsdelivr.net/npm/papaparse@5.3.2/papaparse.min.js " +
+                                "https://unpkg.com/read-excel-file@5.x/bundle/read-excel-file.min.js " +
+                                "'unsafe-inline'; " +
+                                "style-src https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css 'unsafe-inline'")
 
-                )
-                .csrf().ignoringRequestMatchers("/api/**").and()
-                .cors().and()
-                .authorizeHttpRequests(request -> request
-                        .requestMatchers("/admin/**").hasAuthority(Role.ADMIN.name())
-                        .requestMatchers("/api/admin/**").hasAuthority(Role.ADMIN.name())
-                        .requestMatchers("/api/auth/**").permitAll()
-                        .requestMatchers("/api/user/**").permitAll()
-                        .requestMatchers("/auth/**").permitAll()
-                        .requestMatchers("/user/**").permitAll()
-                        .requestMatchers("/payment/**").permitAll()
-                        .requestMatchers("/**").permitAll()
-                        .anyRequest().authenticated()
-                );
-        http
-                .formLogin(form -> form.usernameParameter("username").passwordParameter("password")
-                        .loginPage("/login")
-                        .loginProcessingUrl("/auth/login-process")
-                        .failureUrl("/login?error=true")
-                        .defaultSuccessUrl("/", true).permitAll());
-        http.
-                logout().logoutUrl("/logout").logoutSuccessUrl("/login?logout=true").permitAll();
+        );
+
+        // Cấu hình CSRF
+        // Ngăn chặn tấn công CSRF
+        // Cho phép tất cả các request đến /api/** không cần xác thực CSRF
+        http.csrf().ignoringRequestMatchers("/api/**");
+
+        // Cấu hình CORS
+        http.cors(Customizer.withDefaults()); // TODO - Nghiên cứu lại cấu hình CORS
+//        http.cors();
+
+        // Cấu hình authorize và authentication
+        http.authorizeHttpRequests(request -> request
+                .requestMatchers("/admin/**").hasAuthority(Role.ADMIN.name())
+                .requestMatchers("/api/admin/**").hasAuthority(Role.ADMIN.name())
+                .requestMatchers("/api/auth/**").permitAll()
+                .requestMatchers("/api/user/**").permitAll()
+                .requestMatchers("/auth/**").permitAll()
+                .requestMatchers("/user/**").permitAll()
+                .requestMatchers("/payment/**").permitAll()
+                .requestMatchers("/**").permitAll()
+                .anyRequest().authenticated()
+        );
+
+        // Cấu hình login
+        http.formLogin(form -> form.usernameParameter("username").passwordParameter("password")
+                .loginPage("/login")
+                .loginProcessingUrl("/auth/login-process")
+                .failureUrl("/login?error=true")
+                .defaultSuccessUrl("/", true).permitAll());
+        // Cấu hình logout
+        http.logout().logoutUrl("/logout").logoutSuccessUrl("/login?logout=true").permitAll();
+
         http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }

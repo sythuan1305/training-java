@@ -5,6 +5,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+/**
+ * Class này dùng để xử lý các exception của mvc
+ */
 @ControllerAdvice
 public class MvcExceptionHandler {
 

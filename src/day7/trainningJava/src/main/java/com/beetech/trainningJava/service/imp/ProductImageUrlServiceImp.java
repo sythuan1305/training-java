@@ -11,6 +11,10 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
+/**
+ * Class này dùng để implement interface IProductImageUrlService
+ * @see IProductImageUrlService
+ */
 @Service
 public class ProductImageUrlServiceImp implements IProductImageUrlService {
     @Autowired
@@ -28,11 +32,14 @@ public class ProductImageUrlServiceImp implements IProductImageUrlService {
     public Set<ProductImageurlEntity> saveEntityList(List<String> imageUrls, Integer productId) {
         Set<ProductImageurlEntity> productImageurlEntities = new LinkedHashSet<>();
         for (String imageUrl : imageUrls) {
+            // lưu product image url entity vào database
             ProductImageurlEntity productImageurlEntity = new ProductImageurlEntity();
             productImageurlEntity.setProduct(productRepository.getReferenceById(productId));
             productImageurlEntity.setImageUrl(imageUrl);
+            // thêm vào list
             productImageurlEntities.add(saveEntity(productImageurlEntity));
         }
+        // trả về list product image url entity
         return productImageurlEntities;
     }
 

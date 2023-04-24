@@ -1,0 +1,27 @@
+# config database
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/trainning_java
+    username: root
+    password: 123qwe!@#
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+# upload path
+upload:
+  path: D:\\beetech\\images\\
+
+# debug
+logging:
+  level:
+    sql: debug
+debug: true
+
+# config paypal
+paypal:
+  mode: sandbox
+  client:
+    id: AULWOWt0CtvEuEM1UWjC3mbo-LP0WDaSpSgghEPOa563m8v6rucwe1sIu9B9oFMnfJCVpx8O66zzgEug
+    secret: EJbzUJ8KX0E6osHguhz_eTDhBT4YIi4KbuvacnQz6S3nK2mH7JHb2x32kRzy3Y3EJ4U-5pTWgzg-FwHH
+
+#cookie
+#server.servlet.session.cookie.same-site=none

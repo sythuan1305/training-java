@@ -33,10 +33,12 @@ public class FileServiceImp implements IFileService {
             var fileName = file.getOriginalFilename();
             var is = file.getInputStream();
 
-            // Create Folder
+            // Create folder if not exist
             File dir = new File(path + "productId_" + productId);
             if (!dir.exists()) dir.mkdirs();
 
+            // Create path
+            // Copy file to the path and replace existing file
             var path = dir.getPath() + "\\" + System.currentTimeMillis() + "_" + fileName;
             Files.copy(is, Paths.get(path),
                     StandardCopyOption.REPLACE_EXISTING);
@@ -59,11 +61,13 @@ public class FileServiceImp implements IFileService {
 
     @Override
     public String getImageByPath(String path) throws IOException {
+        // Read image file from path
         File file = new File(path);
         BufferedImage img = ImageIO.read(file);
         if (img == null) {
             System.out.println("Failed to read image file");
         } else {
+            // Encode image to base64 string
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             ImageIO.write(img, "png", baos);
             return Base64.getEncoder().encodeToString(baos.toByteArray());

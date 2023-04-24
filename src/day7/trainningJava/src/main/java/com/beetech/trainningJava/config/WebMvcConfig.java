@@ -12,9 +12,13 @@ import org.thymeleaf.spring6.view.ThymeleafViewResolver;
 import org.thymeleaf.templatemode.TemplateMode;
 import org.thymeleaf.templateresolver.ITemplateResolver;
 
+/**
+ * Cấu hình web mvc cho ứng dụng
+ */
 @Configuration
 @EnableWebMvc
 public class WebMvcConfig implements WebMvcConfigurer {
+    // Thêm các view controller
     @Override
     public void addViewControllers(ViewControllerRegistry registry) {
         registry.addViewController("/").setViewName("redirect:/user/product/list");
@@ -22,18 +26,23 @@ public class WebMvcConfig implements WebMvcConfigurer {
         registry.addViewController("/logout").setViewName("auth/login");
     }
 
+    // Thêm các interceptor
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(authInterceptor()).addPathPatterns("/**");
 
     }
 
+    // Khởi tạo bean auth interceptor
+    // để kiểm tra quyền truy cập của người dùng
     @Bean
     public AuthInterceptor authInterceptor() {
         return new AuthInterceptor();
     }
 
-    //render view
+    // render view
+    // Thêm view resolver
+    // dùng để render view theo cấu hình
     @Bean
     public ViewResolver thymeleafViewResolver() {
         ThymeleafViewResolver resolver = new ThymeleafViewResolver();
@@ -42,7 +51,10 @@ public class WebMvcConfig implements WebMvcConfigurer {
         return resolver;
     }
 
-    //render template
+    // render template
+    // Thêm các template engine
+    // dùng để render template theo cấu hình
+    // template là các file html
     @Bean
     public SpringTemplateEngine thymeleafTemplateEngine() {
         SpringTemplateEngine engine = new SpringTemplateEngine();
@@ -52,6 +64,9 @@ public class WebMvcConfig implements WebMvcConfigurer {
     }
 
     //load template
+    // Thêm các template resolver
+    // dùng để load template theo cấu hình
+    // template là các file html
     @Bean
     public ITemplateResolver thymeleafTemplateResolver() {
         SpringResourceTemplateResolver resolver = new SpringResourceTemplateResolver();
@@ -63,11 +78,14 @@ public class WebMvcConfig implements WebMvcConfigurer {
     }
 
     //layout
+    // Thêm layout dialect
+    // dùng để chia bố cục cho các trang
     @Bean
     public LayoutDialect layoutDialect() {
         return new LayoutDialect();
     }
 
+    // Thêm các resource handler
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         if (!registry.hasMappingForPattern("/assets/**")) {

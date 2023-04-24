@@ -13,7 +13,11 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 
-
+/**
+ * Class này dùng để tạo ra đối tượng UserDetails từ username. <br>
+ * UserDetails chứa thông tin của user và quyền của user
+ * @see UserDetailsService
+ */
 @Service
 public class UserDetailService implements UserDetailsService {
     @Autowired

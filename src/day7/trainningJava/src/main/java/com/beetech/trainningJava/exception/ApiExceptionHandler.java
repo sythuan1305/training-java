@@ -6,6 +6,9 @@ import org.springframework.web.HttpMediaTypeException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+/**
+ * Class này dùng để xử lý các exception của api
+ */
 @RestControllerAdvice
 public class ApiExceptionHandler {
     @ExceptionHandler(Exception.class)

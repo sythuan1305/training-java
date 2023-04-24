@@ -3,7 +3,6 @@ package com.beetech.trainningJava.controller.api.user;
 import com.beetech.trainningJava.service.ICartProductService;
 import com.beetech.trainningJava.service.IProductService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -11,9 +10,14 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+/**
+ * Controller này dùng để xử lý các request liên quan đến giỏ hàng với quyền user
+ */
 @RestController("apiCartController")
 @RequestMapping("/api/user/cart")
 public class CartController {
+    public static final int TEST_MINUS_QUANTITY_NUMBER = 10000;
+
     @Autowired
     ICartProductService cartProductService;
 
@@ -49,6 +53,6 @@ public class CartController {
 
     @GetMapping("/testMinusQuantity")
     public void testMinusQuantity() {
-        productService.TestMinusQuantity(10000);
+        productService.TestMinusQuantity(TEST_MINUS_QUANTITY_NUMBER);
     }
 }

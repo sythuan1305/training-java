@@ -30,7 +30,7 @@
 </head>
 <body layout:fragment="content" onload="ReloadSubmitBtn()">
 <h1>Discount Information</h1>
-<form action="/user/order/payment" method="post" onchange="ReloadSubmitBtn()">
+<form th:action="@{/user/order/payment}" method="post" onchange="ReloadSubmitBtn()">
     <h2>Select Discount</h2>
     <table class="table">
         <tr>
@@ -49,7 +49,7 @@
                 <label for="discount_id"></label><input type="number" class="form-control" id="discount_id"
                                                         name="discountId"
                                                         placeholder="discount Id" th:value="${discount.getId()}"
-                                                        > <!-- Do disabled nên không gửi đc-->
+            > <!-- Do disabled nên không gửi đc-->
             </td>
             <td><label for="discount-1" th:value="${discount.getCode()}"></label></td>
             <td th:text="${discount.getDescription()}"></td>

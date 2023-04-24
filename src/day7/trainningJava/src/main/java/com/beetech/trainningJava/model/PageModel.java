@@ -7,6 +7,10 @@ import lombok.Setter;
 
 import java.util.List;
 
+/**
+ * Class này dùng để trả về kết quả phân trang
+ * @param <T> kiểu dữ liệu của item trong trang
+ */
 @Getter
 @Setter
 @AllArgsConstructor

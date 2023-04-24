@@ -11,6 +11,9 @@ import lombok.Setter;
 
 import java.math.BigDecimal;
 
+/**
+ * Entity này dùng để lưu thông tin sản phẩm trong giỏ hàng
+ */
 @Getter
 @Setter
 @NoArgsConstructor

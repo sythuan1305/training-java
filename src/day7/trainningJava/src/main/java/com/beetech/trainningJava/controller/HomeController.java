@@ -9,6 +9,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.view.RedirectView;
 
+/**
+ * Controller này dùng để xử lý các request đến trang chủ
+ */
 @Controller
 public class HomeController {
     @Autowired
@@ -17,14 +20,25 @@ public class HomeController {
     @Autowired
     private IAccountService accountService;
 
+    /**
+     * Xử lý request đến trang chủ
+     * @param cartCookieValue giá trị của cookie cart
+     * @param response response
+     * @return trang chủ
+     */
     @GetMapping("/")
-    public RedirectView readCartCookie(@CookieValue(value = "cart", defaultValue = Utils.DEFAULT_COOKIE_VALUE) String cartCookieValue,
-                                   HttpServletResponse response) {
+    public RedirectView readCartCookie(
+            @CookieValue(value = "cart", defaultValue = Utils.DEFAULT_COOKIE_VALUE) String cartCookieValue,
+            HttpServletResponse response) {
+        // Lưu giỏ hàng vào database nếu đã đăng nhập và cookie cart khác giá trị mặc định
         if (accountService.isLogin() && !Utils.DEFAULT_COOKIE_VALUE.equals(cartCookieValue)) {
-            cartProductService.saveCartProductEntityListWithAuthenticatedByCartProductParserList(Utils.JsonParserListObjectWithEncodedURL(cartCookieValue));
+            cartProductService.saveCartProductEntityListWithAuthenticatedByCartProductParserList(
+                    Utils.JsonParserListObjectWithEncodedURL(cartCookieValue));
             // Xóa cookie
             Utils.deleteCookie("cart", response);
         }
+
+        // Chuyển hướng đến trang danh sách sản phẩm
         return new RedirectView("/user/product/list");
     }
 }

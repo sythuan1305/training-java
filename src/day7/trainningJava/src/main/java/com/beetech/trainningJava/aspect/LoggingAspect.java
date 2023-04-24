@@ -2,7 +2,6 @@ package com.beetech.trainningJava.aspect;
 
 import com.beetech.trainningJava.aspect.interfaces.IIntroduction;
 import com.beetech.trainningJava.aspect.interfaces.imp.IntroductionImp;
-import com.beetech.trainningJava.controller.mvc.user.CartController;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.*;
@@ -10,9 +9,13 @@ import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
 
+/**
+ * Aspect này dùng để log các hàm được gọi
+ */
 @Aspect
 @Component
 public class LoggingAspect {
+    // Khai báo các pointcut
     @Pointcut("execution(* com.beetech.trainningJava.controller.mvc.user.*.*(..))")
     public void mvcUserExecution() {
     }
@@ -53,6 +56,7 @@ public class LoggingAspect {
 //    public void loggableArgsAnnotation() {
 //    }
 
+    // Khai báo các pointcut dùng chung
     @Pointcut(value = "mvcUserExecution() || mvcUserWithin()" // Pointcut
             + "|| cartProductServiceThis()" // this
             + "|| productServiceTarget()" // target
@@ -161,12 +165,12 @@ public class LoggingAspect {
         System.out.println("Before " + "\n" +
 //                "this: " + joinPoint.getThis() + "\n" +
 //                "target: " + joinPoint.getTarget() + "\n" +
-                "signature: " + joinPoint.getSignature().getName() + "\n" +
-                "kind: " + joinPoint.getKind() + "\n" +
-                "sourceLocation: " + joinPoint.getSourceLocation() + "\n" +
-                "staticPart: " + joinPoint.getStaticPart() + "\n" +
-                "args: " + Arrays.toString(joinPoint.getArgs()) + "\n" +
-                "-----------------------------------------------"
+                        "signature: " + joinPoint.getSignature().getName() + "\n" +
+                        "kind: " + joinPoint.getKind() + "\n" +
+                        "sourceLocation: " + joinPoint.getSourceLocation() + "\n" +
+                        "staticPart: " + joinPoint.getStaticPart() + "\n" +
+                        "args: " + Arrays.toString(joinPoint.getArgs()) + "\n" +
+                        "-----------------------------------------------"
         );
     }
 }

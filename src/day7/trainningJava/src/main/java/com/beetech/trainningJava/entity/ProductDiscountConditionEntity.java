@@ -4,6 +4,9 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+/**
+ * Entity này dùng để lưu các điều kiện của discount áp dụng cho từng sản phẩm
+ */
 @Getter
 @Setter
 @Entity

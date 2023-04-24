@@ -19,7 +19,10 @@ public class AuthServiceImp implements IAuthService {
 
     @Override
     public JwtTokenModel getJwtTokenModelAfterAuthen(String username, String password) {
+        // Xác thực từ username và password.
         authManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
+        // Nếu không xảy ra exception tức là thông tin hợp lệ
+        // Và trả về jwt token cho người dùng.
         return new JwtTokenModel(jwtTokenProvider.generateToken(username), jwtTokenProvider.getExpiredTime());
     }
 }

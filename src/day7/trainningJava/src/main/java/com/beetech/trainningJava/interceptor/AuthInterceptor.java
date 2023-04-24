@@ -10,6 +10,10 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
+/**
+ * Class này dùng để chặn trước khi vào controller
+ * @see HandlerInterceptor
+ */
 public class AuthInterceptor implements HandlerInterceptor {
     @Autowired
     private IAccountService accountService;

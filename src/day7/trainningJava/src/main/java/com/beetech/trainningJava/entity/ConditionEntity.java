@@ -14,6 +14,9 @@ import java.math.BigDecimal;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
+/**
+ * Entity này dùng để lưu thông tin điều kiện giảm giá
+ */
 @Getter
 @Setter
 @Entity

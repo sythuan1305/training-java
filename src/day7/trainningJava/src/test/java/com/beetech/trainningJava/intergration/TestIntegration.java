@@ -40,10 +40,13 @@ public class TestIntegration {
     }
 
     @Test
+    @Transactional
     void testGetListIntegration() throws Exception {
         // given
         Integer pageNumber = 0;
-        PageModel<ProductInforModel> pageModel = productService.findPageModelByProductInforModelIndex(pageNumber, 5, "name");
+        System.out.println("productService" + productService);
+        PageModel<ProductInforModel> pageModel = productService.findPageModelProductInforModelByPageIndex(pageNumber, 5, "name");
+        System.out.println("pageModel" + pageModel);
 
         // when
         ResultActions resultActions = mockMvc.perform(get("/user/product/list").param("pageNumber", pageNumber.toString()));
@@ -59,10 +62,10 @@ public class TestIntegration {
         //
         MvcResult res = resultActions.andReturn();
         PageModel<ProductInforModel> pageModelRes = (PageModel<ProductInforModel>) res.getModelAndView().getModel().get("page");
+        System.out.println("pageModelRes" + pageModelRes);
         assertEquals(pageModelRes.getTotalPages(), pageModel.getTotalPages());
         assertEquals(pageModelRes.getPageNumber(), pageModel.getPageNumber());
         assertEquals(pageModelRes.getItems().size(), pageModel.getItems().size());
-
         for (int i = 0; i < pageModelRes.getItems().size(); i++) {
             assertEquals(pageModelRes.getItems().get(i).getId(), pageModel.getItems().get(i).getId());
             assertEquals(pageModelRes.getItems().get(i).getName(), pageModel.getItems().get(i).getName());
