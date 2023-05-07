@@ -1,7 +1,6 @@
 package com.beetech.trainningJava.utils;
 
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
+import lombok.NonNull;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
@@ -30,7 +29,6 @@ public class BASE64DecodedMultipartFile implements MultipartFile {
 
     @Override
     public String getContentType() {
-        String a;
         // TODO - implementation depends on your requirements
         return null;
     }
@@ -46,17 +44,19 @@ public class BASE64DecodedMultipartFile implements MultipartFile {
     }
 
     @Override
-    public byte[] getBytes() throws IOException {
+    public byte @NonNull [] getBytes() {
         return imgContent;
     }
 
     @Override
-    public InputStream getInputStream() throws IOException {
+    public @NonNull InputStream getInputStream() {
         return new ByteArrayInputStream(imgContent);
     }
 
     @Override
     public void transferTo(File dest) throws IOException, IllegalStateException {
-        new FileOutputStream(dest).write(imgContent);
+        try (OutputStream o = new FileOutputStream(dest)) {
+            o.write(imgContent);
+        }
     }
 }

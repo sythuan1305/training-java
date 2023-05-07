@@ -109,7 +109,7 @@ public class OrderController {
                 cartProductInforModels, cartProductId);
 
         // Chuyển đổi CartProductInforModel sang CartProductEntity để lưu vào CartProductOrderEntity
-        List<CartProductEntity> cartProductEntities = new ArrayList<>();
+        List<CartProductEntity> cartProductEntities;
         if (!accountService.isLogin()) {
             // nếu chưa đăng nhập thì lưu vào bảng cart_product
             cartProductEntities = cartProductService
@@ -133,8 +133,7 @@ public class OrderController {
         OrderEntity orderEntity = orderService.saveOrderEntityByModel(orderModel);
 
         // lưu vào bảng cart_product_order
-        List<CartProductOrderEntity> cartProductOrderEntities = cartProductOrderService
-                .saveCartProductOrderEntityListByCartProductEntityListAndOrderEntity(cartProductEntities, orderEntity);
+        cartProductOrderService.saveCartProductOrderEntityListByCartProductEntityListAndOrderEntity(cartProductEntities, orderEntity);
 
         // lấy link để chuyển đến trang thanh toán
         String approvalLink = paypalService.authorizePayment(orderModel);
@@ -186,8 +185,7 @@ public class OrderController {
         OrderEntity orderEntity = orderService.findOrderEntityById(Integer.parseInt(transaction.getInvoiceNumber()));
 
         // cập nhật trạng thái thanh toán
-        List<CartProductOrderEntity> cartProductOrderEntities = cartProductOrderService
-                .updateCartProductOrderEntityListAfterBoughtByOrderEntity(orderEntity);
+        cartProductOrderService.updateCartProductOrderEntityListAfterBoughtByOrderEntity(orderEntity);
         return "payment/paypal/success";
     }
 }

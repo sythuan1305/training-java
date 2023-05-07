@@ -5,16 +5,9 @@
 <head>
     <meta charset="UTF-8">
     <title>Information Cart</title>
-    <script>
-        function ReloadSubmitBtn() {
-            let checkboxes = document.querySelectorAll('input[type="checkbox"]:checked');
-            let submitButton = document.getElementById("submit-button");
-            submitButton.disabled = checkboxes.length === 0;
-        }
-    </script>
+    <script th:src="@{/static/js/cart/information-cart.js}"></script>
 </head>
 <body layout:fragment="content" onload="ReloadSubmitBtn()">
-
 <h1>Cart Information</h1>
 <form id="form-order" onchange="ReloadSubmitBtn()"
       method="post" th:action="@{/user/order/payment}">
@@ -51,7 +44,5 @@
         <button id="submit-button" type="submit" class="btn btn-primary">Order</button>
     </div>
 </form>
-
-
 </body>
 </html>

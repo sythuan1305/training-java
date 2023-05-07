@@ -5,32 +5,11 @@
 <head>
     <meta charset="UTF-8">
     <title>Discount List</title>
-    <script>
-        // const localTimeZone = IIntl.DateTimeFormat().resolvedOptions().timeZone;
-        // console.log(Intl.DateTimeFormat().resolvedOptions().timeZone);
-        function ReloadSubmitBtn() {
-            // get radio elements is checked using jquery
-            var radios = document.querySelectorAll('input[name="discount"]:checked');
-            var submitBtn = document.getElementById('submitBtn');
-            submitBtn.disabled = radios.length === 0;
-
-
-            // get all radio elements with name 'discount'
-            // var radios = document.getElementsByName('discount');
-            // var submitBtn = document.getElementById('submitBtn');
-            // // check if the radio is checked using jquery
-            // if ($(radios).is(':checked')) {
-            //     submitBtn.disabled = false;
-            // } else {
-            //     submitBtn.disabled = true;
-            // }
-
-        }
-    </script>
+    <script th:src="@{/static/js/discount.js}"></script>
 </head>
-<body layout:fragment="content" onload="ReloadSubmitBtn()">
+<body layout:fragment="content" onload="reloadPaymentSubmitBtn()">
 <h1>Discount Information</h1>
-<form th:action="@{/user/order/payment}" method="post" onchange="ReloadSubmitBtn()">
+<form th:action="@{/user/order/payment}" method="post" onchange="reloadPaymentSubmitBtn()">
     <h2>Select Discount</h2>
     <table class="table">
         <tr>

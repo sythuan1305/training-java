@@ -1,14 +1,15 @@
 package com.beetech.trainningJava.service.imp;
 
-import com.beetech.trainningJava.entity.AccountEntity;
 import com.beetech.trainningJava.entity.CartEntity;
 import com.beetech.trainningJava.repository.CartRepository;
 import com.beetech.trainningJava.service.ICartService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-
+/**
+ * Class này dùng để triển khai các phương thức của interface ICartService
+ * @see ICartService
+ */
 @Service
 public class CartServiceImp implements ICartService {
     @Autowired

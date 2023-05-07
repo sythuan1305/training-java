@@ -55,7 +55,7 @@ public class OrderEntity {
     @JsonManagedReference
     private CartEntity cart;
 
-    @OneToMany(mappedBy = "order")
+    @OneToMany(mappedBy = "order", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     @JsonBackReference
     private Set<CartProductOrderEntity> cartProductOrderEntities = new LinkedHashSet<>();
 

@@ -13,6 +13,14 @@ import lombok.Setter;
 @Setter
 @Entity
 @Table(name = "account")
+@NamedEntityGraphs(
+        @NamedEntityGraph(
+                name = "AccountEntity.cart",
+                attributeNodes = {
+                        @NamedAttributeNode("cart")
+                }
+        )
+)
 public class AccountEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -41,7 +49,7 @@ public class AccountEntity {
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    @OneToOne(mappedBy = "account")
+    @OneToOne(mappedBy = "account", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE, optional = false)
     @JsonManagedReference
     private CartEntity cart;
 }

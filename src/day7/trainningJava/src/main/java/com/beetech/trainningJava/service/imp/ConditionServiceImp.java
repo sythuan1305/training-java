@@ -7,12 +7,18 @@ import com.beetech.trainningJava.model.ConditionModel;
 import com.beetech.trainningJava.service.IConditionService;
 import org.springframework.stereotype.Service;
 
+/**
+ * Class này dùng để triển khai các phương thức của interface IConditionService
+ * @see IConditionService
+ */
 @Service
 public class ConditionServiceImp implements IConditionService {
     @Override
-    public ConditionModel getConditionModelByCartProductInforModelAndConditionEntity(CartProductInforModel cartProductInforModel, ConditionEntity conditionEntity) {
+    public ConditionModel getConditionModelByCartProductInforModelAndConditionEntity(
+            CartProductInforModel cartProductInforModel, ConditionEntity conditionEntity) {
         ConditionModel conditionModel = new ConditionModel(conditionEntity, false, cartProductInforModel.getProduct());
-        // check condition type
+        // Kiểm tra điều kiện
+        // Nếu điều kiện đủ thì set enoughCondition = true
         if (ConditionType.TOTAL_AMOUNT.equals(conditionEntity.getConditionType())) {
             switch (conditionEntity.getOperator()) {
                 case GREATER_THAN -> {

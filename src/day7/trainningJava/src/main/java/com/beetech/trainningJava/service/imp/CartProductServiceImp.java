@@ -9,7 +9,6 @@ import com.beetech.trainningJava.service.IAccountService;
 import com.beetech.trainningJava.service.ICartProductService;
 import com.beetech.trainningJava.service.ICartService;
 import com.beetech.trainningJava.service.IProductService;
-import com.beetech.trainningJava.utils.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -20,6 +19,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Class này dùng để triển khai các phương thức của interface ICartProductService
+ * @see ICartProductService
+ */
 @Service
 public class CartProductServiceImp implements ICartProductService {
     @Autowired
@@ -49,29 +52,31 @@ public class CartProductServiceImp implements ICartProductService {
         return cartProductEntityList.stream().map(
                         cartProductEntity -> new CartProductInforModel(
                                 cartProductEntity,
-                                productService.getProductInforModelById(cartProductEntity.getProduct().getId())))
-                .toList();
+                                productService.createProductInforModelByProductEntity(cartProductEntity.getProduct())))
+                .toList(); // TODO SQL
     }
 
     @Override
-    public CartProductEntity saveCartProductEntityWithAuthenticatedByCartProductParserList(Map<String, Object> cartProductParser) {
-        // get product id, quantity, price from cart product parser
+    public CartProductEntity saveCartProductEntityWithAuthenticatedByCartProductParser(Map<String, Object> cartProductParser) {
+        // khai báo các thông tin về sản phẩm từ cartProductParser
         int productId = Integer.parseInt(cartProductParser.get("product_id").toString());
         int quantity = Integer.parseInt(cartProductParser.get("quantity").toString());
         BigDecimal price = BigDecimal.valueOf(Double.parseDouble(cartProductParser.get("price").toString()));
 
-        // check product exist and not bought in cart
+        // kiểm tra sản phẩm đã tồn tại trong giỏ hàng chưa
         CartProductEntity cartProductEntity = cartProductRepository.findByCartIdAndProductIdAndIsBought(
                 accountService.getCartEntity().getId(),
                 productId,
                 false);
+
+        // nếu sản phẩm đã tồn tại trong giỏ hàng thì cập nhật số lượng và giá
         if (cartProductEntity != null) {
             cartProductEntity.setQuantity(cartProductEntity.getQuantity() + quantity);
             cartProductEntity.setPrice(cartProductEntity.getPrice().add(price));
             return cartProductRepository.save(cartProductEntity);
         }
 
-        // create new cart product if product not exist in cart
+        // nếu sản phẩm chưa tồn tại trong giỏ hàng thì thêm mới
         cartProductEntity = new CartProductEntity();
         ProductEntity productEntity = productService.getProductEntityById(productId);
         cartProductEntity.setCart(accountService.getCartEntity());
@@ -82,9 +87,8 @@ public class CartProductServiceImp implements ICartProductService {
     }
 
     @Override
-    public List<CartProductEntity> saveCartProductEntityListWithAuthenticatedByCartProductParserList(List<Map<String, Object>> cartProductParsers) {
-        //Reference to instance method 'save' requires an enclosing instance of type 'CartProductServiceImpl'
-        return cartProductParsers.stream().map(this::saveCartProductEntityWithAuthenticatedByCartProductParserList).toList();
+    public List<CartProductEntity> saveCartProductEntityListWithAuthenticatedByCartProductParserList(List<Map<String, Object>> cartProductParsers) { // TODO SQL
+        return cartProductParsers.stream().map(this::saveCartProductEntityWithAuthenticatedByCartProductParser).toList();
     }
 
     @Override
@@ -95,24 +99,23 @@ public class CartProductServiceImp implements ICartProductService {
 
     @Override
     public List<CartProductInforModel> getCartProductInforListByCartProductParserList(List<Map<String, Object>> cartProductParserList) {
-        return cartProductParserList.stream().map(this::getCartProductInforByCartProductParser).toList();
+        return cartProductParserList.stream().map(this::getCartProductInforByCartProductParser).toList(); // TODO SQL
     }
 
     @Override
     public CartProductInforModel getCartProductInforByCartProductParser(Map<String, Object> cartProductParser) {
-        // create new cart product from cart product parser
+        // tạo cart product entity từ cart product parser
         CartProductEntity cartProductEntity = new CartProductEntity(
                 (int) Long.parseLong(cartProductParser.get("id").toString()), // generate random id unique
                 Integer.parseInt(cartProductParser.get("quantity").toString()),
                 BigDecimal.valueOf(Double.parseDouble(cartProductParser.get("price").toString())),
                 null, // null cart
                 productService.getProductEntityById(Integer.parseInt(cartProductParser.get("product_id").toString())),
-                null, // null order,
                 false
         );
-        // get product infor model by product id
+        // lấy product infor model từ product id
         ProductInforModel productInforModel = productService.getProductInforModelById(cartProductEntity.getProduct().getId());
-        // return new cart product infor model by cart product entity and product infor model
+        // trả về cart product infor model từ cart product entity và product infor model
         return new CartProductInforModel(cartProductEntity, productInforModel);
     }
 
@@ -120,8 +123,8 @@ public class CartProductServiceImp implements ICartProductService {
     public List<CartProductInforModel> getCartProductInforModelListByCartProductInforModelListAndCartProductArray(
             List<CartProductInforModel> cartProductInforModelList,
             Integer[] cartProductIds) {
-        // filter cart product infor model list by cart product id array
-        // return new cart product infor model list
+        // lọc cart product infor model list theo cart product id array
+        // trả về danh sách cart product infor model có id trong cart product id array
         return cartProductInforModelList.stream().filter(cartProductInforModel -> {
             for (Integer cartProductId : cartProductIds) {
                 if (cartProductInforModel.getId().equals(cartProductId)) {
@@ -135,35 +138,40 @@ public class CartProductServiceImp implements ICartProductService {
     @Override
     public List<CartProductEntity> saveCartProductEntityListByCartProductModelList(List<CartProductInforModel> cartProductInforModelList) {
         return cartProductInforModelList.stream().map(cartProductInforModel -> {
-            // create new cart product entity from cart product infor model
-            cartProductInforModel.setId(null);
+            // tạo cart product entity mới từ cart product infor model
+            cartProductInforModel.setId(null); // vì lưu vào database nên id phải null
             CartProductEntity cartProductEntity = new CartProductEntity(cartProductInforModel);
-            // save cart product entity with un auth
+            // lưu cart product entity vào database
             return cartProductRepository.save(cartProductEntity);
-        }).toList();
+        }).toList(); // TODO SQL
     }
 
     @Override
     public List<CartProductEntity> changeCartProductInforModelListToCartProductEntityList(List<CartProductInforModel> cartProductInforModelList) {
-        return cartProductInforModelList.stream().map(cartProductInforModel -> {
-            // create new cart product entity from cart product infor model
-            CartProductEntity cartProductEntity = new CartProductEntity(cartProductInforModel);
-            return cartProductEntity;
-        }).toList();
+        // tạo list cart product entity từ list cart product infor model
+        return cartProductInforModelList.stream().map(CartProductEntity::new).toList();
     }
 
     @Override
     public List<CartProductInforModel> createCartProductInforListWithLoginOrNotWithCartProductParserList(
             List<Map<String, Object>> cartProductParserList) {
-        List<CartProductInforModel> cartProductInforModels = new ArrayList<>();
+        List<CartProductInforModel> cartProductInforModels;
+        // nếu đã đăng nhập thì lấy danh sách cart product infor model từ cart id
         if (accountService.isLogin()) {
             cartProductInforModels = getCartProductInforListByCartIdAndIsBought(accountService.getCartEntity().getId(), false);
         } else {
+            // nếu chưa đăng nhập thì lấy danh sách cart product infor model từ cart product parser list
+            // nếu cart product parser list là null thì trả về list rỗng
+            if (cartProductParserList == null) {
+                return new ArrayList<>();
+            }
+            // nếu cart product parser list không phải null thì tạo danh sách cart product infor model từ cart product parser list
             cartProductInforModels = getCartProductInforListByCartProductParserList(cartProductParserList);
         }
         return cartProductInforModels;
     }
 
+    // region - test
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
     public void TestMinusQuantity() {
@@ -193,4 +201,5 @@ public class CartProductServiceImp implements ICartProductService {
         // lưu đối tượng đơn hàng vào database
 //        cartProductRepository.save(cartProductEntity);
     }
+    // endregion
 }

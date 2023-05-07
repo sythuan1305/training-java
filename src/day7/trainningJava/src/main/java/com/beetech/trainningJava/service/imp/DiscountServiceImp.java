@@ -8,6 +8,10 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+/**
+ * Class này dùng để triển khai các phương thức của interface IDiscountService
+ * @see IDiscountService
+ */
 @Service
 public class DiscountServiceImp implements IDiscountService {
     @Autowired

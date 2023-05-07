@@ -56,7 +56,7 @@ public class DiscountEntity {
     private String description;
 
     @JsonBackReference
-    @OneToMany(mappedBy = "discount")
+    @OneToMany(mappedBy = "discount", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     private Set<ProductDiscountConditionEntity> productDiscountConditions = new LinkedHashSet<>();
 
     public DiscountEntity(DiscountEntity discountEntity) {

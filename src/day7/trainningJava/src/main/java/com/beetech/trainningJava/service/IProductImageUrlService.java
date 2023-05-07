@@ -1,5 +1,6 @@
 package com.beetech.trainningJava.service;
 
+import com.beetech.trainningJava.entity.ProductEntity;
 import com.beetech.trainningJava.entity.ProductImageurlEntity;
 
 import java.util.List;
@@ -20,15 +21,15 @@ public interface IProductImageUrlService {
     /**
      * Lưu danh sách product image url entity vào database
      * @param productImageurls là danh sách product image url cần lưu vào database
-     * @param productId là id của product
+     * @param productEntity là product entity cần lưu vào database
      * @return Set<ProductImageurlEntity> là danh sách product image url sau khi lưu vào database
      */
-    public Set<ProductImageurlEntity> saveEntityList(List<String> productImageurls, Integer productId);
+    public Set<ProductImageurlEntity> saveEntityList(List<String> productImageurls, ProductEntity productEntity);
 
     /**
      * Tìm product image url entity theo product id
      * @param productId là id của product cần tìm
      * @return List<ProductImageurlEntity> là danh sách product image url sau khi tìm thấy
      */
-    public List<ProductImageurlEntity> findEntityByProductId(Integer productId);
+    List<ProductImageurlEntity> findEntityByProductId(Integer productId);
 }

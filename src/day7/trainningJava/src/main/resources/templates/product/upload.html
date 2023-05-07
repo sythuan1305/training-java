@@ -39,155 +39,24 @@
         }
     </style>
     <!--    add script from static folder-->
-
-    <script>
-
-        // upload file to imgbb.com
-        function uploadFile(file) {
-            let formData = new FormData();
-            formData.append("image", file);
-
-            $.ajax({
-                url: "https://api.imgbb.com/1/upload?key=0a2f694b33e70dc6d06249c85fa8bb63",
-                type: "POST",
-                data: formData,
-                processData: false,
-                contentType: false,
-                success: function (data) {
-                    console.log(data.data.url);
-                    let img_url = document.getElementById("image_url");
-                    img_url.value = data.data.url;
-                    validateForm();
-                },
-                error: function (data) {
-                    console.log("error");
-                    console.log(data);
-                }
-            });
-        }
-
-        // File onchange event
-        function fileChange() {
-            const file = document.getElementById("image_file").files[0];
-            uploadFile(file);
-        }
-
-        function validateFormProduct() {
-            console.log("validateFormProduct" + "currentFiles.length" + currentFiles.length);
-            // event.preventDefault();
-            let btnSubmit = document.getElementById("btn-upload-product");
-            let name = document.forms["form-upload-product"]["name"].value;
-            let price = document.forms["form-upload-product"]["price"].value;
-            let quantity = document.forms["form-upload-product"]["quantity"].value;
-            console.log(currentFiles);
-            btnSubmit.disabled = name.length === 0 || price.length === 0 || quantity.length === 0 || currentFiles.length === 0;
-        }
-
-        // --------------
-        var currentFiles = [];
-
-        function handleChangeInput(e) {
-            console.log(e.target.files);
-            var imgContainer = document.querySelector('.img-container');
-            // remove all images
-            imgContainer.innerHTML = '';
-            var files = e.target.files;
-            currentFiles = files;
-
-            for (var i = 0; i < files.length; i++) {
-                var file = files[i];
-
-                // Create image wrapper
-                var imgWrapper = document.createElement('div');
-                imgWrapper.classList.add('img-wrapper');
-
-                // Create image element
-                // var img = document.createElement('img');
-                // img.src = URL.createObjectURL(file);
-                // img.alt = file.name;
-
-                // Create text element
-                var text = document.createElement('p');
-                text.textContent = file.name;
-
-
-                // Create delete button
-                var deleteBtn = document.createElement('button');
-                deleteBtn.classList.add('delete-btn');
-                deleteBtn.textContent = 'Delete';
-                deleteBtn.addEventListener('click', function (event) {
-                    let imgWrapper = event.currentTarget.parentElement;
-                    imgWrapper.remove();
-
-                    // Create a new FileList without the deleted file
-                    currentFiles = Array.from(currentFiles).filter(function (file) {
-                        console.log(imgWrapper.querySelector("p").innerText);
-                        return file.name !== imgWrapper.querySelector("p").innerText;
-                    });
-
-                    console.log(currentFiles);
-                    validateFormProduct();
-                });
-
-
-                // Add image and delete button to wrapper
-                // imgWrapper.appendChild(img);
-                imgWrapper.appendChild(text);
-                imgWrapper.appendChild(deleteBtn);
-
-                // Add wrapper to image container
-                imgContainer.appendChild(imgWrapper);
-            }
-        }
-
-        function handleOnSubmit() {
-            // event.preventDefault();
-
-            var formData = new FormData();
-
-            // Thêm các trường input vào FormData
-            formData.append("name", document.getElementById("name").value);
-            formData.append("price", document.getElementById("price").value);
-            formData.append("quantity", document.getElementById("quantity").value);
-
-            // Thêm các file từ fileList vào FormData
-            for (var i = 0; i < currentFiles.length; i++) {
-                formData.append("files", currentFiles[i]);
-            }
-
-            // Gửi đối tượng FormData lên server
-            var xhr = new XMLHttpRequest();
-            // xhr.open("post", "/admin/product/upload", true);
-            xhr.send(formData);
-        }
-
-        // -----------
-    </script>
+    <script th:src="@{/static/js/product/upload.js}"></script>
     <script src="https://unpkg.com/read-excel-file@5.x/bundle/read-excel-file.min.js"></script>
 
 </head>
 <div layout:fragment="content">
     <body onload="
-    validateForm(document.getElementById('form-csv'), document.getElementById('btn-upload-csv'));
-    validateFormProduct();
+    reloadSubmitBtnByForm(document.getElementById('form-csv'), document.getElementById('btn-upload-csv'));
+    reloadSubmitBtnByUploadForm();
     ">
     <header>
         <h1>Upload a Product</h1>
     </header>
     <main>
         <div>
-
-            <!--            <script>-->
-            <!--                function onInputCsv123() {-->
-            <!--                    let file = document.getElementById("csv_file").files[0];-->
-            <!--                    readExcelFile(file);-->
-            <!--                }-->
-            <!--            </script>-->
-
             <form id="form-csv" method="post" th:action="@{/admin/product/uploadCsv}" enctype="multipart/form-data"
-                  oninput="validateForm(document.getElementById('form-csv'), document.getElementById('btn-upload-csv'))">
+                  oninput="reloadSubmitBtnByForm(document.getElementById('form-csv'), document.getElementById('btn-upload-csv'))">
                 <label for="csv_file">CSV File:</label>
-<!--                input csv-->
+                <!--                input csv-->
                 <input type="file" id="csv_file" name="fileCsv" th:required="true" accept=".csv">
                 <br>
                 <button id="btn-upload-csv" type="submit">Upload</button>
@@ -195,7 +64,7 @@
         </div>
         <div>
             <form enctype="multipart/form-data" id="form-upload-product"
-                  oninput="validateFormProduct()"
+                  oninput="reloadSubmitBtnByUploadForm()"
                   onsubmit="handleOnSubmit(event)"
                   th:action="@{/admin/product/upload}" method="post"
             >
@@ -208,19 +77,8 @@
                 <label for="quantity">Quantity:</label>
                 <input min="0" type="number" id="quantity" name="quantity" th:required="true">
                 <br>
-                <!--            <label for="image_file">Image File:</label>-->
-                <!--            <input type="file" id="image_file" onchange="fileChange()" accept="image/*" th:required="true">-->
-                <!--        <br>-->
-                <!--    image files -->
-                <!--            <div>-->
-                <!--                <label for="files">Select files:</label>-->
-                <!--                <input type="file" id="files" name="files" multiple><br><br>-->
-                <!--                <input type="submit">-->
-                <!--            </div>-->
-                <!--            <label for="image_url"></label>-->
-                <!--            <input min="0" id="image_url" type="text" name="image_url" th:required="true">-->
                 <label for="file-input">Select files:</label>
-                <input type="file" id="file-input" multiple onchange="handleChangeInput(event); validateFormProduct()"
+                <input type="file" id="file-input" multiple onchange="handleChangeInputImage(event); reloadSubmitBtnByUploadForm()"
                        name="files" style="display: none;">
                 <input type="button" value="Browse..." onclick="document.getElementById('file-input').click();"/>
                 <div class="img-container"></div>

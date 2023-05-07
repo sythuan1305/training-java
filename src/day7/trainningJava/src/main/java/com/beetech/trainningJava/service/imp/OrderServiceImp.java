@@ -7,6 +7,10 @@ import com.beetech.trainningJava.service.IOrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+/**
+ * Class này dùng để triển khai các phương thức của interface IOrderService
+ * @see IOrderService
+ */
 @Service
 public class OrderServiceImp implements IOrderService {
     @Autowired

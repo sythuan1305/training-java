@@ -1,6 +1,5 @@
 package com.beetech.trainningJava.service.imp;
 
-import com.beetech.trainningJava.config.model.AccountModel;
 import com.beetech.trainningJava.jwt.JwtTokenProvider;
 import com.beetech.trainningJava.model.JwtTokenModel;
 import com.beetech.trainningJava.service.IAuthService;
@@ -9,6 +8,10 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Service;
 
+/**
+ * Class này dùng để implement interface IAuthService
+ * @see IAuthService
+ */
 @Service
 public class AuthServiceImp implements IAuthService {
     @Autowired

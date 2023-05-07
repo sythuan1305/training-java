@@ -17,6 +17,24 @@ import java.util.*;
 public class Utils {
     public final static String DEFAULT_COOKIE_VALUE = "defaultCookieValue";
 
+    private static final int KBinBytes = 1024;
+
+    public static long memoryUsed() {
+        return ((Runtime.getRuntime().totalMemory() / KBinBytes) - (Runtime
+                .getRuntime().freeMemory() / KBinBytes));
+    }
+
+    public static void performGC() {
+        for (int i = 0; i < 10; i++) {
+            System.gc();
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
+        }
+    }
+
     public static Map<String, Object> JsonParserObjectWithEncodedBase64(String cookieValue) {
         byte[] decodedBytes = Base64.getDecoder().decode(cookieValue);
         try {

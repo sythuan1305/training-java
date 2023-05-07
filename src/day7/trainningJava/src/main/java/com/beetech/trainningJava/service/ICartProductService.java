@@ -39,7 +39,7 @@ public interface ICartProductService {
      * @param cartProductParser là cart product parser (là đối tượng được parse từ json) dùng để tạo danh sách cart product entity
      * @return Danh sách cart product entity sau khi lưu vào database
      */
-    CartProductEntity saveCartProductEntityWithAuthenticatedByCartProductParserList(Map<String, Object> cartProductParser);
+    CartProductEntity saveCartProductEntityWithAuthenticatedByCartProductParser(Map<String, Object> cartProductParser);
 
     /**
      * Lấy danh sách cart product infor model theo cart id và is bought

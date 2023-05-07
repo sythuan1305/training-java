@@ -1,5 +1,6 @@
 package com.beetech.trainningJava.service.imp;
 
+import com.beetech.trainningJava.entity.ProductEntity;
 import com.beetech.trainningJava.entity.ProductImageurlEntity;
 import com.beetech.trainningJava.repository.ProductImageurlRepository;
 import com.beetech.trainningJava.repository.ProductRepository;
@@ -12,7 +13,7 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * Class này dùng để implement interface IProductImageUrlService
+ * Class này dùng để triển khai các phương thức của interface IProductImageUrlService
  * @see IProductImageUrlService
  */
 @Service
@@ -29,12 +30,12 @@ public class ProductImageUrlServiceImp implements IProductImageUrlService {
     }
 
     @Override
-    public Set<ProductImageurlEntity> saveEntityList(List<String> imageUrls, Integer productId) {
+    public Set<ProductImageurlEntity> saveEntityList(List<String> imageUrls, ProductEntity productEntity) {
         Set<ProductImageurlEntity> productImageurlEntities = new LinkedHashSet<>();
         for (String imageUrl : imageUrls) {
             // lưu product image url entity vào database
             ProductImageurlEntity productImageurlEntity = new ProductImageurlEntity();
-            productImageurlEntity.setProduct(productRepository.getReferenceById(productId));
+            productImageurlEntity.setProduct(productEntity);
             productImageurlEntity.setImageUrl(imageUrl);
             // thêm vào list
             productImageurlEntities.add(saveEntity(productImageurlEntity));

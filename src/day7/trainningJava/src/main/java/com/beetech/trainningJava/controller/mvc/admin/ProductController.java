@@ -65,7 +65,7 @@ public class ProductController {
         // lưu ảnh sản phẩm
         Set<ProductImageurlEntity> productImageurlEntities = productImageurlService.saveEntityList(
                 fileService.uploadMultipleImagesByProductId(List.of(files), productEntity.getId()),
-                productEntity.getId());
+                productEntity);
 
         // lấy danh sách ảnh sản phẩm từ path
         // với ảnh là dạng mã hóa base64
@@ -84,8 +84,6 @@ public class ProductController {
     @PostMapping("/uploadCsv")
     public String uploadProductCsv(@RequestParam("fileCsv") MultipartFile fileCsv) {
         csvService.csvToProductInforModelList(fileCsv);
-        System.out.println(fileCsv);
-        System.out.println(fileCsv.getOriginalFilename());
         return "redirect:/user/product/list";
     }
 }

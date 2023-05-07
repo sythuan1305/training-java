@@ -49,7 +49,7 @@ public class ConditionEntity {
     private String description;
 
     @JsonBackReference
-    @OneToMany(mappedBy = "condition")
+    @OneToMany(mappedBy = "condition", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     private Set<ProductDiscountConditionEntity> productDiscountConditions = new LinkedHashSet<>();
 
     public ConditionEntity(ConditionEntity conditionEntity) {

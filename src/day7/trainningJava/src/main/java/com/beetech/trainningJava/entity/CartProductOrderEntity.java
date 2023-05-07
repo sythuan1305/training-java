@@ -28,10 +28,4 @@ public class CartProductOrderEntity {
     @OneToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "cart_product_id", nullable = false)
     private CartProductEntity cartProduct;
-
-    public CartProductOrderEntity(CartProductEntity cartProduct, OrderEntity order) {
-        this.order = order;
-        this.cartProduct = cartProduct;
-    }
-
 }

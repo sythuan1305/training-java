@@ -46,8 +46,8 @@ public class CartController {
     @Deprecated
     @GetMapping("/information")
     public ModelAndView information(
-            @Loggable @CookieValue(value = "cart", defaultValue = Utils.DEFAULT_COOKIE_VALUE) String cookieValue,
-            @RequestParam(value = "discountId", required = false) Integer discountId) throws JsonProcessingException {
+            @CookieValue(value = "cart", defaultValue = Utils.DEFAULT_COOKIE_VALUE) String cookieValue,
+            @RequestParam(value = "discountId", required = false) Integer discountId) {
         ModelAndView modelAndView = new ModelAndView("cart/information");
 
         // Lấy thông tin giỏ hàng từ cookie hoặc database

@@ -19,7 +19,15 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "cart_product")
+@Table(name = "cart_product"
+//        , indexes = {@Index(name = "cart_product_index", columnList = "cart_id, product_id")}
+) // OPTIMIZE INDEX
+@NamedEntityGraphs({
+        @NamedEntityGraph(name = "cartProductEntity.product",
+                attributeNodes = {
+                        @NamedAttributeNode("product")
+                }),
+})
 public class CartProductEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -32,20 +40,15 @@ public class CartProductEntity {
     @Column(name = "price", nullable = false, precision = 10, scale = 2)
     private BigDecimal price;
 
-
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "cart_id")
     @JsonManagedReference
     private CartEntity cart;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "product_id", nullable = false)
     @JsonManagedReference
     private ProductEntity product;
-
-    @OneToOne(mappedBy = "cartProduct")
-    @JsonBackReference
-    private CartProductOrderEntity cartProductOrdersEntity;
 
     @Column(name = "is_bought", nullable = false)
     private boolean isBought = false;
@@ -56,7 +59,6 @@ public class CartProductEntity {
                 cartProductEntity.getPrice(),
                 cartProductEntity.getCart(),
                 cartProductEntity.getProduct(),
-                cartProductEntity.getCartProductOrdersEntity(),
                 cartProductEntity.isBought());
     }
 
@@ -66,7 +68,6 @@ public class CartProductEntity {
                 cartProductInforModel.getPrice(),
                 cartProductInforModel.getCart(),
                 cartProductInforModel.getProduct(),
-                cartProductInforModel.getCartProductOrdersEntity(),
                 cartProductInforModel.isBought());
     }
 

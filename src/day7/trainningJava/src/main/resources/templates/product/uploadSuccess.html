@@ -14,7 +14,6 @@
 <p th:text="'Product Quantity: '  + ${product.getQuantity()}"></p>
 <p th:each="image : ${product.getImages()}">
     <img th:src="${'data:image/png;base64,' + image}" style="max-width: 100px"/>
-<!--    <img th:src="@{'data:image/png;base64,' + #strings.encodeBase64(image)}" alt="product_image" style="max-width: 100px">-->
 </p>
 </body>
 </html>

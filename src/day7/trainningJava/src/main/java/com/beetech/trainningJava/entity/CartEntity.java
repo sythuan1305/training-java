@@ -28,11 +28,11 @@ public class CartEntity {
     @Column(name = "total_quantity", nullable = false)
     private Integer totalQuantity = 0;
 
-    @OneToMany(mappedBy = "cart")
+    @OneToMany(mappedBy = "cart", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     @JsonBackReference
     private Set<CartProductEntity> cartProducts = new LinkedHashSet<>();
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "account_id")
     @JsonBackReference
     private AccountEntity account;

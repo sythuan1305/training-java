@@ -5,7 +5,6 @@ import com.beetech.trainningJava.entity.ProductImageurlEntity;
 import com.beetech.trainningJava.model.ProductInforModel;
 import com.beetech.trainningJava.service.ICSVService;
 import com.beetech.trainningJava.service.IFileService;
-import com.beetech.trainningJava.service.IProductImageUrlService;
 import com.beetech.trainningJava.service.IProductService;
 import com.beetech.trainningJava.utils.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +16,10 @@ import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 
+/**
+ * Class này dùng để triển khai các phương thức của interface ICSVService
+ * @see ICSVService
+ */
 @Service
 public class CSVServiceImp implements ICSVService {
     @Autowired
@@ -25,31 +28,34 @@ public class CSVServiceImp implements ICSVService {
     @Autowired
     private IFileService fileService;
 
-    @Autowired
-    private IProductImageUrlService productImageUrlService;
-
     @Override
     public List<ProductInforModel> csvToProductInforModelList(MultipartFile file) {
         List<ProductInforModel> productInforModels = new ArrayList<>();
-        try (BufferedReader br = new BufferedReader(new InputStreamReader(file.getInputStream(), StandardCharsets.UTF_8))) {
+        // CLOSE RESOURCE
+        try (BufferedReader br = new BufferedReader(new InputStreamReader(file.getInputStream(), StandardCharsets.UTF_8))) { // tự động close
             String line;
+            // đọc từng dòng
             while ((line = br.readLine()) != null) {
+                // đọc từng cột
                 String[] values = line.split(",");
-                // check product name is exist
-                if (productService.findProductEntityByProductName(values[0]) != null) {
+
+                // Nếu tên sản phẩm đã tồn tại thì bỏ qua
+                if (productService.isExistProductEntityByProductName(values[0])) { // CHECK EXISTS
                     continue;
                 }
 
-                // save product
+                // lưu product entity vào db
                 ProductEntity productEntity = new ProductEntity();
                 productEntity.setName(values[0]);
                 productEntity.setPrice(Utils.checkRoundDirection(BigDecimal.valueOf(Double.parseDouble(values[1]))));
                 productEntity.setQuantity(Integer.parseInt(values[2]));
                 productEntity = productService.saveProductEntity(productEntity);
 
-                // save product image url
+                // lưu product image url entity vào db (nếu có)
                 Set<ProductImageurlEntity> productImageurlEntities = new HashSet<>();
                 List<String> images = fileService.getImageListByPathLists(productImageurlEntities.stream().map(ProductImageurlEntity::getImageUrl).toList());
+                // tạo product infor model từ product entity và list image
+                // và thêm vào list product infor model
                 productInforModels.add(new ProductInforModel(productEntity, images));
             }
             return productInforModels;

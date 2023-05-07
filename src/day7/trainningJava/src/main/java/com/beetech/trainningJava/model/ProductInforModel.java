@@ -6,7 +6,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.math.BigDecimal;
 import java.util.List;
 /**
  * Class này bao gồm thông tin của sản phẩm và danh sách ảnh của sản phẩm đó

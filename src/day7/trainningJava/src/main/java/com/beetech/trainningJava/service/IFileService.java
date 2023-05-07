@@ -29,7 +29,7 @@ public interface IFileService {
      * @param path là đường dẫn của ảnh cần lấy
      * @return ảnh được mã hóa base64
      */
-    public String getImageByPath(String path) throws IOException;
+    public String getImageByPath(String path);
 
     /**
      * Lấy nhiều ảnh theo danh sách đường dẫn
@@ -43,13 +43,13 @@ public interface IFileService {
      * @param base64 là ảnh được mã hóa base64
      * @return MultipartFile là ảnh sau khi chuyển
      */
-    public MultipartFile convertBase64ImageToMultipartFile(String base64) throws IOException;
+    public MultipartFile convertBase64ImageToMultipartFile(String base64);
 
     /**
      * Chuyển danh sách base64 thành danh sách MultipartFile
      * @param base64List là danh sách ảnh được mã hóa base64
      * @return danh sách MultipartFile là danh sách ảnh sau khi chuyển
      */
-    public List<MultipartFile> convertBase64ImageListToMultipartFileList(List<String> base64List) throws IOException;
+    public List<MultipartFile> convertBase64ImageListToMultipartFileList(List<String> base64List);
 
 }

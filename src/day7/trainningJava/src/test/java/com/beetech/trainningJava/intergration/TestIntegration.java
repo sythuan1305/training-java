@@ -1,5 +1,6 @@
 package com.beetech.trainningJava.intergration;
 
+import com.beetech.trainningJava.aspect.annotation.LogMemoryAndCpu;
 import com.beetech.trainningJava.entity.ProductEntity;
 import com.beetech.trainningJava.model.PageModel;
 import com.beetech.trainningJava.model.ProductInforModel;
@@ -86,12 +87,12 @@ public class TestIntegration {
 
         //then
         resultActions.andExpectAll(
-                        MockMvcResultMatchers.status().isOk(),
-                        MockMvcResultMatchers.view().name("product/information"),
-                        MockMvcResultMatchers.model().attributeExists("product"),
-                        MockMvcResultMatchers.model().size(1),
-                        MockMvcResultMatchers.content().contentType("text/html;charset=UTF-8")
-                ).andDo(print());
+                MockMvcResultMatchers.status().isOk(),
+                MockMvcResultMatchers.view().name("product/information"),
+                MockMvcResultMatchers.model().attributeExists("product"),
+                MockMvcResultMatchers.model().size(1),
+                MockMvcResultMatchers.content().contentType("text/html;charset=UTF-8")
+        ).andDo(print());
         //
         MvcResult mvcResult = resultActions.andReturn();
         ProductInforModel productInforModel1 = (ProductInforModel) mvcResult.getModelAndView().getModel().get("product");
@@ -99,5 +100,13 @@ public class TestIntegration {
         assertEquals(productInforModel1.getName(), productInforModel.getName());
         assertEquals(productInforModel1.getPrice(), productInforModel.getPrice());
         assertEquals(productInforModel1.getQuantity(), productInforModel.getQuantity());
+    }
+
+
+    @Test
+    @Transactional
+    @LogMemoryAndCpu
+    void TestLogMemoryAndCpu() {
+        productService.getProductInforModelById(1);
     }
 }

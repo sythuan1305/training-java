@@ -87,7 +87,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
 
     // Thêm các resource handler
     @Override
-    public void addResourceHandlers(ResourceHandlerRegistry registry) {
+    public void addResourceHandlers(final ResourceHandlerRegistry registry) {
         if (!registry.hasMappingForPattern("/assets/**")) {
             registry.addResourceHandler("/static/**").addResourceLocations("classpath:/static/");
         }

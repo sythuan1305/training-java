@@ -1,9 +1,11 @@
 package com.beetech.trainningJava.service.imp;
 
+import com.beetech.trainningJava.aspect.annotation.LogMemoryAndCpu;
 import com.beetech.trainningJava.entity.ProductEntity;
 import com.beetech.trainningJava.entity.ProductImageurlEntity;
 import com.beetech.trainningJava.model.PageModel;
 import com.beetech.trainningJava.model.ProductInforModel;
+import com.beetech.trainningJava.repository.ProductImageurlRepository;
 import com.beetech.trainningJava.repository.ProductRepository;
 import com.beetech.trainningJava.service.IFileService;
 import com.beetech.trainningJava.service.IProductImageUrlService;
@@ -17,14 +19,19 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 /**
- * Class này dùng để implement interface IProductService
+ * Class này dùng để triển khai các phương thức của interface IProductService
+ *
  * @see IProductService
  */
 @Service
+@LogMemoryAndCpu
 public class ProductServiceImp implements IProductService {
     @Autowired
     private ProductRepository productRepository;
@@ -34,41 +41,36 @@ public class ProductServiceImp implements IProductService {
 
     @Autowired
     private IFileService fileService;
+    @Autowired
+    private ProductImageurlRepository productImageurlRepository;
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
     public ProductEntity saveProductEntity(ProductEntity productEntity) {
+        if (productEntity == null)
+            throw new RuntimeException("productEntity is null");
+        if (isExistProductEntityByProductName(productEntity.getName())) // CHECK EXISTS
+            throw new RuntimeException("productEntity is exist");
         return productRepository.save(productEntity);
     }
 
-
     @Override
-    public PageModel<ProductEntity> findPageModeProductEntitylByPageIndex(Integer pageIndex, Integer size, String sort) {
+    public PageModel<ProductInforModel> findPageModelProductInforModelByPageIndex(Integer pageIndex, Integer size, String sort) {// TODO SQL
         // lấy page product entity theo page index, size, sort
         PageRequest pageRequest = PageRequest.of(pageIndex < 0 ? 0 : pageIndex, size, Sort.by(sort));
         Page<ProductEntity> paging = productRepository.findAll(pageRequest);
 
-        // trả về page model product entity
-        return new PageModel<>(paging.getContent(), pageRequest.getPageNumber(), paging.getTotalPages());
-    }
-
-    @Override
-    public PageModel<ProductInforModel> findPageModelProductInforModelByPageIndex(Integer pageIndex, Integer size, String sort) {
-        // lấy page product entity theo page index, size, sort
-        PageRequest pageRequest =  PageRequest.of(pageIndex < 0 ? 0 : pageIndex, size, Sort.by(sort));
-        Page<ProductEntity> paging = productRepository.findAll(pageRequest);
-
         // tạo list product infor model
         List<ProductInforModel> productInforModels = new ArrayList<>();
+
         for (ProductEntity productEntity : paging.getContent()) {
             // tạo product infor model từ product entity
-            ProductInforModel productInforModel = getProductInforModelById(productEntity.getId());
+            ProductInforModel productInforModel = changeProductEntityToProductInforModel(productEntity);
             // thêm product infor model vào list product infor model
             productInforModels.add(productInforModel);
         }
-
-        // trả về page model product infor model
-        return new PageModel<>(productInforModels, pageRequest.getPageNumber(), paging.getTotalPages());
+        double totalPage = (double) productRepository.count() / (double) size;
+        return new PageModel<>(productInforModels, pageRequest.getPageNumber(), (long) Math.ceil(totalPage));
     }
 
     @Override
@@ -79,25 +81,65 @@ public class ProductServiceImp implements IProductService {
     }
 
     @Override
-    public ProductInforModel getProductInforModelById(Integer id) {
-        // lấy list image url entity theo product id
-        List<ProductImageurlEntity> productImageurlEntities = productImageUrlService.findEntityByProductId(id);
-        List<String> images = new ArrayList<>();
-        try {
-            // tạo ảnh dạng base64 từ danh sách path
-            List<String> pathList = productImageurlEntities.stream().map(ProductImageurlEntity::getImageUrl).toList();
-            images = fileService.getImageListByPathLists(pathList);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        // trả về product infor model
-        return new ProductInforModel(getProductEntityById(id), images);
-    }
-
-    @Override
     public ProductEntity findProductEntityByProductName(String productName) {
         return productRepository.findByName(productName);
     }
+
+    @Override
+    public boolean isExistProductEntityByProductName(String productName) {
+        return productRepository.existsByName(productName);
+    }
+
+    // region create product infor model
+    @Override
+    public ProductInforModel getProductInforModelById(Integer id) { // TODO SQL
+        ProductEntity productEntity = getProductEntityById(id);
+        List<String> images = productEntity
+                .getProductImageurlEntities()
+                .stream().map(productImageurlEntity ->
+                        fileService.getImageByPath(productImageurlEntity.getImageUrl())).toList();
+        return new ProductInforModel(productEntity, images);
+    }
+
+    @Override
+    public ProductInforModel createProductInforModelByProductEntity(ProductEntity productEntity) {
+        if (productEntity == null)
+            throw new RuntimeException("productEntity is null");
+        List<String> images = createBase64ImageListFromPathList(
+                productEntity.getProductImageurlEntities().parallelStream().map(ProductImageurlEntity::getImageUrl).toList());
+        return new ProductInforModel(productEntity, images);
+    }
+
+    @Override
+    public ProductInforModel changeProductEntityToProductInforModel(ProductEntity productEntity) {
+        // lấy list image url entity theo product id
+        Set<ProductImageurlEntity> productImageurlEntities = productEntity.getProductImageurlEntities();
+        // tạo list ảnh dạng base64
+
+        List<String> images = createBase64ImageListFromPathList(productImageurlEntities.
+                stream()
+                .map(ProductImageurlEntity::getImageUrl)
+                .toList());
+        return new ProductInforModel(productEntity, images);
+    }
+
+    /**
+     * Tạo list ảnh dạng base64 từ list product image url entity
+     *
+     * @param pathList danh sách path ảnh
+     * @return list ảnh dạng base64
+     */
+    List<String> createBase64ImageListFromPathList(Collection<?> pathList) {
+        try {
+            // tạo ảnh dạng base64 từ danh sách path
+            return fileService.getImageListByPathLists((List<String>) pathList);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        // nếu lỗi thì trả về list rỗng
+        return new ArrayList<>();
+    }
+    // endregion
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED)

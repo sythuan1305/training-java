@@ -180,7 +180,7 @@ public class PaypalService {
      * Lấy thông tin của payment
      * @param paymentId là id của payment
      * @return đối tượng payment chứa thông tin thanh toán
-     * @throws PayPalRESTException
+     * @throws PayPalRESTException ném ra lỗi khi get thông tin payment
      */
     public Payment getPaymentDetails(String paymentId) throws PayPalRESTException {
         return Payment.get(apiContext, paymentId);

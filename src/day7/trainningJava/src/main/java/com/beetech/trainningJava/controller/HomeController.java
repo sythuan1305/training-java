@@ -1,5 +1,7 @@
 package com.beetech.trainningJava.controller;
 
+import com.beetech.trainningJava.aspect.annotation.LogMemoryAndCpu;
+import com.beetech.trainningJava.aspect.annotation.Loggable;
 import com.beetech.trainningJava.service.IAccountService;
 import com.beetech.trainningJava.service.ICartProductService;
 import com.beetech.trainningJava.utils.Utils;
@@ -13,6 +15,7 @@ import org.springframework.web.servlet.view.RedirectView;
  * Controller này dùng để xử lý các request đến trang chủ
  */
 @Controller
+@Loggable
 public class HomeController {
     @Autowired
     private ICartProductService cartProductService;
@@ -27,6 +30,7 @@ public class HomeController {
      * @return trang chủ
      */
     @GetMapping("/")
+    @Loggable
     public RedirectView readCartCookie(
             @CookieValue(value = "cart", defaultValue = Utils.DEFAULT_COOKIE_VALUE) String cartCookieValue,
             HttpServletResponse response) {
@@ -40,5 +44,10 @@ public class HomeController {
 
         // Chuyển hướng đến trang danh sách sản phẩm
         return new RedirectView("/user/product/list");
+    }
+
+    @GetMapping("/testArgs")
+    public void testArgs(@RequestParam(value = "args", required = false) String args) {
+        System.out.println("testArgs" + args);
     }
 }

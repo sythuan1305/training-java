@@ -1,9 +1,7 @@
 package com.beetech.trainningJava.service;
 
-import com.beetech.trainningJava.entity.AccountEntity;
 import com.beetech.trainningJava.entity.CartEntity;
 
-import java.util.List;
 
 /**
  * Interface chứa các method xư lý logic của cart

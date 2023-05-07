@@ -7,7 +7,6 @@ import org.springframework.boot.web.servlet.server.CookieSameSiteSupplier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -58,7 +57,7 @@ public class WebSercurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("http://localhost:8081"));
+        configuration.setAllowedOrigins(List.of("http://localhost:8080"));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE"));
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
@@ -77,15 +76,27 @@ public class WebSercurityConfig {
                         // để ngăn chặn tấn công XSS
                         // cho phép những script nào được load
                         .contentSecurityPolicy("" +
-//                                "form-action 'self'; " +
-                                "img-src 'self' data:; " +
-                                "default-src 'self'; " +
+                                "img-src 'self' data: " +
+                                ";" +
+                                "default-src 'self' " +
+                                ";" +
                                 "script-src " +
                                 "https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js " +
                                 "https://cdn.jsdelivr.net/npm/papaparse@5.3.2/papaparse.min.js " +
                                 "https://unpkg.com/read-excel-file@5.x/bundle/read-excel-file.min.js " +
-                                "'unsafe-inline'; " +
-                                "style-src https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css 'unsafe-inline'")
+                                "'unsafe-inline' " +
+                                "http://localhost:8080/static/js/cookie.js " +
+                                "http://localhost:8080/static/js/common.js " +
+                                "http://localhost:8080/static/js/product/upload.js " +
+                                "http://localhost:8080/static/js/product/list.js " +
+                                "http://localhost:8080/static/js/discount.js " +
+                                "http://localhost:8080/static/js/cart/information-cart.js " +
+                                "http://localhost:8080/static/js/cart/add-product.js " +
+                                "http://localhost:8080/static/js/auth/login.js " +
+                                ";" +
+                                "style-src https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css 'unsafe-inline'" +
+                                ";"
+                        )
 
         );
 
@@ -95,7 +106,7 @@ public class WebSercurityConfig {
         http.csrf().ignoringRequestMatchers("/api/**");
 
         // Cấu hình CORS
-        http.cors(Customizer.withDefaults()); // TODO - Nghiên cứu lại cấu hình CORS
+//        http.cors(Customizer.withDefaults()); // TODO - Nghiên cứu lại cấu hình CORS
 //        http.cors();
 
         // Cấu hình authorize và authentication

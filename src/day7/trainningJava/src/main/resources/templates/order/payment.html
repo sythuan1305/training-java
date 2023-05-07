@@ -6,19 +6,10 @@
     <meta charset="UTF-8">
     <title>Dashboard</title>
     <script>
-        function checkRadio() {
-            var radios = document.querySelectorAll('input[name="paymentMethod"]:checked');
-            var submitBtn = document.getElementById('btn-order');
-            console.log(radios.length === 0);
-            return radios.length > 0;
-        }
 
-        function onLoad() {
-            validateForm(document.getElementById('form-payment'), document.getElementById('btn-order'), checkRadio());
-        }
     </script>
 </head>
-<body layout:fragment="content" onload="onLoad()">
+<body layout:fragment="content" onload="onLoadPayment()">
 <form method="post" th:action="@{/user/discount/list}" id="form-discount" hidden="hidden"
 >
     <div th:each="cartProduct: ${cartProducts}">
@@ -29,7 +20,7 @@
     <button id="btn-add-discount" class="btn btn-primary" type="submit">Add Discount</button>
 </form>
 <form method="post" th:action="@{/user/order/authorizePayment}" id="form-payment"
-      oninput="onLoad()">
+      oninput="onLoadPayment()">
     <div class="card">
         <!--        address-->
         <h3 class="card-header">Shipping Address:</h3>

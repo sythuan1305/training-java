@@ -20,5 +20,5 @@ public class PageModel<T> {
 
     private int pageNumber;
 
-    private int totalPages;
+    private long totalPages;
 }

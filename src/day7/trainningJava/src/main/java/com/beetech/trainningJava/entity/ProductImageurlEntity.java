@@ -20,7 +20,7 @@ public class ProductImageurlEntity {
     @Column(name = "image_url", length = 100, nullable = false)
     private String imageUrl;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "product_id")
     private ProductEntity product;
 }

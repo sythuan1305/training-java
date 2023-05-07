@@ -31,6 +31,7 @@ dependencies {
     implementation("com.google.code.gson:gson:2.10.1")
     implementation("org.springframework.security:spring-security-config:6.0.2")
     implementation("org.apache.tomcat:tomcat-util:10.1.7")
+    implementation("org.springframework.boot:spring-boot-starter-actuator")
     developmentOnly("org.springframework.boot:spring-boot-devtools")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.springframework.restdocs:spring-restdocs-mockmvc")
