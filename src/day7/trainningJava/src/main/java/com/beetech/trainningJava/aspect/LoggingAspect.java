@@ -206,7 +206,7 @@ public class LoggingAspect {
             logger.info("Memory: " + (startMemory - endMemory) + " bytes");
             System.out.println("Time: " + (endTime - startTime) + " ms");
             System.out.println("Memory used: " + (endMemory - startMemory) + " bytes");
-            Utils.performGC();
+//            Utils.performGC();
         } catch (Throwable e) {
             System.out.println("Around Exception " + e.getMessage());
         }

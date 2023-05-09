@@ -33,33 +33,37 @@ public class ProductDiscountConditionServiceImp implements IProductDiscountCondi
     @Override
     public List<DiscountModel> getDiscountModelListByCartProductInforModelList(List<CartProductInforModel> cartProductInforModelList) {// TODO SQL
         Map<Integer, DiscountModel> discountModelHashtable = new Hashtable<>();
+        Map<Integer, CartProductInforModel> cartProductInforModelHash = new Hashtable<>();
+
+        // change list to map
         for (CartProductInforModel cartProductInforModel : cartProductInforModelList) {
-            // lấy tất cả product discount condition theo product id
-            List<ProductDiscountConditionEntity> productDiscountConditionEntityList =
-                    getProductDiscountConditionListByProductId(cartProductInforModel.getProduct().getId()); // TODO SQL
-
-            // tạo ra danh sách discount model
-            // đồng thời lọc ra những discount model thõa mãn với operator là OR
-            discountModelHashtable = createDiscountModelMapByProductDiscountConditionEntityListAndCartProductInforModel(
-                    productDiscountConditionEntityList,
-                    cartProductInforModel,
-                    discountModelHashtable);
-
+            cartProductInforModelHash.put(cartProductInforModel.getProduct().getId(), cartProductInforModel);
         }
 
+        // lấy tất cả product discount condition theo danh sách product id
+        List<ProductDiscountConditionEntity> productDiscountConditionEntityList =
+                productDiscountConditionRepository.findAllByProductIdIn(new ArrayList<>(cartProductInforModelHash.keySet()));
+
+        // tạo ra danh sách discount model
+        // đồng thời lọc ra những discount model thõa mãn với operator là OR
+        discountModelHashtable = createDiscountModelMapByProductDiscountConditionEntityListAndCartProductInforModelHash(
+                productDiscountConditionEntityList,
+                cartProductInforModelHash,
+                discountModelHashtable);
+
         // lọc ra những discount model thỏa mãn với operator là AND
-        return filterDiscountModels(new ArrayList<>(discountModelHashtable.values()));
+        return filterDiscountModels(discountModelHashtable);
     }
 
     /**
      * Tạo và lọc ra những discount model có thể sử dụng được với logical operator là OR
      * @param productDiscountConditionEntityList danh sách product discount condition entity để taọ discount model
-     * @param cartProductInforModel cart product infor model dùng để kiểm tra condition của sản phẩm có thõa mản điều kiện không
+     * @param cartProductInforModelHash          danh sách cart product infor model dùng để kiểm tra condition của sản phẩm có thõa mản điều kiện không
      * @return danh sách discount model có thể sử dụng được với logical operator là OR
      */
-    Map<Integer, DiscountModel> createDiscountModelMapByProductDiscountConditionEntityListAndCartProductInforModel(
+    Map<Integer, DiscountModel> createDiscountModelMapByProductDiscountConditionEntityListAndCartProductInforModelHash(
             List<ProductDiscountConditionEntity> productDiscountConditionEntityList,
-            CartProductInforModel cartProductInforModel,
+            Map<Integer, CartProductInforModel> cartProductInforModelHash,
             Map<Integer, DiscountModel> discountModelHashtable) {
         for (ProductDiscountConditionEntity productDiscountConditionEntity : productDiscountConditionEntityList) {
             // Kiểm tra xem discount model đã tồn tại trong danh sách discount model chưa
@@ -69,8 +73,8 @@ public class ProductDiscountConditionServiceImp implements IProductDiscountCondi
                 // tạo condition model từ cart product infor model và condition entity
                 // và kiểm tra xem condition model có thỏa mãn điều kiện không
                 ConditionModel conditionModel =
-                        conditionService.getConditionModelByCartProductInforModelAndConditionEntity(cartProductInforModel, conditionEntity);//TODO SQL
-
+                        conditionService.getConditionModelByCartProductInforModelAndConditionEntity(
+                                cartProductInforModelHash.get(productDiscountConditionEntity.getProduct().getId()), conditionEntity); //TODO SQL
                 // lấy discount model từ danh sách discount model
                 // và kiểm tra discount model có thỏa mãn điều kiện với logical operator là OR không
                 DiscountModel discountModel = discountModelHashtable.get(productDiscountConditionEntity.getDiscount().getId());
@@ -86,7 +90,8 @@ public class ProductDiscountConditionServiceImp implements IProductDiscountCondi
                 // tạo condition model từ cart product infor model và condition entity
                 // và kiểm tra xem condition model có thỏa mãn điều kiện không
                 ConditionModel conditionModel =
-                        conditionService.getConditionModelByCartProductInforModelAndConditionEntity(cartProductInforModel, conditionEntity);
+                        conditionService.getConditionModelByCartProductInforModelAndConditionEntity(
+                                cartProductInforModelHash.get(productDiscountConditionEntity.getProduct().getId()), conditionEntity); //TODO SQL
 
                 // tạo ra discount model mới với isAbleToUse = false
                 // kiểm tra xem condition model có thỏa mãn điều kiện với logical operator là OR không
@@ -112,16 +117,16 @@ public class ProductDiscountConditionServiceImp implements IProductDiscountCondi
      * @param discountModels danh sách discount model cần lọc
      * @return danh sách discount model có thể sử dụng được
      */
-    List<DiscountModel> filterDiscountModels(List<DiscountModel> discountModels) {
-        discountModels.forEach(discountModel -> { // TODO SQL
-            // Lấy danh sách product discount condition từ discount id
-            List<ProductDiscountConditionEntity> productDiscountConditionEntityList =
-                    productDiscountConditionRepository.findAllByDiscountId(discountModel.getId());
+    List<DiscountModel> filterDiscountModels(Map<Integer, DiscountModel> discountModels) {
+        // Lấy danh sách product discount condition theo discount id từ danh sách discount id
+        Map<Integer, List<ProductDiscountConditionEntity>> productDiscountConditionEntityMap = productDiscountConditionRepository
+                .findAllByDiscountIdInMap(new ArrayList<>(discountModels.keySet()));
 
+        productDiscountConditionEntityMap.forEach((discountId, productDiscountConditionEntityList) -> {
             // tạo danh sách các condition model theo danh sách product discount condition được tạo từ discount id
             List<ConditionModel> conditionModelList =
                     createConditionModelListByProductDiscountConditionEntityList(productDiscountConditionEntityList);
-
+            DiscountModel discountModel = discountModels.get(discountId);
             conditionModelList.forEach(conditionModel -> {
                 // thêm những condition model chưa có trong discount model
                 if (!discountModel.getConditions().containsKey(conditionModel.getId())) { // CHECK CONTAIN
@@ -130,12 +135,12 @@ public class ProductDiscountConditionServiceImp implements IProductDiscountCondi
             });
 
             // Kiểm tra condition có thõa mãn với operator là AND
-            if (isConditionEnoughWithLogicalOperatorIsAnd(discountModel.getConditions())) {
+            if (isConditionEnoughWithLogicalOperatorIsAnd(discountModels.get(discountId).getConditions())) {
                 // nếu có thõa mãn thì set isAbleToUse = true
                 discountModel.setAbleToUse(true);
             }
         });
-        return discountModels;
+        return new ArrayList<>(discountModels.values());
     }
 
     List<ConditionModel> createConditionModelListByProductDiscountConditionEntityList(
