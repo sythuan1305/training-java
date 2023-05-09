@@ -11,6 +11,15 @@ import lombok.Setter;
 @Setter
 @Entity
 @Table(name = "product_discount_condition")
+@NamedEntityGraphs(
+        @NamedEntityGraph(
+                name = "discount - condition",
+                attributeNodes = {
+                        @NamedAttributeNode("discount"),
+                        @NamedAttributeNode("condition")
+                }
+        )
+)
 public class ProductDiscountConditionEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

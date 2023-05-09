@@ -49,7 +49,7 @@ public class AccountEntity {
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    @OneToOne(mappedBy = "account", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE, optional = false)
+    @OneToOne(mappedBy = "account", cascade = CascadeType.REMOVE, optional = false)
     @JsonManagedReference
     private CartEntity cart;
 }

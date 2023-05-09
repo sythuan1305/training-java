@@ -32,7 +32,7 @@ public class CartEntity {
     @JsonBackReference
     private Set<CartProductEntity> cartProducts = new LinkedHashSet<>();
 
-    @OneToOne(fetch = FetchType.LAZY, optional = false)
+    @OneToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "account_id")
     @JsonBackReference
     private AccountEntity account;

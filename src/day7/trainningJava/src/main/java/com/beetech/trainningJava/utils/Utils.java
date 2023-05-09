@@ -27,11 +27,11 @@ public class Utils {
     public static void performGC() {
         for (int i = 0; i < 10; i++) {
             System.gc();
-            try {
-                Thread.sleep(100);
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-            }
+//            try {
+//                Thread.sleep(100);
+//            } catch (InterruptedException e) {
+//                Thread.currentThread().interrupt();
+//            }
         }
     }
 
