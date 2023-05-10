@@ -1,6 +1,7 @@
 package com.beetech.trainningJava.repository;
 
 import com.beetech.trainningJava.entity.ProductEntity;
+import com.beetech.trainningJava.entity.ProductImageurlEntity;
 import com.beetech.trainningJava.model.ProductInforModel;
 import com.beetech.trainningJava.model.ProductWithImageUrl;
 import org.junit.jupiter.api.*;
@@ -20,13 +21,15 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @DataJpaTest // chỉ dùng cho test repository mà không dùng service, controller
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE) // vì chưa config database giả nên sẽ dùng database thật
-@Rollback(false) // để lưu dữ liệu vào database thật
+@Rollback(value = true) // để lưu dữ liệu vào database thật
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class ProductRepositoryTest {
     @Autowired
     private ProductRepository productRepository;
 
     ProductEntity productEntity;
+    @Autowired
+    private ProductImageurlRepository productImageurlRepository;
 
     @BeforeEach
     void setUp() {
@@ -138,5 +141,21 @@ class ProductRepositoryTest {
                     );
                 }
         );
+    }
+
+    @Test
+    void testSaveList() {
+        ProductEntity product = productRepository.getReferenceById(104);
+        // create product imageUrl entity list
+        List<ProductImageurlEntity> productImageurlEntities = new ArrayList<>();
+        productImageurlEntities.add(ProductImageurlEntity.builder()
+                .imageUrl("imageUrl1")
+                .product(product)
+                .build());
+        productImageurlEntities.add(ProductImageurlEntity.builder().imageUrl("imageUrl2").product(product).build());
+
+        productImageurlRepository.saveAll(productImageurlEntities);
+
+
     }
 }
