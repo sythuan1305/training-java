@@ -1,7 +1,9 @@
 package com.beetech.trainningJava.config;
 
 import com.beetech.trainningJava.interceptor.AuthInterceptor;
+import com.beetech.trainningJava.utils.Utils;
 import nz.net.ultraq.thymeleaf.LayoutDialect;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.ViewResolver;
@@ -18,6 +20,11 @@ import org.thymeleaf.templateresolver.ITemplateResolver;
 @Configuration
 @EnableWebMvc
 public class WebMvcConfig implements WebMvcConfigurer {
+    @Value("${upload.path}")
+    void setUploadPath(String path) {
+        Utils.Base64Image.path = path;
+    }
+
     // Thêm các view controller
     @Override
     public void addViewControllers(ViewControllerRegistry registry) {
@@ -25,6 +32,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
         registry.addViewController("/login").setViewName("auth/login");
         registry.addViewController("/logout").setViewName("auth/login");
     }
+    // TODO ADD CONFIG PATH MATCHER
 
     // Thêm các interceptor
     @Override

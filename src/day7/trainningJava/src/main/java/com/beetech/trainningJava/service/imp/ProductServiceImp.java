@@ -7,9 +7,9 @@ import com.beetech.trainningJava.model.PageModel;
 import com.beetech.trainningJava.model.ProductInforModel;
 import com.beetech.trainningJava.repository.ProductImageurlRepository;
 import com.beetech.trainningJava.repository.ProductRepository;
-import com.beetech.trainningJava.service.IFileService;
 import com.beetech.trainningJava.service.IProductImageUrlService;
 import com.beetech.trainningJava.service.IProductService;
+import com.beetech.trainningJava.utils.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -18,10 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.io.IOException;
-import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
@@ -39,8 +36,6 @@ public class ProductServiceImp implements IProductService {
     @Autowired
     private IProductImageUrlService productImageUrlService;
 
-    @Autowired
-    private IFileService fileService;
     @Autowired
     private ProductImageurlRepository productImageurlRepository;
 
@@ -97,7 +92,7 @@ public class ProductServiceImp implements IProductService {
         List<String> images = productEntity
                 .getProductImageurlEntities()
                 .stream().map(productImageurlEntity ->
-                        fileService.getImageByPath(productImageurlEntity.getImageUrl())).toList();
+                        Utils.Base64Image.getImageByPath(productImageurlEntity.getImageUrl())).toList();
         return new ProductInforModel(productEntity, images);
     }
 
@@ -105,7 +100,7 @@ public class ProductServiceImp implements IProductService {
     public ProductInforModel createProductInforModelByProductEntity(ProductEntity productEntity) {
         if (productEntity == null)
             throw new RuntimeException("productEntity is null");
-        List<String> images = createBase64ImageListFromPathList(
+        List<String> images = Utils.Base64Image.getImageListByPathLists(
                 productEntity.getProductImageurlEntities().parallelStream().map(ProductImageurlEntity::getImageUrl).toList());
         return new ProductInforModel(productEntity, images);
     }
@@ -116,28 +111,11 @@ public class ProductServiceImp implements IProductService {
         Set<ProductImageurlEntity> productImageurlEntities = productEntity.getProductImageurlEntities();
         // tạo list ảnh dạng base64
 
-        List<String> images = createBase64ImageListFromPathList(productImageurlEntities.
+        List<String> images = Utils.Base64Image.getImageListByPathLists(productImageurlEntities.
                 stream()
                 .map(ProductImageurlEntity::getImageUrl)
                 .toList());
         return new ProductInforModel(productEntity, images);
-    }
-
-    /**
-     * Tạo list ảnh dạng base64 từ list product image url entity
-     *
-     * @param pathList danh sách path ảnh
-     * @return list ảnh dạng base64
-     */
-    List<String> createBase64ImageListFromPathList(Collection<?> pathList) {
-        try {
-            // tạo ảnh dạng base64 từ danh sách path
-            return fileService.getImageListByPathLists((List<String>) pathList);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        // nếu lỗi thì trả về list rỗng
-        return new ArrayList<>();
     }
     // endregion
 

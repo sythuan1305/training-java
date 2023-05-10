@@ -4,7 +4,6 @@ import com.beetech.trainningJava.entity.ProductEntity;
 import com.beetech.trainningJava.entity.ProductImageurlEntity;
 import com.beetech.trainningJava.model.ProductInforModel;
 import com.beetech.trainningJava.service.ICSVService;
-import com.beetech.trainningJava.service.IFileService;
 import com.beetech.trainningJava.service.IProductService;
 import com.beetech.trainningJava.utils.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,9 +23,6 @@ import java.util.*;
 public class CSVServiceImp implements ICSVService {
     @Autowired
     private IProductService productService;
-
-    @Autowired
-    private IFileService fileService;
 
     @Override
     public List<ProductInforModel> csvToProductInforModelList(MultipartFile file) {
@@ -53,7 +49,7 @@ public class CSVServiceImp implements ICSVService {
 
                 // lưu product image url entity vào db (nếu có)
                 Set<ProductImageurlEntity> productImageurlEntities = new HashSet<>();
-                List<String> images = fileService.getImageListByPathLists(productImageurlEntities.stream().map(ProductImageurlEntity::getImageUrl).toList());
+                List<String> images = Utils.Base64Image.getImageListByPathLists(productImageurlEntities.stream().map(ProductImageurlEntity::getImageUrl).toList());
                 // tạo product infor model từ product entity và list image
                 // và thêm vào list product infor model
                 productInforModels.add(new ProductInforModel(productEntity, images));

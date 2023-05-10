@@ -4,6 +4,7 @@ import com.beetech.trainningJava.entity.ProductEntity;
 import com.beetech.trainningJava.entity.ProductImageurlEntity;
 import com.beetech.trainningJava.model.ProductInforModel;
 import com.beetech.trainningJava.service.*;
+import com.beetech.trainningJava.utils.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,9 +28,6 @@ import java.util.Set;
 public class ProductController {
     @Autowired
     private IProductService productService;
-
-    @Autowired
-    private IFileService fileService;
 
     @Autowired
     private IProductImageUrlService productImageurlService;
@@ -58,18 +56,18 @@ public class ProductController {
     @PostMapping("/upload")
     public ModelAndView uploadProduct(@RequestParam("name") String name, @RequestParam("price") BigDecimal price,
                                       @RequestParam("quantity") Integer quantity,
-                                      @RequestParam(value = "files", required = false) MultipartFile[] files) throws IOException {
+                                      @RequestParam(value = "files", required = false) MultipartFile[] files) {
         // lưu thông tin sản phẩm
         ProductEntity productEntity = productService.saveProductEntity(new ProductEntity(name, price, quantity));
 
         // lưu ảnh sản phẩm
         Set<ProductImageurlEntity> productImageurlEntities = productImageurlService.saveEntityList(
-                fileService.uploadMultipleImagesByProductId(List.of(files), productEntity.getId()),
+                Utils.Base64Image.uploadMultipleImagesByProductId(List.of(files), productEntity.getId()),
                 productEntity);
 
         // lấy danh sách ảnh sản phẩm từ path
         // với ảnh là dạng mã hóa base64
-        List<String> images = fileService.getImageListByPathLists(productImageurlEntities.stream().map(ProductImageurlEntity::getImageUrl).toList());
+        List<String> images = Utils.Base64Image.getImageListByPathLists(productImageurlEntities.stream().map(ProductImageurlEntity::getImageUrl).toList());
 
         // trả về trang upload sản phẩm thành công
         ModelAndView modelAndView = new ModelAndView("product/uploadSuccess");
