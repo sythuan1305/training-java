@@ -12,7 +12,6 @@ import org.springframework.context.annotation.Configuration;
  */
 @Configuration
 public class PaypalConfig {
-
     // clientId là id của ứng dụng paypal
     @Value("${paypal.client.id}")
     private String clientId;

@@ -6,6 +6,7 @@ import com.beetech.trainningJava.service.IAccountService;
 import com.beetech.trainningJava.service.ICartProductService;
 import com.beetech.trainningJava.utils.Utils;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -15,16 +16,16 @@ import org.springframework.web.servlet.view.RedirectView;
  * Controller này dùng để xử lý các request đến trang chủ
  */
 @Controller
+@RequiredArgsConstructor(onConstructor_ = {@Autowired})
 @Loggable
 public class HomeController {
-    @Autowired
-    private ICartProductService cartProductService;
+    private final ICartProductService cartProductService;
 
-    @Autowired
-    private IAccountService accountService;
+    private final IAccountService accountService;
 
     /**
      * Xử lý request đến trang chủ
+     *
      * @param cartCookieValue giá trị của cookie cart
      * @param response response
      * @return trang chủ

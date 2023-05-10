@@ -3,6 +3,7 @@ package com.beetech.trainningJava.controller.mvc.user;
 import com.beetech.trainningJava.model.PageModel;
 import com.beetech.trainningJava.model.ProductInforModel;
 import com.beetech.trainningJava.service.IProductService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,9 +16,9 @@ import org.springframework.web.servlet.ModelAndView;
  */
 @Controller("mvcUserProductController")
 @RequestMapping("/user/product")
+@RequiredArgsConstructor(onConstructor_ = {@Autowired})
 public class ProductController {
-    @Autowired
-    private IProductService productService;
+    private final IProductService productService;
 
     /**
      * Xử lý request đến trang danh sách sản phẩm

@@ -14,6 +14,7 @@ import com.beetech.trainningJava.utils.Utils;
 import com.paypal.api.payments.Payment;
 import com.paypal.api.payments.Transaction;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -29,31 +30,26 @@ import java.util.List;
  */
 @Controller("mvcUserOrderController")
 @RequestMapping("/user/order")
+@RequiredArgsConstructor(onConstructor_ = {@Autowired})
 public class OrderController {
-    @Autowired
-    private ICartProductService cartProductService;
+    private final ICartProductService cartProductService;
 
-    @Autowired
-    private IProductDiscountConditionService productDiscountConditionService;
+    private final IProductDiscountConditionService productDiscountConditionService;
 
-    @Autowired
-    private IAccountService accountService;
+    private final IAccountService accountService;
 
-    @Autowired
-    private IOrderService orderService;
+    private final IOrderService orderService;
 
-    @Autowired
-    private ICartProductOrder cartProductOrderService;
+    private final ICartProductOrder cartProductOrderService;
 
-    @Autowired
-    private PaypalService paypalService;
+    private final PaypalService paypalService;
 
     /**
      * Chuyển đến trang xem thông tin đơn hàng
      *
      * @param cartProductId danh sách id sản phẩm trong giỏ hàng
-     * @param discountId   id giảm giá
-     * @param cookieValue giá trị của cookie cart
+     * @param discountId    id giảm giá
+     * @param cookieValue   giá trị của cookie cart
      * @return trang xem thông tin đơn hàng
      */
     @PostMapping("/payment")
@@ -88,10 +84,11 @@ public class OrderController {
 
     /**
      * Xử lý xác thực và chuyển đến linh approve của paypal
+     *
      * @param cartProductId danh sách id của sản phẩm trong đơn hàng
-     * @param discountId id của giảm giá
+     * @param discountId    id của giảm giá
      * @param paymentMethod phương thức thanh toán
-     * @param cookieValue giá trị cookie của giỏ hàng
+     * @param cookieValue   giá trị cookie của giỏ hàng
      * @return trả về đường dẫn approve của paypal
      */
     @PostMapping("/authorizePayment")
@@ -148,9 +145,10 @@ public class OrderController {
 
     /**
      * Thực hiện thanh toán với phương thức GET
+     *
      * @param paymentId id của thanh toán
-     * @param payerId id của người thanh toán
-     * @param response response
+     * @param payerId   id của người thanh toán
+     * @param response  response
      * @return gọi đến phương thức POST
      */
     @GetMapping("/executePayment")

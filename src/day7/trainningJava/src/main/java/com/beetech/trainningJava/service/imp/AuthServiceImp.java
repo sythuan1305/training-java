@@ -3,6 +3,7 @@ package com.beetech.trainningJava.service.imp;
 import com.beetech.trainningJava.jwt.JwtTokenProvider;
 import com.beetech.trainningJava.model.JwtTokenModel;
 import com.beetech.trainningJava.service.IAuthService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -10,15 +11,15 @@ import org.springframework.stereotype.Service;
 
 /**
  * Class này dùng để implement interface IAuthService
+ * 
  * @see IAuthService
  */
 @Service
+@RequiredArgsConstructor(onConstructor_ = { @Autowired })
 public class AuthServiceImp implements IAuthService {
-    @Autowired
-    private AuthenticationManager authManager;
+    private final AuthenticationManager authManager;
 
-    @Autowired
-    private JwtTokenProvider jwtTokenProvider;
+    private final JwtTokenProvider jwtTokenProvider;
 
     @Override
     public JwtTokenModel getJwtTokenModelAfterAuthen(String username, String password) {

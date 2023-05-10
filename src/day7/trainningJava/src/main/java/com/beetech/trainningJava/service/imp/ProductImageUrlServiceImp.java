@@ -5,6 +5,7 @@ import com.beetech.trainningJava.entity.ProductImageurlEntity;
 import com.beetech.trainningJava.repository.ProductImageurlRepository;
 import com.beetech.trainningJava.repository.ProductRepository;
 import com.beetech.trainningJava.service.IProductImageUrlService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,16 +14,17 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * Class này dùng để triển khai các phương thức của interface IProductImageUrlService
+ * Class này dùng để triển khai các phương thức của interface
+ * IProductImageUrlService
+ * 
  * @see IProductImageUrlService
  */
 @Service
+@RequiredArgsConstructor(onConstructor_ = { @Autowired })
 public class ProductImageUrlServiceImp implements IProductImageUrlService {
-    @Autowired
-    ProductImageurlRepository productImageurlRepository;
+    private final ProductImageurlRepository productImageurlRepository;
 
-    @Autowired
-    ProductRepository productRepository;
+    private final ProductRepository productRepository;
 
     @Override
     public ProductImageurlEntity saveEntity(ProductImageurlEntity productImageurlEntity) {

@@ -3,6 +3,7 @@ package com.beetech.trainningJava.controller.api;
 import com.beetech.trainningJava.model.ApiResponse;
 import com.beetech.trainningJava.model.JwtTokenModel;
 import com.beetech.trainningJava.service.IAuthService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,9 +14,9 @@ import org.springframework.web.bind.annotation.*;
  */
 @RestController("apiAuthenticationController")
 @RequestMapping("/api/auth")
+@RequiredArgsConstructor(onConstructor_ = {@Autowired})
 public class AuthenticationController {
-    @Autowired
-    private IAuthService authService;
+    private final IAuthService authService;
 
     /**
      * Xử lý request đến api login

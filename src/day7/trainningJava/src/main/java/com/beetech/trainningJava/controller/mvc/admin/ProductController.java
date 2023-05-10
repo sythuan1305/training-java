@@ -5,6 +5,7 @@ import com.beetech.trainningJava.entity.ProductImageurlEntity;
 import com.beetech.trainningJava.model.ProductInforModel;
 import com.beetech.trainningJava.service.*;
 import com.beetech.trainningJava.utils.Utils;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,19 +25,18 @@ import java.util.Set;
  */
 @Controller("mvcAdminProductController")
 @RequestMapping("/admin/product")
+@RequiredArgsConstructor(onConstructor_ = {@Autowired})
 //@PreAuthorize("hasRole('ROLE_ADMIN')")
 public class ProductController {
-    @Autowired
-    private IProductService productService;
+    private final IProductService productService;
 
-    @Autowired
-    private IProductImageUrlService productImageurlService;
+    private final IProductImageUrlService productImageurlService;
 
-    @Autowired
-    private ICSVService csvService;
+    private final ICSVService csvService;
 
     /**
      * Xử lý request đến trang upload sản phẩm với phương thức GET
+     *
      * @return trang upload sản phẩm
      */
     @GetMapping("/upload")
@@ -46,10 +46,11 @@ public class ProductController {
 
     /**
      * Xử lý request đến trang upload sản phẩm với phương thức POST
-     * @param name tên sản phẩm
-     * @param price giá sản phẩm
+     *
+     * @param name     tên sản phẩm
+     * @param price    giá sản phẩm
      * @param quantity số lượng sản phẩm
-     * @param files danh sách file ảnh
+     * @param files    danh sách file ảnh
      * @return trang upload sản phẩm thành công
      * @throws IOException ném ra exception khi lấy file ảnh từ path
      */
@@ -77,6 +78,7 @@ public class ProductController {
 
     /**
      * Xử lý request đến trang upload sản phẩm trong file csv với phương thức POST
+     *
      * @return chuyển hướng đến trang danh sách sản phẩm
      */
     @PostMapping("/uploadCsv")

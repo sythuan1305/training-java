@@ -7,6 +7,7 @@ import com.beetech.trainningJava.utils.Utils;
 import com.paypal.api.payments.*;
 import com.paypal.base.rest.APIContext;
 import com.paypal.base.rest.PayPalRESTException;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,19 +19,17 @@ import java.util.List;
  * Class chứa các method xử lý logic của paypal
  */
 @Service
+@RequiredArgsConstructor(onConstructor_ = {@Autowired})
 public class PaypalService {
     private static final String currency = "USD";
 
-    @Autowired
-    private IAccountService accountService;
+    private final IAccountService accountService;
 
     // Đối tượng apiContext sẽ được sử dụng để gọi các API của PayPal
-    @Autowired
-    APIContext apiContext;
+    private final APIContext apiContext;
 
     // Đối tượng redirectUrls sẽ chứa các url của trang web
-    @Autowired
-    RedirectUrls redirectUrls;
+    private final RedirectUrls redirectUrls;
 
     /**
      * Xác thực thông tin của 1 payment và trả về link redirect để chuyển hướng đến trang paypal
@@ -156,6 +155,7 @@ public class PaypalService {
 
     /**
      * Lấy link redirect
+     *
      * @param approvedPayment là đối tượng payment đã được approved
      * @return link redirect
      */
@@ -178,6 +178,7 @@ public class PaypalService {
 
     /**
      * Lấy thông tin của payment
+     *
      * @param paymentId là id của payment
      * @return đối tượng payment chứa thông tin thanh toán
      * @throws PayPalRESTException ném ra lỗi khi get thông tin payment
@@ -188,8 +189,9 @@ public class PaypalService {
 
     /**
      * Thực hiện thanh toán
+     *
      * @param paymentId là id của payment
-     * @param payerId là id của người thanh toán
+     * @param payerId   là id của người thanh toán
      * @return đối tượng payment chứa thông tin thanh toán
      */
     public Payment executePayment(String paymentId, String payerId) {

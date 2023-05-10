@@ -4,17 +4,19 @@ import com.beetech.trainningJava.entity.OrderEntity;
 import com.beetech.trainningJava.model.OrderModel;
 import com.beetech.trainningJava.repository.OrderRepository;
 import com.beetech.trainningJava.service.IOrderService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
  * Class này dùng để triển khai các phương thức của interface IOrderService
+ * 
  * @see IOrderService
  */
 @Service
+@RequiredArgsConstructor(onConstructor_ = { @Autowired })
 public class OrderServiceImp implements IOrderService {
-    @Autowired
-    private OrderRepository orderRepository;
+    private final OrderRepository orderRepository;
 
     @Override
     public OrderEntity saveOrderEntityByEntity(OrderEntity orderEntity) {

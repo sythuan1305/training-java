@@ -2,6 +2,7 @@ package com.beetech.trainningJava.controller.api.user;
 
 import com.beetech.trainningJava.service.ICartProductService;
 import com.beetech.trainningJava.service.IProductService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,14 +16,13 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController("apiCartController")
 @RequestMapping("/api/user/cart")
+@RequiredArgsConstructor(onConstructor_ = {@Autowired})
 public class CartController {
     public static final int TEST_MINUS_QUANTITY_NUMBER = 10000;
 
-    @Autowired
-    ICartProductService cartProductService;
+    private final ICartProductService cartProductService;
 
-    @Autowired
-    IProductService productService;
+    private final IProductService productService;
 
     @PostMapping("/testCase1")
     @Transactional(propagation = Propagation.REQUIRED)

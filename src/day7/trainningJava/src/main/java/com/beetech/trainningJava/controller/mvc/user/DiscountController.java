@@ -5,6 +5,7 @@ import com.beetech.trainningJava.model.DiscountModel;
 import com.beetech.trainningJava.service.ICartProductService;
 import com.beetech.trainningJava.service.IProductDiscountConditionService;
 import com.beetech.trainningJava.utils.Utils;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -17,16 +18,16 @@ import java.util.*;
  */
 @Controller("mvcUserDiscountController")
 @RequestMapping("/user/discount")
+@RequiredArgsConstructor(onConstructor_ = {@Autowired})
 public class DiscountController {
-    @Autowired
-    private ICartProductService cartProductService;
+    private final ICartProductService cartProductService;
 
-    @Autowired
-    private IProductDiscountConditionService discountProductService;
+    private final IProductDiscountConditionService discountProductService;
 
     /**
      * Chuyển đến trang xem danh sách giảm giá
-     * @param cookieValue giá trị của cookie cart
+     *
+     * @param cookieValue   giá trị của cookie cart
      * @param cartProductId danh sách id sản phẩm trong giỏ hàng được chọn để mua
      * @return trang xem danh sách giảm giá
      */

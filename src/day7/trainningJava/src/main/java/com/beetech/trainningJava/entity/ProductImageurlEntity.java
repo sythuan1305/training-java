@@ -1,8 +1,7 @@
 package com.beetech.trainningJava.entity;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 /**
  * Entity này dùng để lưu các ảnh của sản phẩm
@@ -10,6 +9,9 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 @Table(name = "product_imageurl")
 public class ProductImageurlEntity {
     @Id

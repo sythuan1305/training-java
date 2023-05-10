@@ -7,6 +7,7 @@ import com.beetech.trainningJava.model.DiscountModel;
 import com.beetech.trainningJava.service.*;
 import com.beetech.trainningJava.utils.Utils;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import lombok.RequiredArgsConstructor;
 import org.apache.tomcat.util.json.JSONParser;
 import org.apache.tomcat.util.json.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,19 +23,16 @@ import java.util.*;
  */
 @Controller("mvcUserCartController")
 @RequestMapping("/user/cart")
+@RequiredArgsConstructor(onConstructor_ = {@Autowired})
 @Loggable
 public class CartController {
-    @Autowired
-    private ICartProductService cartProductService;
+    private final ICartProductService cartProductService;
 
-    @Autowired
-    private IProductService productService;
+    private final IProductService productService;
 
-    @Autowired
-    private IAccountService accountService;
+    private final IAccountService accountService;
 
-    @Autowired
-    private IProductDiscountConditionService productDiscountConditionService;
+    private final IProductDiscountConditionService productDiscountConditionService;
 
     /**
      * Chuyển đến trang xem thông tin giỏ hàng

@@ -2,6 +2,7 @@ package com.beetech.trainningJava.config;
 
 import com.beetech.trainningJava.enums.Role;
 import com.beetech.trainningJava.jwt.JwtAuthenticationFilter;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.servlet.server.CookieSameSiteSupplier;
 import org.springframework.context.annotation.Bean;
@@ -27,10 +28,10 @@ import java.util.List;
  */
 @Configuration
 @EnableWebSecurity
+@RequiredArgsConstructor(onConstructor_ = {@Autowired})
 //@EnableMethodSecurity(prePostEnabled = false, securedEnabled = true, jsr250Enabled = true)
 public class WebSercurityConfig {
-    @Autowired
-    private JwtAuthenticationFilter jwtAuthenticationFilter;
+    private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
     // Khởi tạo bean password encoder để mã hóa mật khẩu
     @Bean

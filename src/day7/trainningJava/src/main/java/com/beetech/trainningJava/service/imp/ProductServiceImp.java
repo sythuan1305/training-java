@@ -10,6 +10,7 @@ import com.beetech.trainningJava.repository.ProductRepository;
 import com.beetech.trainningJava.service.IProductImageUrlService;
 import com.beetech.trainningJava.service.IProductService;
 import com.beetech.trainningJava.utils.Utils;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -28,16 +29,14 @@ import java.util.Set;
  * @see IProductService
  */
 @Service
+@RequiredArgsConstructor(onConstructor_ = {@Autowired})
 @LogMemoryAndCpu
 public class ProductServiceImp implements IProductService {
-    @Autowired
-    private ProductRepository productRepository;
+    private final ProductRepository productRepository;
 
-    @Autowired
-    private IProductImageUrlService productImageUrlService;
+    private final IProductImageUrlService productImageUrlService;
 
-    @Autowired
-    private ProductImageurlRepository productImageurlRepository;
+    private final ProductImageurlRepository productImageurlRepository;
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
@@ -50,7 +49,8 @@ public class ProductServiceImp implements IProductService {
     }
 
     @Override
-    public PageModel<ProductInforModel> findPageModelProductInforModelByPageIndex(Integer pageIndex, Integer size, String sort) {// TODO SQL
+    public PageModel<ProductInforModel> findPageModelProductInforModelByPageIndex(Integer pageIndex, Integer size,
+                                                                                  String sort) {// TODO SQL
         // lấy page product entity theo page index, size, sort
         PageRequest pageRequest = PageRequest.of(pageIndex < 0 ? 0 : pageIndex, size, Sort.by(sort));
         Page<ProductEntity> paging = productRepository.findAll(pageRequest);
@@ -91,8 +91,9 @@ public class ProductServiceImp implements IProductService {
         ProductEntity productEntity = getProductEntityById(id);
         List<String> images = productEntity
                 .getProductImageurlEntities()
-                .stream().map(productImageurlEntity ->
-                        Utils.Base64Image.getImageByPath(productImageurlEntity.getImageUrl())).toList();
+                .stream()
+                .map(productImageurlEntity -> Utils.Base64Image.getImageByPath(productImageurlEntity.getImageUrl()))
+                .toList();
         return new ProductInforModel(productEntity, images);
     }
 
@@ -101,7 +102,8 @@ public class ProductServiceImp implements IProductService {
         if (productEntity == null)
             throw new RuntimeException("productEntity is null");
         List<String> images = Utils.Base64Image.getImageListByPathLists(
-                productEntity.getProductImageurlEntities().parallelStream().map(ProductImageurlEntity::getImageUrl).toList());
+                productEntity.getProductImageurlEntities().parallelStream().map(ProductImageurlEntity::getImageUrl)
+                        .toList());
         return new ProductInforModel(productEntity, images);
     }
 
@@ -111,8 +113,7 @@ public class ProductServiceImp implements IProductService {
         Set<ProductImageurlEntity> productImageurlEntities = productEntity.getProductImageurlEntities();
         // tạo list ảnh dạng base64
 
-        List<String> images = Utils.Base64Image.getImageListByPathLists(productImageurlEntities.
-                stream()
+        List<String> images = Utils.Base64Image.getImageListByPathLists(productImageurlEntities.stream()
                 .map(ProductImageurlEntity::getImageUrl)
                 .toList());
         return new ProductInforModel(productEntity, images);

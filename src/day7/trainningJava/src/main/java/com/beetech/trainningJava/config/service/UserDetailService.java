@@ -4,6 +4,7 @@ import com.beetech.trainningJava.config.model.AccountModel;
 import com.beetech.trainningJava.config.model.RoleModel;
 import com.beetech.trainningJava.entity.AccountEntity;
 import com.beetech.trainningJava.repository.AccountRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -19,9 +20,9 @@ import java.util.List;
  * @see UserDetailsService
  */
 @Service
+@RequiredArgsConstructor(onConstructor_ = {@Autowired})
 public class UserDetailService implements UserDetailsService {
-    @Autowired
-    private AccountRepository accountRepository;
+    private final AccountRepository accountRepository;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
