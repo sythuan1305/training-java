@@ -40,6 +40,8 @@ dependencies {
     annotationProcessor("org.projectlombok:lombok:1.18.26")
     testImplementation("org.mockito:mockito-inline:4.6.1")
     implementation("com.paypal.sdk:rest-api-sdk:1.14.0")
+    implementation("javax.validation:validation-api:2.0.1.Final")
+    implementation("org.springframework.boot:spring-boot-starter-validation:3.0.4")
 }
 
 tasks.withType<Test> {
@@ -52,4 +54,12 @@ tasks.bootJar {
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }
 //
-
+// enable preview in java 17 -- https://www.lotharschulz.info/2022/05/22/how-to-set-java-pattern-matching-for-switch-in-intellij-gradle/
+val ENABLE_PREVIEW = "--enable-preview"
+tasks.withType<JavaCompile> {
+    options.compilerArgs.add(ENABLE_PREVIEW)
+}
+tasks.test {
+    useJUnitPlatform()
+    jvmArgs(ENABLE_PREVIEW)
+}
