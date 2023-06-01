@@ -10,6 +10,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureWebMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
@@ -46,7 +48,8 @@ public class TestIntegration {
         // given
         Integer pageNumber = 0;
         System.out.println("productService" + productService);
-        PageModel<ProductInforModel> pageModel = productService.findPageModelProductInforModelByPageIndex(pageNumber, 5, "name");
+        Pageable pageable = PageRequest.of(pageNumber, 5);
+        PageModel<ProductInforModel> pageModel = productService.findPageModelProductInforModelByPageIndex(pageable);
         System.out.println("pageModel" + pageModel);
 
         // when

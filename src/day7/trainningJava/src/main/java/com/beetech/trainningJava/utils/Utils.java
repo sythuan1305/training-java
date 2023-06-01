@@ -24,11 +24,15 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.security.SecureRandom;
 import java.util.*;
 
 public class Utils {
     public final static String DEFAULT_COOKIE_VALUE = "defaultCookieValue";
+    public static String REFRESH_TOKEN_COOKIE_NAME;
+    public static int REFRESH_TOKEN_COOKIE_LENGTH;
 
+    public final static long VERIFY_TOKEN_EXPIRED_TIME = 1000 * 60 * 60 * 24; // 1 days
     private static final int KBinBytes = 1024;
 
     public static long memoryUsed() {
@@ -109,9 +113,22 @@ public class Utils {
 
     public static class Base64Image {
         public static String path;
+        static final SecureRandom random = new SecureRandom();
+
+        public static String randomString(int length) {
+            if (length < 1)
+                throw new RuntimeException("Length cannot be negative");
+
+            byte[] arr = new byte[length];
+            random.nextBytes(arr);
+
+            String s = Base64.getEncoder().encodeToString(arr);
+            return s.substring(0, Math.min(length, s.length()));
+        }
 
         /**
          * Lưu ảnh vào thư mục và trả về đường dẫn của ảnh
+         *
          * @param file là ảnh cần lưu
          * @return đường dẫn của ảnh sau khi lưu
          */
@@ -148,6 +165,7 @@ public class Utils {
 
         /**
          * Lưu nhiều ảnh vào thư mục và trả về danh sách đường dẫn của ảnh
+         *
          * @param files là danh sách ảnh cần lưu
          * @return danh sách đường dẫn của ảnh sau khi lưu
          */
@@ -161,6 +179,7 @@ public class Utils {
 
         /**
          * Lấy ảnh theo đường dẫn
+         *
          * @param path là đường dẫn của ảnh cần lấy
          * @return ảnh được mã hóa base64
          */
@@ -181,13 +200,14 @@ public class Utils {
                     return Base64.getEncoder().encodeToString(baos.toByteArray());
                 }
             } catch (IOException e) {
-                throw new RuntimeException(e);
+                return e.getMessage();
             }
             return "";
         }
 
         /**
          * Lấy nhiều ảnh theo danh sách đường dẫn
+         *
          * @param paths là danh sách đường dẫn của ảnh cần lấy
          * @return danh sách ảnh được mã hóa base64
          */
@@ -201,6 +221,7 @@ public class Utils {
 
         /**
          * Chuyển base64 thành MultipartFile
+         *
          * @param base64 là ảnh được mã hóa base64
          * @return MultipartFile là ảnh sau khi chuyển
          */
@@ -214,6 +235,7 @@ public class Utils {
 
         /**
          * Chuyển danh sách base64 thành danh sách MultipartFile
+         *
          * @param base64List là danh sách ảnh được mã hóa base64
          * @return danh sách MultipartFile là danh sách ảnh sau khi chuyển
          */

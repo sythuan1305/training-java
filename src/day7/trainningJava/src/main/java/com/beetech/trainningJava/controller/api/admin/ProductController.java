@@ -1,23 +1,82 @@
 package com.beetech.trainningJava.controller.api.admin;
 
+import com.beetech.trainningJava.entity.ProductEntity;
+import com.beetech.trainningJava.entity.ProductImageurlEntity;
+import com.beetech.trainningJava.model.ApiResponse;
+import com.beetech.trainningJava.model.PageModel;
+import com.beetech.trainningJava.model.ProductInforModel;
+import com.beetech.trainningJava.service.ICSVService;
 import com.beetech.trainningJava.service.ICartProductService;
+import com.beetech.trainningJava.service.IProductImageUrlService;
+import com.beetech.trainningJava.service.IProductService;
+import com.beetech.trainningJava.utils.Utils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.ModelAndView;
+
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Controller này dùng để xử lý các request liên quan đến sản phẩm với quyền admin
  */
-@Controller("apiAdminProductController")
+@RestController("apiAdminProductController")
 @RequestMapping("/api/admin/product")
 @RequiredArgsConstructor(onConstructor_ = {@Autowired})
 public class ProductController {
-    private final ICartProductService cartProductService;
+    private final IProductService productService;
 
-    @GetMapping("/testCsrf")
-    public void testCsrf() {
-        cartProductService.TestMinusQuantity();
+    private final IProductImageUrlService productImageurlService;
+
+    private final ICSVService csvService;
+
+    /**
+     * Xử lý request đến trang upload sản phẩm với phương thức POST
+     *
+     * @param name     tên sản phẩm
+     * @param price    giá sản phẩm
+     * @param quantity số lượng sản phẩm
+     * @param files    danh sách file ảnh
+     * @return trang upload sản phẩm thành công
+     * @throws IOException ném ra exception khi lấy file ảnh từ path
+     */
+    @PostMapping("/upload")
+    public ResponseEntity<Object> uploadProduct(@RequestParam("name") String name,
+                                                @RequestParam("price") BigDecimal price,
+                                                @RequestParam("quantity") Integer quantity,
+                                                @RequestParam(value = "files", required = false) MultipartFile[] files) {
+        // lưu thông tin sản phẩm
+        ProductEntity productEntity = productService.saveProductEntity(new ProductEntity(name, price, quantity));
+
+        // lưu ảnh sản phẩm
+        Set<ProductImageurlEntity> productImageurlEntities = productImageurlService.saveEntityList(
+                Utils.Base64Image.uploadMultipleImagesByProductId(List.of(files), productEntity.getId()),
+                productEntity);
+
+        // lấy danh sách ảnh sản phẩm từ path
+        // với ảnh là dạng mã hóa base64
+        List<String> images = Utils.Base64Image.getImageListByPathLists(productImageurlEntities.stream().map(ProductImageurlEntity::getImageUrl).toList());
+
+        return ResponseEntity.ok(new ApiResponse(HttpStatus.OK.value(),
+                true,
+                "Upload product successfully",
+                new ProductInforModel(productEntity, images)));
+    }
+
+    /**
+     * Xử lý request đến trang upload sản phẩm trong file csv với phương thức POST
+     *
+     * @return chuyển hướng đến trang danh sách sản phẩm
+     */
+    @PostMapping("/uploadCsv")
+    public String uploadProductCsv(@RequestParam("fileCsv") MultipartFile fileCsv) {
+        csvService.csvToProductInforModelList(fileCsv);
+        return "redirect:/user/product/list";
     }
 }

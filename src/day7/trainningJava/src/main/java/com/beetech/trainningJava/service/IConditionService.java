@@ -1,6 +1,8 @@
 package com.beetech.trainningJava.service;
 
 import com.beetech.trainningJava.entity.ConditionEntity;
+import com.beetech.trainningJava.model.ConditionEntityDto;
+import com.beetech.trainningJava.model.CartProductEntityDto;
 import com.beetech.trainningJava.model.CartProductInforModel;
 import com.beetech.trainningJava.model.ConditionModel;
 
@@ -15,5 +17,15 @@ public interface IConditionService {
      * @param conditionEntity là thông tin của điều kiện
      * @return ConditionModel là thông tin của điều kiện của sản phẩm sau khi kiểm tra điều kiện đủ hay chưa
      */
-    ConditionModel getConditionModelByCartProductInforModelAndConditionEntity(CartProductInforModel cartProductInforModel, ConditionEntity conditionEntity);
+    ConditionModel getConditionModelByCartProductInforModelAndConditionEntity(
+            CartProductInforModel cartProductInforModel, ConditionEntity conditionEntity);
+
+    /**
+     * Lấy thông tin condition model sau khi kiểm tra điều kiện đủ hay chưa của sản phẩm trong giỏ hàng
+     * @param cartProductEntityDto là thông tin của sản phẩm trong giỏ hàng
+     * @param conditionEntity là thông tin của điều kiện
+     * @return Condition Entity Dto là thông tin của điều kiện của sản phẩm sau khi kiểm tra điều kiện đủ hay chưa
+     */
+    ConditionEntityDto getConditionEntityDtoByCartProductEntityDtoAndConditionEntity(
+            CartProductEntityDto cartProductEntityDto, ConditionEntity conditionEntity);
 }

@@ -1,9 +1,11 @@
 package com.beetech.trainningJava.jwt;
 
+import com.beetech.trainningJava.exception.HttpError;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -28,12 +30,17 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final UserDetailsService userDetailsService;
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request,
-                                    HttpServletResponse response,
-                                    FilterChain filterChain)
+    protected void doFilterInternal(@NonNull HttpServletRequest request,
+                                    @NonNull HttpServletResponse response,
+                                    @NonNull FilterChain filterChain)
             throws ServletException, IOException {
+        String REFRESH_URI = "/api/auth/refreshToken";
+        if (REFRESH_URI.equals(request.getRequestURI())) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+        String jwt = getJwtFromRequest(request);
         try {
-            String jwt = getJwtFromRequest(request);
             if (StringUtils.hasText(jwt) && jwtTokenProvider.isValidToken(jwt)) {
                 String username = jwtTokenProvider.getUsernameFromJwt(jwt);
                 UserDetails userDetails = userDetailsService.loadUserByUsername(username);
@@ -47,8 +54,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                     SecurityContextHolder.getContext().setAuthentication(auth);
                 }
             }
-        } catch (Exception e) {
-            System.out.println("failed on set user authentication" + e.getMessage());
+        } catch (HttpError e) {
+            response.sendError(e.getHttpStatus().value(), e.getMessage());
+            return;
         }
         filterChain.doFilter(request, response);
     }

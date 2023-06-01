@@ -49,7 +49,6 @@ class ProductDiscountConditionRepositoryTest {
                 System.out.println(productDiscountConditionEntity.getProduct().getId());
                 System.out.println(productDiscountConditionEntity.getProduct().getName());
                 System.out.println(productDiscountConditionEntity.getProduct().getPrice());
-                System.out.println(productDiscountConditionEntity.getProduct().getTestColumn());
             });
         });
 

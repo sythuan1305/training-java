@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Payment Information</title>
+</head>
+<body>
+<header style="text-align: center">
+    <div>
+        <h1>Đơn hàng của bạn đã hủy</h1>
+        <p th:text="${'Đơn hàng ' + order.getId() + ' đã bị hủy'}"></p>
+    </div>
+</header>
+<div class="card" style="text-align: center">
+    <h2 class="card-header" style="color: #005cbf">Detail Payment</h2>
+    <table class="table card-body" style="display: inline-block">
+        <tr>
+            <td>
+                <table class="table">
+                    <tbody>
+                    <tr th:each="cartProduct : ${order.getCartProductEntityDto()}">
+                        <td>
+                            <img class="card-img" th:src="${'data:image/png;base64,' + cartProduct.getProduct().getDefaultImageUrl()}"
+                                 alt="product_image"
+                                 style="max-width: 100px">
+                        </td>
+                        <td th:text="${cartProduct.getProduct().getName()}"></td>
+                        <td th:text="${cartProduct.getPrice()}"></td>
+                        <td th:text="${cartProduct.getQuantity()}"></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <table style="text-align: left" class="table card-columns">
+                    <tr>
+                        <th class="card-text">Total Product Price:</th>
+                        <td class="card-text" id="total-product-price" th:text="${order.getTotalPrice()}"></td>
+                    </tr>
+                    <tr>
+                        <th class="card-text">Total discount:</th>
+                        <td class="card-text" id="total-discount" th:text="${order.getTotalDiscount()}"></td>
+                    </tr>
+                    <tr>
+                        <th><h3 class="card-text">Total Order</h3></th>
+                        <td><h3 class="card-text" id="total-order" th:text="${order.getTotalAmount()}"></h3>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+</div>
+</body>
+</html>

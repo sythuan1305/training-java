@@ -1,12 +1,15 @@
 package com.beetech.trainningJava.service.imp;
 
 import com.beetech.trainningJava.aspect.annotation.LogMemoryAndCpu;
+import com.beetech.trainningJava.entity.CategoryEntity;
 import com.beetech.trainningJava.entity.ProductEntity;
 import com.beetech.trainningJava.entity.ProductImageurlEntity;
-import com.beetech.trainningJava.model.PageModel;
-import com.beetech.trainningJava.model.ProductInforModel;
+import com.beetech.trainningJava.model.*;
+import com.beetech.trainningJava.model.mappper.ProductEntityDtoMapper;
+import com.beetech.trainningJava.repository.CategoryRepository;
 import com.beetech.trainningJava.repository.ProductImageurlRepository;
 import com.beetech.trainningJava.repository.ProductRepository;
+import com.beetech.trainningJava.service.ICategoryService;
 import com.beetech.trainningJava.service.IProductImageUrlService;
 import com.beetech.trainningJava.service.IProductService;
 import com.beetech.trainningJava.utils.Utils;
@@ -14,6 +17,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -21,7 +25,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * Class này dùng để triển khai các phương thức của interface IProductService
@@ -34,9 +40,7 @@ import java.util.Set;
 public class ProductServiceImp implements IProductService {
     private final ProductRepository productRepository;
 
-    private final IProductImageUrlService productImageUrlService;
-
-    private final ProductImageurlRepository productImageurlRepository;
+    private final ProductEntityDtoMapper productEntityDtoMapper;
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
@@ -49,11 +53,8 @@ public class ProductServiceImp implements IProductService {
     }
 
     @Override
-    public PageModel<ProductInforModel> findPageModelProductInforModelByPageIndex(Integer pageIndex, Integer size,
-                                                                                  String sort) {// TODO SQL
-        // lấy page product entity theo page index, size, sort
-        PageRequest pageRequest = PageRequest.of(pageIndex < 0 ? 0 : pageIndex, size, Sort.by(sort));
-        Page<ProductEntity> paging = productRepository.findAll(pageRequest);
+    public PageModel<ProductInforModel> findPageModelProductInforModelByPageIndex(Pageable pageable) {// TODO SQL
+        Page<ProductEntity> paging = productRepository.findAll(pageable);
 
         // tạo list product infor model
         List<ProductInforModel> productInforModels = new ArrayList<>();
@@ -64,15 +65,36 @@ public class ProductServiceImp implements IProductService {
             // thêm product infor model vào list product infor model
             productInforModels.add(productInforModel);
         }
-        double totalPage = (double) productRepository.count() / (double) size;
-        return new PageModel<>(productInforModels, pageRequest.getPageNumber(), (long) Math.ceil(totalPage));
+        double totalPage = (double) productRepository.count() / (double) paging.getContent().size();
+        return new PageModel<>(productInforModels, pageable.getPageNumber(), (long) Math.ceil(totalPage));
     }
+
+    @Override
+    public List<CategoryEntityDto> findAllPageModelProductEntityDtoByAllCategoryAndPageable(
+            List<CategoryEntity> categoryEntities,
+            Pageable pageable) {
+        List<CategoryEntityDto> categoryEntityDtos = new ArrayList<>();
+        categoryEntities.forEach(categoryEntity -> {
+            Set<ProductEntityDto> productEntityDtos =productRepository
+                    .findAllByCategoryId(categoryEntity.getId(), pageable)
+                    .stream()
+                    .map(productEntityDtoMapper)
+                    .collect(Collectors.toSet());
+            categoryEntityDtos.add(new CategoryEntityDto(
+                    categoryEntity.getId(),
+                    categoryEntity.getName(),
+                    productEntityDtos));
+        });
+        return categoryEntityDtos;
+    }
+
 
     @Override
     public ProductEntity getProductEntityById(Integer productId) {
         if (productId == null)
             throw new RuntimeException("productId is null");
-        return productRepository.getReferenceById(productId);
+        Optional<ProductEntity> productEntity = productRepository.findById(productId);
+        return productEntity.orElse(null);
     }
 
     @Override
@@ -89,12 +111,21 @@ public class ProductServiceImp implements IProductService {
     @Override
     public ProductInforModel getProductInforModelById(Integer id) { // TODO SQL
         ProductEntity productEntity = getProductEntityById(id);
+        if (productEntity == null)
+            throw new RuntimeException("productEntity is null");
         List<String> images = productEntity
                 .getProductImageurlEntities()
                 .stream()
                 .map(productImageurlEntity -> Utils.Base64Image.getImageByPath(productImageurlEntity.getImageUrl()))
                 .toList();
         return new ProductInforModel(productEntity, images);
+    }
+
+    @Override
+    public ProductEntityDto getProductEntityDtoById(Integer id) {
+        return productRepository.findById(id)
+                .map(productEntityDtoMapper)
+                .orElseThrow(() -> new RuntimeException("productEntity is null"));
     }
 
     @Override
@@ -112,12 +143,12 @@ public class ProductServiceImp implements IProductService {
         // lấy list image url entity theo product id
         Set<ProductImageurlEntity> productImageurlEntities = productEntity.getProductImageurlEntities();
         // tạo list ảnh dạng base64
-
         List<String> images = Utils.Base64Image.getImageListByPathLists(productImageurlEntities.stream()
                 .map(ProductImageurlEntity::getImageUrl)
                 .toList());
         return new ProductInforModel(productEntity, images);
     }
+
     // endregion
 
     @Override

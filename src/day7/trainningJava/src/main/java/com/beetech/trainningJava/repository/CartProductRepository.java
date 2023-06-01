@@ -6,10 +6,14 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+
 @Repository
 public interface CartProductRepository extends JpaRepository<CartProductEntity, Integer> {
-    @EntityGraph(attributePaths = {"product", "product.productImageurlEntities"}, type = EntityGraph.EntityGraphType.FETCH)
+    @EntityGraph(attributePaths = {"product"}, type = EntityGraph.EntityGraphType.FETCH)
     List<CartProductEntity> findAllByCartIdAndIsBought(Integer cartId, boolean bought);
 
+    @EntityGraph(attributePaths = {"product", "product.productImageurlEntities"}, type = EntityGraph.EntityGraphType.FETCH)
     CartProductEntity findByCartIdAndProductIdAndIsBought(Integer cartId, Integer productId, boolean bought);
+
+    boolean existsByCartIdAndProductIdAndIsBought(Integer cartId, Integer productId, boolean bought);
 }

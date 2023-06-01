@@ -27,10 +27,10 @@
         <div class="card-body">
             <!--            input address-->
             <div th:if="${isAuthenticated}">
-                <label>
-                    <input type="text" name="address" th:value="${cartProducts[0].getCart().getAccount().getUsername()}"
-                           disabled>
-                </label>
+<!--                <label>-->
+<!--                    <input type="text" name="address" th:value="${cartProducts[0].getCart().getAccount().getUsername()}"-->
+<!--                           disabled>-->
+<!--                </label>-->
             </div>
             <div th:if="${!isAuthenticated}">
                 <label>

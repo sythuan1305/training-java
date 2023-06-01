@@ -26,6 +26,6 @@ public class AccountController {
     @GetMapping("/test")
     public ResponseEntity<ApiResponse> getAccountByUserName(@RequestParam(value = "username") String username) {
         List<AccountEntity> accountEntities = accountRepository.findAllByUsernameNative(username);
-        return ResponseEntity.ok(new ApiResponse(true ,accountEntities));
+        return ResponseEntity.ok(new ApiResponse(true, accountEntities));
     }
 }

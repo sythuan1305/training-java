@@ -33,7 +33,7 @@ public class DiscountModel extends DiscountEntity {
         super(discountEntity);
         this.conditions = conditions;
         this.isAbleToUse = isAbleToUse;
-        this.startDateZone = ZonedDateTime.parse(discountEntity.getStartDate()).withZoneSameInstant(ZoneId.systemDefault());
-        this.endDateZone = ZonedDateTime.parse(discountEntity.getEndDate()).withZoneSameInstant(ZoneId.systemDefault());
+        this.startDateZone = ZonedDateTime.parse(discountEntity.getStartDate().toString()).withZoneSameInstant(ZoneId.systemDefault());
+        this.endDateZone = ZonedDateTime.parse(discountEntity.getEndDate().toString()).withZoneSameInstant(ZoneId.systemDefault());
     }
 }

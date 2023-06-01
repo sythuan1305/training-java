@@ -11,6 +11,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class ApiResponse {
+    public static final int CODE_SUCCESS = 200;
     int code;
 
     boolean success;
@@ -22,5 +23,13 @@ public class ApiResponse {
     public ApiResponse(boolean success, Object data) {
         this.success = success;
         this.data = data;
+        this.code = CODE_SUCCESS;
+    }
+
+    public ApiResponse(Object data, String message) {
+        this.success = true;
+        this.data = data;
+        this.code = CODE_SUCCESS;
+        this.message = message;
     }
 }

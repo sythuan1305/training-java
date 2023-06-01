@@ -46,9 +46,4 @@ public class HomeController {
         // Chuyển hướng đến trang danh sách sản phẩm
         return new RedirectView("/user/product/list");
     }
-
-    @GetMapping("/testArgs")
-    public void testArgs(@RequestParam(value = "args", required = false) String args) {
-        System.out.println("testArgs" + args);
-    }
 }

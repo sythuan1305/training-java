@@ -1,9 +1,9 @@
 package com.beetech.trainningJava.repository;
 
+import com.beetech.trainningJava.entity.CategoryEntity;
 import com.beetech.trainningJava.entity.ProductEntity;
 import com.beetech.trainningJava.entity.ProductImageurlEntity;
 import com.beetech.trainningJava.model.ProductInforModel;
-import com.beetech.trainningJava.model.ProductWithImageUrl;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
@@ -16,6 +16,7 @@ import org.springframework.test.annotation.Rollback;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -47,14 +48,12 @@ class ProductRepositoryTest {
                 .build();
         // when
         ProductEntity productEntity1 = productRepository.save(productEntity); // id tự tăng
-        System.out.println("productEntity1 " + productEntity1.getTestColumn());
         System.out.println("productEntity1 " + productEntity1.getId());
         // then
 //        assertEquals(productEntity.getId(), productEntity1.getId()); wrong
         assertEquals(productEntity.getName(), productEntity1.getName());
         assertEquals(productEntity.getPrice(), productEntity1.getPrice());
         assertEquals(productEntity.getQuantity(), productEntity1.getQuantity());
-        assertEquals(productEntity.getTestColumn(), productEntity1.getTestColumn());
 
         // thêm trường (default) vào product để test
         // khong set gia tri cho truong tren (de null)
@@ -155,7 +154,91 @@ class ProductRepositoryTest {
         productImageurlEntities.add(ProductImageurlEntity.builder().imageUrl("imageUrl2").product(product).build());
 
         productImageurlRepository.saveAll(productImageurlEntities);
+    }
+
+    @Test
+    void TestFindByName() {
+        PageRequest pageRequest = PageRequest.of(0, 2);
+        Page<CategoryEntity> categoryEntities = productRepository.findProductsByCategoryName("áo polo", pageRequest);
+
+        categoryEntities.getContent().forEach(
+                categoryEntity -> {
+                    System.out.println(categoryEntity.getName());
+                    categoryEntity.getProductEntities().forEach(
+                            productEntity -> {
+                                System.out.println(productEntity.getName());
+                            }
+                    );
+                }
+        );
+    }
 
 
+    @Test
+    void testFindByName() {
+        ProductEntity product = productRepository.findByName("áo polo 1");
+        System.out.println(product.getId());
+        System.out.println(product.getName());
+        System.out.println(product.getQuantity());
+        System.out.println(product.getPrice());
+        System.out.println(product.getCategory().getName());
+    }
+
+    @Test
+    void testFindById() {
+        Optional<ProductEntity> product = productRepository.findById(160);
+        ProductEntity productEntity = product.get();
+        System.out.println(productEntity.getId());
+        System.out.println(productEntity.getName());
+        System.out.println(productEntity.getQuantity());
+        System.out.println(productEntity.getPrice());
+        System.out.println(productEntity.getCategory().getName());
+    }
+
+    @Test
+    void testFindAll() {
+        PageRequest pageRequest = PageRequest.of(0, 1);
+        Page<ProductEntity> productEntities = productRepository.findAll(pageRequest);
+        productEntities.getContent().forEach(
+                productEntity -> {
+                    System.out.println(productEntity.getId());
+                    System.out.println(productEntity.getName());
+                    System.out.println(productEntity.getQuantity());
+                    System.out.println(productEntity.getPrice());
+                    productEntity.getProductImageurlEntities().forEach(
+                            productImageurlEntity -> {
+                                System.out.println(productImageurlEntity.getImageUrl());
+                            }
+                    );
+                    System.out.println(productEntity.getCategory().getName());
+                }
+        );
+        System.out.println(productEntities.getTotalElements());
+        System.out.println(productEntities.getTotalPages());
+        System.out.println(productEntities.getNumber());
+
+    }
+
+    @Test
+    void testfindAllByCategoryId() {
+        PageRequest pageRequest = PageRequest.of(0, 2);
+        Page<ProductEntity> productEntities = productRepository.findAllByCategoryId(1, pageRequest);
+        productEntities.getContent().forEach(
+                productEntity -> {
+                    System.out.println(productEntity.getId());
+                    System.out.println(productEntity.getName());
+                    System.out.println(productEntity.getQuantity());
+                    System.out.println(productEntity.getPrice());
+                    System.out.println(productEntity.getDefaultImageUrl());
+                }
+        );
+        System.out.println(productEntities.getTotalElements());
+        System.out.println(productEntities.getTotalPages());
+        System.out.println(productEntities.getNumber());
+    }
+
+    @Test
+    void findProductEntityById() {
+        Optional<ProductEntity> productEntity = productRepository.findProductEntityById(160);
     }
 }

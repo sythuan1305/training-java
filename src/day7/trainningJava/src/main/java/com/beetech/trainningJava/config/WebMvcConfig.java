@@ -25,6 +25,16 @@ public class WebMvcConfig implements WebMvcConfigurer {
         Utils.Base64Image.path = path;
     }
 
+    @Value("${security.jwt.refresh-token.cookie-name}")
+    void setRefreshTokenCookieName(String name) {
+        Utils.REFRESH_TOKEN_COOKIE_NAME = name;
+    }
+
+    @Value("${security.jwt.refresh-token.cookie-length}")
+    void setRefreshTokenCookieLength(int length) {
+        Utils.REFRESH_TOKEN_COOKIE_LENGTH = length;
+    }
+
     // Thêm các view controller
     @Override
     public void addViewControllers(ViewControllerRegistry registry) {
@@ -37,7 +47,9 @@ public class WebMvcConfig implements WebMvcConfigurer {
     // Thêm các interceptor
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(authInterceptor()).addPathPatterns("/**");
+        registry.addInterceptor(authInterceptor())
+                .addPathPatterns("/**")
+                .excludePathPatterns("/api/**");
 
     }
 
@@ -48,6 +60,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
         return new AuthInterceptor();
     }
 
+    //
     // render view
     // Thêm view resolver
     // dùng để render view theo cấu hình

@@ -186,7 +186,7 @@ public class LoggingAspect {
         );
     }
 
-    @Around("execution(* com.beetech.trainningJava.service.imp.*.*(..))")
+//    @Around("execution(* com.beetech.trainningJava.service.imp.*.*(..))")
     public Object logMemoryAndCpuAnnotation(ProceedingJoinPoint pjp) {
         System.out.println("Before Around " + "\n" +
                 "signature: " + pjp.getSignature().getName() + "\n" );

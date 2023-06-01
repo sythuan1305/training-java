@@ -38,7 +38,7 @@ public class AccountModel implements UserDetails {
 
     @Override
     public String getUsername() {
-        return account.getUsername();
+        return account.getRefreshTokenEntity().getUsername();
     }
 
     @Override

@@ -3,10 +3,13 @@ package com.beetech.trainningJava.entity;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -21,7 +24,11 @@ import java.util.Set;
 @AllArgsConstructor
 @Table(name = "product")
 @NamedEntityGraphs({
-        @NamedEntityGraph(name = "productEntity.productImageurlEntities", attributeNodes = @NamedAttributeNode("productImageurlEntities")),
+        @NamedEntityGraph(name = "productEntity",
+                attributeNodes = {
+                        @NamedAttributeNode("productImageurlEntities"),
+                        @NamedAttributeNode("category")}),
+        @NamedEntityGraph(name = "productEntity.category", attributeNodes = @NamedAttributeNode("category"))
 })
 public class ProductEntity {
     @Id
@@ -42,7 +49,7 @@ public class ProductEntity {
     @JsonBackReference
     private Set<CartProductEntity> cartProducts = new LinkedHashSet<>();
 
-    @OneToMany(mappedBy = "product", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "product", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     @JsonBackReference
     private Set<ProductImageurlEntity> productImageurlEntities = new LinkedHashSet<>();
 
@@ -50,8 +57,19 @@ public class ProductEntity {
     @JsonBackReference
     private Set<ProductDiscountConditionEntity> productDiscountConditions = new LinkedHashSet<>();
 
-    @Column(name = "test_column", length = 45)
-    private String testColumn;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "category_id", nullable = false)
+    private CategoryEntity category;
+
+    @CreationTimestamp
+    @Column(name = "created_at", nullable = false)
+    private LocalDateTime createdAt;
+
+    @Column(name = "sold_quantity", nullable = false)
+    private Integer soldQuantity;
+
+    @Column(name = "default_image_url", nullable = false, length = 100)
+    private String defaultImageUrl;
 
     public ProductEntity(String name, BigDecimal price, Integer quantity) {
         this.name = name;
@@ -63,7 +81,6 @@ public class ProductEntity {
         this.name = name;
         this.price = new BigDecimal(String.valueOf(price));
         this.quantity = quantity;
-        this.testColumn = testColumn;
     }
 
     public ProductEntity(ProductEntity productEntity) {
@@ -75,7 +92,10 @@ public class ProductEntity {
                 productEntity.getCartProducts(),
                 productEntity.getProductImageurlEntities(),
                 productEntity.getProductDiscountConditions(),
-                productEntity.getTestColumn()
+                productEntity.getCategory(),
+                productEntity.getCreatedAt(),
+                productEntity.getSoldQuantity(),
+                productEntity.getDefaultImageUrl()
         );
     }
 }

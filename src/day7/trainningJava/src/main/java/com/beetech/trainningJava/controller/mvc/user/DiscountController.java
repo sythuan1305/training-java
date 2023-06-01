@@ -35,6 +35,8 @@ public class DiscountController {
     public ModelAndView information(
             @CookieValue(value = "cart", defaultValue = Utils.DEFAULT_COOKIE_VALUE) String cookieValue,
             @RequestParam("cartProductId") Integer[] cartProductId) {
+        System.out.println(Utils.JsonParserListObjectWithEncodedURL(cookieValue));
+        Arrays.stream(cartProductId).map(String::valueOf).forEach(System.out::println);
         // Lấy thông tin giỏ hàng từ cookie hoặc database
         List<CartProductInforModel> cartProductInforModels = cartProductService
                 .createCartProductInforListWithLoginOrNotWithCartProductParserList(Utils.JsonParserListObjectWithEncodedURL(cookieValue));

@@ -2,6 +2,7 @@ package com.beetech.trainningJava.config;
 
 import com.beetech.trainningJava.enums.Role;
 import com.beetech.trainningJava.jwt.JwtAuthenticationFilter;
+import com.beetech.trainningJava.security.AuthenticationSuccessHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.servlet.server.CookieSameSiteSupplier;
@@ -9,6 +10,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -29,9 +32,10 @@ import java.util.List;
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor(onConstructor_ = {@Autowired})
-//@EnableMethodSecurity(prePostEnabled = false, securedEnabled = true, jsr250Enabled = true)
+@EnableMethodSecurity()
 public class WebSercurityConfig {
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
+    private final AuthenticationSuccessHandler authenticationSuccessHandler;
 
     // Khởi tạo bean password encoder để mã hóa mật khẩu
     @Bean
@@ -58,7 +62,7 @@ public class WebSercurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("http://localhost:8080"));
+        configuration.setAllowedOrigins(List.of("http://localhost:8081"));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE"));
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
@@ -107,7 +111,7 @@ public class WebSercurityConfig {
         http.csrf().ignoringRequestMatchers("/api/**");
 
         // Cấu hình CORS
-//        http.cors(Customizer.withDefaults()); // TODO - Nghiên cứu lại cấu hình CORS
+        http.cors().configurationSource(corsConfigurationSource()); // TODO - Nghiên cứu lại cấu hình CORS
 //        http.cors();
 
         // Cấu hình authorize và authentication
@@ -126,6 +130,7 @@ public class WebSercurityConfig {
         // Cấu hình login
         http.formLogin(form -> form.usernameParameter("username").passwordParameter("password")
                 .loginPage("/login")
+                .successHandler(authenticationSuccessHandler)
                 .loginProcessingUrl("/auth/login-process")
                 .failureUrl("/login?error=true")
                 .defaultSuccessUrl("/", true).permitAll());

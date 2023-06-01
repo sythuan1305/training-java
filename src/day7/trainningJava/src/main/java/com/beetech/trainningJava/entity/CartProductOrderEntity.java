@@ -25,7 +25,7 @@ public class CartProductOrderEntity {
     @JoinColumn(name = "order_id", nullable = false)
     private OrderEntity order;
 
-    @OneToOne(fetch = FetchType.LAZY, optional = false)
+    @OneToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "cart_product_id", nullable = false)
     private CartProductEntity cartProduct;
 }

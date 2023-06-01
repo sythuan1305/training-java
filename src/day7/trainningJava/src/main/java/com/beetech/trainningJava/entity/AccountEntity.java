@@ -1,10 +1,10 @@
 package com.beetech.trainningJava.entity;
 
 import com.beetech.trainningJava.enums.Role;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 /**
  * Entity này dùng để lưu thông tin tài khoản
@@ -12,6 +12,9 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 @Table(name = "account")
 @NamedEntityGraphs(
         @NamedEntityGraph(
@@ -27,11 +30,9 @@ public class AccountEntity {
     @Column(name = "id", nullable = false)
     private Integer id;
 
-    @Column(name = "username", nullable = false, length = 100)
-    private String username;
-
-    @Column(name = "email", nullable = false, length = 100)
-    private String email;
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "username", nullable = false)
+    private RefreshTokenEntity refreshTokenEntity;
 
     @Column(name = "password", nullable = false, length = 100)
     private String password;
@@ -49,7 +50,15 @@ public class AccountEntity {
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    @OneToOne(mappedBy = "account", cascade = CascadeType.REMOVE, optional = false)
+    @OneToOne(fetch = FetchType.LAZY, optional = false, cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "cart_id")
     @JsonManagedReference
     private CartEntity cart;
+
+    @Column(name = "email", nullable = false, length = 100)
+    private String email;
+
+    @Column(name = "token", length = 150)
+    private String token;
+
 }

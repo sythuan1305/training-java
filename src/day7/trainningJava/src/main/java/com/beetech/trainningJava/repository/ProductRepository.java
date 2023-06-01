@@ -1,8 +1,8 @@
 package com.beetech.trainningJava.repository;
 
+import com.beetech.trainningJava.entity.CategoryEntity;
 import com.beetech.trainningJava.entity.ProductEntity;
 import com.beetech.trainningJava.model.ProductWithImageUrl;
-import jakarta.persistence.Entity;
 import lombok.NonNull;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -12,9 +12,15 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface ProductRepository extends JpaRepository<ProductEntity, Integer> {
+    @EntityGraph(attributePaths = {"productImageurlEntities", "category"}, type = EntityGraph.EntityGraphType.FETCH)
+    Optional<ProductEntity> findById(Integer id);
+
+    Optional<ProductEntity> findProductEntityById(Integer id);
+
     ProductEntity findByName(String name);
 
     boolean existsByName(String name);
@@ -42,9 +48,19 @@ public interface ProductRepository extends JpaRepository<ProductEntity, Integer>
             "ON p.id = pi.product.id")
     Page<Object[]> findAllProductWithImageUrls(Pageable pageable);
 
-    @EntityGraph(attributePaths = {"productImageurlEntities"}, type = EntityGraph.EntityGraphType.FETCH)
+    @EntityGraph(attributePaths = {"productImageurlEntities", "category"}, type = EntityGraph.EntityGraphType.FETCH)
     @NonNull
     Page<ProductEntity> findAll(@NonNull Pageable pageable);
+
+    Page<ProductEntity> findAllByCategoryId(Integer categoryId, Pageable pageable);
+
+
+    default Page<ProductEntity> findAllByCategoryIdOrAllProduct(Integer categoryId, Pageable pageable) {
+        if (categoryId == null) {
+            return findAll(pageable);
+        }
+        return findAllByCategoryId(categoryId, pageable);
+    }
 
     // count all product join with product_imageurl table
     @Query(value = "SELECT COUNT(p.id) " +
@@ -52,4 +68,10 @@ public interface ProductRepository extends JpaRepository<ProductEntity, Integer>
             "LEFT JOIN ProductImageurlEntity pi " +
             "ON p.id = pi.product.id")
     long count();
+
+    @Query(value = "select c1_0, p1_0 " +
+            "from CategoryEntity c1_0 " +
+            "inner join ProductEntity p1_0 on c1_0.id=p1_0.category.id " +
+            "where c1_0.name=?1")
+    Page<CategoryEntity> findProductsByCategoryName(String name, Pageable pageable);
 }

@@ -5,6 +5,8 @@ import com.beetech.trainningJava.model.ProductInforModel;
 import com.beetech.trainningJava.service.IProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,13 +24,13 @@ public class ProductController {
 
     /**
      * Xử lý request đến trang danh sách sản phẩm
-     * @param page trang hiện tại
+     * @param pageable tham số dùng để phân trang
      * @return trang danh sách sản phẩm
      */
     @GetMapping("/list")
-    public ModelAndView listProduct(@RequestParam(value = "page", required = false, defaultValue = "0") Integer page) {
+    public ModelAndView listProduct(@PageableDefault(size = 5, sort = {"name"}) Pageable pageable) {
         ModelAndView modelAndView = new ModelAndView("product/list");
-        PageModel<ProductInforModel> pageModel = productService.findPageModelProductInforModelByPageIndex(page, 5, "name");
+        PageModel<ProductInforModel> pageModel = productService.findPageModelProductInforModelByPageIndex(pageable);
         modelAndView.addObject("page", pageModel);
         return modelAndView;
     }

@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.util.List;
 
@@ -50,10 +51,8 @@ public class OrderModel extends OrderEntity {
         this.setTotalAmount(this.totalPrice.subtract(this.totalDiscount));
         this.cartProductInforModelList = cartProductInforModelList;
 
-        super.setOrderDate(ZonedDateTime.now().toString());
         super.setPaymentMethod(paymentMethod);
         super.setPaymentStatus(paymentStatus);
-        super.setCart(cartEntity);
     }
 
 }

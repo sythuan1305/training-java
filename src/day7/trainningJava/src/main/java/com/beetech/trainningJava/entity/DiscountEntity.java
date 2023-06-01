@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -47,10 +48,10 @@ public class DiscountEntity {
     private BigDecimal minimumOrderAmount;
 
     @Column(name = "start_date", nullable = false)
-    private String startDate;
+    private LocalDateTime startDate;
 
     @Column(name = "end_date", nullable = false)
-    private String endDate;
+    private LocalDateTime endDate;
 
     @Column(name = "description", length = 100)
     private String description;

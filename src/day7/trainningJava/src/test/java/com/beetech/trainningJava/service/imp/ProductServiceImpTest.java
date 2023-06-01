@@ -52,4 +52,25 @@ class ProductServiceImpTest {
 
     }
 
+    @Test
+    void testGetProductEntityById() {
+        // given
+        ProductEntity productEntity = ProductEntity.builder()
+                .id(1)
+                .name("name")
+                .price(BigDecimal.TEN)
+                .quantity(10)
+                .build();
+        given(productService.getProductEntityById(productEntity.getId())).willReturn(productEntity);
+
+        // when
+        ProductEntity productEntity2 = productService.getProductEntityById(productEntity.getId());
+
+        // then
+        assertEquals(productEntity.getId(), productEntity2.getId(), "Id is not equal");
+        assertEquals(productEntity.getName(), productEntity2.getName(), "Name is not equal");
+        assertEquals(productEntity.getPrice(), productEntity2.getPrice(), "Price is not equal");
+        assertEquals(productEntity.getQuantity(), productEntity2.getQuantity(), "Quantity is not equal");
+    }
+
 }

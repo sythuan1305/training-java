@@ -5,6 +5,7 @@ package com.beetech.trainningJava.enums;
  */
 public enum PaymentMethod {
     PAYPAL,
+    COD
 //    CASH,
 //    CREDIT_CARD,
 //    DEBIT_CARD,

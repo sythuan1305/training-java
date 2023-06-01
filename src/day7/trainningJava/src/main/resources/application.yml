@@ -8,21 +8,33 @@ spring:
   jpa:
     hibernate:
       ddl-auto: update
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: thuanbui130520@gmail.com
+    password: szkimxfyphxrgddp
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+            required: true
 
 # upload path
 upload:
   path: D:\\beetech\\images\\
 
-# show hibernate sql
+#  show hibernate sql
 logging:
   level:
     org:
       hibernate:
         SQL: DEBUG
-      type:
-        descriptor:
-          sql:
-            BasicBinder: TRACE
+        type:
+          descriptor:
+            sql:
+              BasicBinder: TRACE
 
 #debug: true
 
@@ -34,7 +46,14 @@ paypal:
     id: AULWOWt0CtvEuEM1UWjC3mbo-LP0WDaSpSgghEPOa563m8v6rucwe1sIu9B9oFMnfJCVpx8O66zzgEug
     secret: EJbzUJ8KX0E6osHguhz_eTDhBT4YIi4KbuvacnQz6S3nK2mH7JHb2x32kRzy3Y3EJ4U-5pTWgzg-FwHH
 
+security:
+  jwt:
+    refresh-token:
+      cookie-name: refresh-token
+      cookie-length: 15552000
 
-
+web:
+  server:
+    url: http://localhost:8080
 #cookie
 #server.servlet.session.cookie.same-site=none
