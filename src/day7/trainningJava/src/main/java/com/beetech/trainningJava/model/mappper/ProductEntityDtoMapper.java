@@ -23,6 +23,8 @@ public class ProductEntityDtoMapper implements Function<ProductEntity, ProductEn
                 productEntity.getCreatedAt(),
                 productEntity.getSoldQuantity(),
                 Utils.Base64Image.getImageByPath(productEntity.getDefaultImageUrl()),
+                productEntity.getCategory().getName(),
+                productEntity.getDescription(),
                 productEntity.getProductImageurlEntities()
                         .stream()
                         .map(productImageurlEntity -> Utils.Base64Image.getImageByPath(productImageurlEntity.getImageUrl()))
@@ -38,6 +40,8 @@ public class ProductEntityDtoMapper implements Function<ProductEntity, ProductEn
                 productEntity.getCreatedAt(),
                 productEntity.getSoldQuantity(),
                 Utils.Base64Image.getImageByPath(productEntity.getDefaultImageUrl()),
+                productEntity.getCategory().getName(),
+                productEntity.getDescription(),
                 null);
     }
 }

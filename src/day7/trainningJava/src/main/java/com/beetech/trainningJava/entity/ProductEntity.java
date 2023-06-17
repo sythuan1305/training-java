@@ -71,6 +71,9 @@ public class ProductEntity {
     @Column(name = "default_image_url", nullable = false, length = 100)
     private String defaultImageUrl;
 
+    @Column(name = "description", length = 100)
+    private String description;
+
     public ProductEntity(String name, BigDecimal price, Integer quantity) {
         this.name = name;
         this.price = new BigDecimal(String.valueOf(price));
@@ -95,7 +98,8 @@ public class ProductEntity {
                 productEntity.getCategory(),
                 productEntity.getCreatedAt(),
                 productEntity.getSoldQuantity(),
-                productEntity.getDefaultImageUrl()
+                productEntity.getDefaultImageUrl(),
+                productEntity.getDescription()
         );
     }
 }

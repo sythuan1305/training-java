@@ -24,5 +24,7 @@ public class ProductEntityDto implements Serializable {
     LocalDateTime createdAt;
     Integer soldQuantity;
     String defaultImageUrl;
+    String categoryName;
+    String description;
     List<String> images;
 }
