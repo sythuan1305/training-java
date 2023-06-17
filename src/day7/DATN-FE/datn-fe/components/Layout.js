@@ -2,7 +2,7 @@ import React from 'react';
 import Head from "next/head";
 import Link from "next/link";
 
-function Layout({title, children1}) {
+function Layout({title, children}) {
     return (
         <>
             <Head>
@@ -24,7 +24,7 @@ function Layout({title, children1}) {
                     </nav>
                 </header>
                 <main className={'container m-auto mt-4 px-4'}>
-                    {children1}
+                    {children}
                 </main>
                 <footer className={'flex h-10 justify-center items-center shadow-inner'}>
                     <p>Copyright @2023 DATN</p>

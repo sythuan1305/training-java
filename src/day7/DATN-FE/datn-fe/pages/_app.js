@@ -1,11 +1,15 @@
 import '@/styles/globals.css'
-import {DevSupport} from "@react-buddy/ide-toolbox-next";
-import {ComponentPreviews, useInitial} from "@/components/dev";
+import Layout from "@/components/Layout";
+import '@/configs/axios.config';
+import ScrollView from '@/components/ScrollView';
+
 
 export default function App({Component, pageProps}) {
-    return <DevSupport ComponentPreviews={ComponentPreviews}
-                       useInitialHook={useInitial}
-    >
-        <Component {...pageProps} />
-    </DevSupport>
+    return <>
+        {/* <Layout */}
+            {/* title='home' */}
+            <Component {...pageProps} />
+        {/* > */}
+        {/* </Layout> */}
+    </>
 }
