@@ -31,7 +31,7 @@ public class AccountEntity {
     private Integer id;
 
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "username", nullable = false)
+    @JoinColumn(name = "username", unique = true, nullable = false)
     private RefreshTokenEntity refreshTokenEntity;
 
     @Column(name = "password", nullable = false, length = 100)

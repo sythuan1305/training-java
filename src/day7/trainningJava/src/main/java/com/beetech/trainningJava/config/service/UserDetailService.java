@@ -33,9 +33,11 @@ public class UserDetailService implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         //
         RefreshTokenEntity refreshTokenEntity = refreshTokenRepository.findByUsername(username);
+        System.out.println("refreshTokenEntity: " + refreshTokenEntity);
         // Kiem tra xem username co ton tai trong DB hay khong?
         AccountEntity account = accountRepository.findByRefreshTokenEntity(refreshTokenEntity);
 
+        System.out.println("account: " + account);
         if (account == null) {
             throw new UsernameNotFoundException("User not found");
         }

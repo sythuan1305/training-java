@@ -44,6 +44,7 @@ public class CartController {
     @PostMapping("/information-cart")
     public ResponseEntity<Object> informationCart(
             @CookieValue(value = "cart", defaultValue = Utils.DEFAULT_COOKIE_VALUE) String cookieValue) {
+        System.out.println("cookieValue: " + cookieValue);
         // Lấy thông tin giỏ hàng từ cookie hoặc database
         List<CartProductEntityDto> cartProductEntityDtos = cartProductService.createCartProductEntityDtoListWithLoginOrNotWithCartProductParserList(
                 Utils.JsonParserListObjectWithEncodedURL(cookieValue)

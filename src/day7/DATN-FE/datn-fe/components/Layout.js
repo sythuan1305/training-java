@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import Head from 'next/head';
 import Link from 'next/link';
 import { useSelector } from 'react-redux';
@@ -6,7 +6,10 @@ import { useSelector } from 'react-redux';
 function Layout({ title, children }) {
   const cartItems = useSelector((state) => Object.values(state.cart.cartItems));
 
-  console.log(cartItems);
+
+  const cartItemCount = useMemo(() => {
+    return cartItems.reduce((a, c) => a + c.quantity, 0);
+  }, [cartItems.length]);
   return (
     <>
       <Head>
@@ -25,12 +28,12 @@ function Layout({ title, children }) {
               DATN
             </Link>
             <div>
-              <Link className={'px-2'} href={'/cart'} className='p-2'>
+              <Link className={'px-2 p-2'} href={'/cart'}>
                   Cart
-                  {cartItems.length > 0 && (
-                    <span className='ml-1 rounded-full bg-red-600 px-2 py-1 text-xs font-bold text-white'>
-                      {cartItems.reduce((a, c) => a + c.quantity, 0)}
-                    </span>
+                  {cartItemCount > 0 && (
+                    <p className='ml-1 rounded-full bg-red-600 px-2 py-1 text-xs font-bold text-white inline-block'>
+                      {cartItemCount}
+                    </p>
                   )}
               </Link>
               <Link className={'px-2'} href={'/login'}>

@@ -72,3 +72,9 @@ textarea {
   border-bottom: 8px solid transparent;
   border-left: 16px solid blue;
 }
+
+input,
+select,
+textarea {
+  @apply rounded border p-2  outline-none ring-indigo-300  focus:ring;
+}

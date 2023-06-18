@@ -4,8 +4,8 @@ import ScrollView from '@/components/ScrollView';
 import { ProductList } from '@/service/productServices';
 import React from 'react';
 
+
 const list = (props) => {
-  console.log(props);
 
   return (
     <Layout title='home'>
@@ -22,11 +22,11 @@ const list = (props) => {
 };
 
 export async function getServerSideProps(context) {
-  const { page, size } = context.query;
+  const { page, size, req, res } = context.query;
+
   // Fetch data from external API
-  const res = await ProductList({ page, size });
-  const data = res.data;
-  console.log('data', data);
+  const result = await ProductList({ page, size });
+  const data = result.data;
 
   // Pass data to the page via props
   return { props: { data } };

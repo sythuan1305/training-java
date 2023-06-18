@@ -40,6 +40,7 @@ public class AuthenticationController {
                                              @RequestParam("password") String password,
                                              @CookieValue(value = "cart", defaultValue = Utils.DEFAULT_COOKIE_VALUE) String cartCookieValue,
                                              HttpServletResponse response) {
+        System.out.println("cartCookieValue = " + cartCookieValue);
         JwtTokenModel jwtTokenProvider = authService.getJwtTokenModelAfterAuthen(username, password, cartCookieValue, response);
         return ResponseEntity.ok(new ApiResponse(HttpStatus.OK.value(), true, "", jwtTokenProvider));
     }

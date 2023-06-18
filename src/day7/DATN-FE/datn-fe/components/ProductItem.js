@@ -3,8 +3,6 @@ import Link from 'next/link';
 import React from 'react';
 
 export default function ProductItem({ product, addToCartHandler, className }) {
-  console.log('product', product);
-  console.log('className', className);
   return (
     <div className='card'>
       <Link href={`/product/${product.id}`}>

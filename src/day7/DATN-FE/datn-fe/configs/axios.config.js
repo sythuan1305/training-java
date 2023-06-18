@@ -1,14 +1,21 @@
 import axios from 'axios';
-import { configure } from 'axios-hooks';
-import LRU from 'lru-cache';
-import {AppConfig} from "@/configs/app.config";
+import { AppConfig } from '@/configs/app.config';
+import Cookies from 'js-cookie';
 
 axios.defaults.baseURL = AppConfig.API_URL;
 axios.defaults.headers.common = {
-    "Content-Type": "application/json"
+  'Content-Type': 'application/json',
 };
 
-const cache = new LRU({ max: 10 });
+
+axios.interceptors.request.use(
+  (config) => {
+    return config;
+  },
+  (error) => {
+    Promise.reject(error);
+  }
+);
 
 // request interceptor to add token to request headers
 // axios.interceptors.request.use(
@@ -36,5 +43,3 @@ const cache = new LRU({ max: 10 });
 //         return Promise.reject(error);
 //     }
 // );
-
-configure({ axios, cache });

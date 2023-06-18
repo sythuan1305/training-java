@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useRouter } from 'next/router';
 import Layout from '@/components/Layout';
@@ -6,10 +6,17 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { XCircleIcon } from '@heroicons/react/24/solid';
 import { addCartItem, removeCartItem } from '@/redux/slices/cartSlice';
+import dynamic from 'next/dynamic';
+import { InformationCart } from '@/service/cartServices';
+import Cookies from 'cookies'
+
 
 const CartScreen = (props) => {
+  const productDetails = props.data;
+  console.log('productDetail', productDetails[0]);
   const cartItems = useSelector((state) => Object.values(state.cart.cartItems));
 
+  const [itemsBough, setItemsBough] = useState([]);
   const dispatch = useDispatch();
   const router = useRouter();
 
@@ -20,11 +27,12 @@ const CartScreen = (props) => {
     [dispatch]
   );
 
-  const updateCartHandler = useCallback((item, quantity) => {
-    console.log('item', item);
-    console.log('quantity', quantity);
-    dispatch(addCartItem)
-  }, []);
+  const updateCartHandler = useCallback(
+    (item, quantity) => {
+      dispatch(addCartItem({ newItem: { ...item, quantity } }));
+    },
+    [dispatch]
+  );
 
   return (
     <Layout title='Shopping Cart'>
@@ -46,15 +54,35 @@ const CartScreen = (props) => {
                 </tr>
               </thead>
               <tbody>
-                {cartItems.map((item) => (
-                  <tr key={item.slug} className='border-b'>
+                {cartItems.map((item, index) => (
+                  <tr key={item.id} className='border-b'>
+                    <td>
+                      {/* check box */}
+                      <div className='flex items-center'>
+                        <input
+                          type='checkbox'
+                          className='mr-2 h-5 w-5'
+                          // checked={true}
+                          onChange={(e) => {
+                            if (e.target.checked)
+                              setItemsBough([...itemsBough, item]);
+                            else {
+                              const newItemsBough = itemsBough.filter(
+                                (i) => i.id !== item.id
+                              );
+                              setItemsBough(newItemsBough);
+                            }
+                          }}
+                        />
+                      </div>
+                    </td>
                     <td>
                       <Link
                         className='flex items-center'
-                        href={`/product/${item.slug}`}
+                        href={`/product/${item.id}`}
                       >
                         <Image
-                          src={item.image}
+                          src={productDetails[index]?.product?.defaultImageUrl !== "Can't read input file!"? "data:image/png;base64," + productDetails[index]?.product?.defaultImageUrl: ""}
                           alt={item.name}
                           width={50}
                           height={50}
@@ -114,4 +142,11 @@ const CartScreen = (props) => {
   );
 };
 
-export default CartScreen;
+export async function getServerSideProps({req, res}) {
+  const cookies = new Cookies(req, res);
+  const result = await InformationCart({cart: cookies.get('cart')});
+  console.log("result", result);
+  return {props: {data: result.data}};
+};
+
+export default dynamic(() => Promise.resolve(CartScreen), { ssr: false });

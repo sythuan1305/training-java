@@ -21,7 +21,6 @@ const ProductDetailScreen = (props) => {
 
 
   const addToCartHandler = useCallback(() => {
-    console.log('addToCartHandler');
     dispatch(
       addCartItem({
         newItem: {
@@ -39,7 +38,6 @@ const ProductDetailScreen = (props) => {
   }, [productDetail, dispatch, quantity, router]);
 
   useEffect(() => {
-    console.log('useEffect');
     const isDisable = quantity === 0 || quantity > productDetail.quantity;
     buttonRef.current.disabled = isDisable;
 
@@ -127,7 +125,6 @@ const ProductDetailScreen = (props) => {
 
 export async function getServerSideProps({ params }) {
   const { id } = params;
-  console.log('id', id);
   const res = await ProductDetail({ id });
   const data = res.data;
   return {
