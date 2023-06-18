@@ -2,7 +2,7 @@ import Layout from '@/components/Layout';
 import ProductItem from '@/components/ProductItem';
 import ScrollView from '@/components/ScrollView';
 import { ProductList } from '@/service/productServices';
-import React, { StrictMode } from 'react';
+import React from 'react';
 
 const list = (props) => {
   console.log(props);
@@ -13,8 +13,7 @@ const list = (props) => {
         {props.data.map((item) => (
           <div key={item.name}>
             <p className='flex items-center justify-between  bg-teal-500 p-6 rounded-md h-3'>{item.name}</p>
-            <ScrollView items={item.productEntities} ItemComponent={ProductItem}>
-            </ScrollView>
+            <ScrollView items={item.productEntities} ItemComponent={ProductItem} />
           </div>
         ))}
       </div>

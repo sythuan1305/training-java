@@ -39,7 +39,7 @@ const ScrollView = ({ items }) => {
         )}
       </div>
       <div>
-        <button ref={nextBtn}  className={'bg-red-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded-md disabled:bg-blue-300'} onClick={() => handleClick(1)}>Next</button>
+        <button type="button" ref={nextBtn}  className={'bg-red-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded-md disabled:bg-blue-300'} onClick={() => handleClick(1)}>Next</button>
       </div>
     </div>
   );

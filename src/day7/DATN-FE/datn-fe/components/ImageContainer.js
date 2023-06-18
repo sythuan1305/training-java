@@ -25,7 +25,7 @@ const ImageContainer = (props) => {
 
   return (
     <div className='grid grid-cols-10'>
-      <div className='h-screen items-center col-span-1'>
+      <div className='col-span-1 h-screen items-center'>
         <div>
           <button
             ref={prevBtn}
@@ -34,13 +34,19 @@ const ImageContainer = (props) => {
           ></button>
         </div>
 
-        <div id="listImage" className=' flex-1 grid-cols-1 gap-4 md:grid-cols-1 lg:grid-cols-1'>
+        <div
+          id='listImage'
+          className=' flex-1 grid-cols-1 gap-4 md:grid-cols-1 lg:grid-cols-1'
+        >
           {itemsToDisplay.map((item, index) => {
-            console.log('item', item);
             return (
               <Image
                 key={index}
-                src={item !== "Can't read input file!" ? 'data:image/png;base64,' + item : ''}
+                src={
+                  item !== "Can't read input file!"
+                    ? 'data:image/png;base64,' + item
+                    : ''
+                }
                 alt={index}
                 width={640}
                 height={640}
@@ -60,7 +66,9 @@ const ImageContainer = (props) => {
       <Image
         className='col-span-9'
         src={
-          defaultImageUrl !== "Can't read input file!" ? 'data:image/png;base64,' + defaultImageUrl : ''
+          defaultImageUrl !== "Can't read input file!"
+            ? 'data:image/png;base64,' + defaultImageUrl
+            : ''
         }
         alt={name}
         width={1000}
