@@ -5,6 +5,8 @@ import ScrollView from '@/components/ScrollView';
 import { Provider } from 'react-redux';
 import { store } from './../redux/store';
 import { useEffect, useState } from 'react';
+import { SessionProvider } from 'next-auth/react';
+
 
 export default function App({
   Component,
@@ -19,9 +21,11 @@ export default function App({
       <>
         {/* <Layout */}
         {/* title='home' */}
+        <SessionProvider session={session}>
         <Provider store={store}>
           <Component {...pageProps} />
         </Provider>
+        </SessionProvider>
         {/* > */}
         {/* </Layout> */}
       </>

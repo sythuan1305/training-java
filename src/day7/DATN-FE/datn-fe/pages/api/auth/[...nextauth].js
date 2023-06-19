@@ -27,7 +27,7 @@
 //   ],
 // });
 
-import { fetchSelf, postLogin } from '@/services/userApi'
+import { fetchSelf, login } from '@/service/userServices'
 import NextAuth from 'next-auth'
 import CredentialsProvider from 'next-auth/providers/credentials'
 export default NextAuth({
@@ -44,10 +44,11 @@ export default NextAuth({
           credentials?.username,
           credentials?.password
         )
-        const userInfo = await fetchSelf(resToken.token)
-        const user = { ...resToken, ...userInfo }
+        console.log('resToken', resToken);
+        const userInfo = await fetchSelf(resToken.data.token)
+        const user = { ...resToken.data, ...userInfo.data }
         if (user) {
-          return user as any
+          return user
         } else {
           return null
         }
@@ -56,14 +57,14 @@ export default NextAuth({
   ],
 
   pages: {
-    signIn: '/sign-in',
+    signIn: '/login',
   },
   callbacks: {
     async jwt({ token, user }) {
       return { ...token, ...user }
     },
-    async session({ session, token, user }) {
-      session.user = token as any
+    async session({ session, token }) {
+      session.user = token
       return session
     },
   },

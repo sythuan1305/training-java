@@ -2,10 +2,12 @@ import React, { useMemo } from 'react';
 import Head from 'next/head';
 import Link from 'next/link';
 import { useSelector } from 'react-redux';
+import { useSession } from 'next-auth/react';
+import { ToastContainer } from 'react-toastify';
 
 function Layout({ title, children }) {
+  const { status, data: session } = useSession();
   const cartItems = useSelector((state) => Object.values(state.cart.cartItems));
-
 
   const cartItemCount = useMemo(() => {
     return cartItems.reduce((a, c) => a + c.quantity, 0);
@@ -19,6 +21,7 @@ function Layout({ title, children }) {
           content='Learn how to build a personal website using Next.js'
         />
         <link rel='icon' href='/favicon.ico' />
+        <ToastContainer position='bottom-center' limit={1} />
       </Head>
       <div className={'flex min-h-screen flex-col justify-between'}>
         <header>
@@ -28,17 +31,23 @@ function Layout({ title, children }) {
               DATN
             </Link>
             <div>
-              <Link className={'px-2 p-2'} href={'/cart'}>
-                  Cart
-                  {cartItemCount > 0 && (
-                    <p className='ml-1 rounded-full bg-red-600 px-2 py-1 text-xs font-bold text-white inline-block'>
-                      {cartItemCount}
-                    </p>
-                  )}
+              <Link className={'p-2 px-2'} href={'/cart'}>
+                Cart
+                {cartItemCount > 0 && (
+                  <p className='ml-1 inline-block rounded-full bg-red-600 px-2 py-1 text-xs font-bold text-white'>
+                    {cartItemCount}
+                  </p>
+                )}
               </Link>
-              <Link className={'px-2'} href={'/login'}>
-                Login
-              </Link>
+              {status === 'loading' ? (
+                'Loading'
+              ) : session?.user ? (
+                session.user.name
+              ) : (
+                <Link href='/login' className='p-2'>
+                  Login
+                </Link>
+              )}
             </div>
           </nav>
         </header>
