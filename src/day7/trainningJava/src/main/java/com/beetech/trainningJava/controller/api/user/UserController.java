@@ -25,7 +25,9 @@ public class UserController {
 
     @PostMapping("/me")
     public ResponseEntity<Object> me() {
+        System.out.println("apiUserController.me");
         AccountEntity accountEntity = accountService.getAccountEntity();
+        System.out.println("accountEntity = " + accountEntity);
         return ResponseEntity.ok(new ApiResponse(HttpStatus.OK.value(), true, "Success", accountEntityDtoMapper.apply(accountEntity)));
     }
 }

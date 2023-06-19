@@ -209,7 +209,7 @@ public class AuthServiceImp implements IAuthService {
             cartProductService.saveCartProductEntityListWithAuthenticatedByCartProductParserList(
                     Utils.JsonParserListObjectWithEncodedURL(cartCookie));
             // Xóa cookie
-//            Utils.deleteCookie("cart", response);
+            Utils.deleteCookie("cart", response);
         }
     }
 }
