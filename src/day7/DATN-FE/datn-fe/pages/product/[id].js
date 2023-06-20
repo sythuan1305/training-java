@@ -19,7 +19,6 @@ const ProductDetailScreen = (props) => {
 
   const router = useRouter();
 
-
   const addToCartHandler = useCallback(() => {
     dispatch(
       addCartItem({
@@ -117,7 +116,6 @@ const ProductDetailScreen = (props) => {
             </button>
           </div>
         </div>
-        
       </div>
     </Layout>
   );

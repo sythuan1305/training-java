@@ -4,7 +4,9 @@ import Cookies from 'js-cookie';
 export const cartSlice = createSlice({
   name: 'cart',
   initialState: {
-    cartItems: Cookies.get("cart") ? JSON.parse(Cookies.get("cart")) : {},
+    cartItems: Cookies.get('cart') ? JSON.parse(Cookies.get('cart')) : {},
+    shipping: {},
+    paymentMethod: '',
   },
   reducers: {
     addCartItem: (state, action) => {
@@ -21,14 +23,39 @@ export const cartSlice = createSlice({
 
       Cookies.set('cart', JSON.stringify(Object.values(state.cartItems)));
     },
+    setCartItem: (state, action) => {
+      const { existingItem } = action.payload;
+      state.cartItems[existingItem.product_id] = existingItem;
+    },
     removeCartItem: (state, action) => {
       const { id } = action.payload;
       delete state.cartItems[id];
 
       Cookies.set('cart', JSON.stringify(Object.values(state.cartItems)));
     },
+    cartReset: (state, action) => {
+      const newState = {
+        cartItems: {},
+        shipping: {},
+        paymentMethod: '',
+      };
+      state = newState;
+    },
+    saveShipping: (state, action) => {
+      state.shipping = { ...state.shipping, ...action.payload };
+    },
+    savePaymentMethod: (state, action) => {
+      state.paymentMethod = action.payload.paymentMethod;
+    },
   },
 });
 
-export const { addCartItem, removeCartItem } = cartSlice.actions;
+export const {
+  addCartItem,
+  setCartItem,
+  removeCartItem,
+  cartReset,
+  saveShipping,
+  savePaymentMethod,
+} = cartSlice.actions;
 export default cartSlice.reducer;

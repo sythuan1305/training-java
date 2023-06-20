@@ -5,11 +5,12 @@ import Layout from '@/components/Layout';
 import Link from 'next/link';
 import Image from 'next/image';
 import { XCircleIcon } from '@heroicons/react/24/solid';
-import { addCartItem, removeCartItem } from '@/redux/slices/cartSlice';
+import { addCartItem, removeCartItem, setCartItem } from '@/redux/slices/cartSlice';
 import dynamic from 'next/dynamic';
 import { InformationCart } from '@/service/cartServices';
-import Cookies from 'cookies'
-
+import Cookies from 'cookies';
+import { toast } from 'react-toastify';
+import { ProductDetail } from '@/service/productServices';
 
 const CartScreen = (props) => {
   const productDetails = props.data;
@@ -28,8 +29,15 @@ const CartScreen = (props) => {
   );
 
   const updateCartHandler = useCallback(
-    (item, quantity) => {
-      dispatch(addCartItem({ newItem: { ...item, quantity } }));
+    async (item, quantity) => {
+      console.log('item', item);
+      const { data } = await ProductDetail({ id: item.product_id });
+      if (data.quantity < quantity) {
+        return toast.error('Sorry. Product is out of stock');
+      }
+
+      dispatch(setCartItem({ existingItem: { ...item, quantity } }));
+      return toast.success('Product updated in the cart');
     },
     [dispatch]
   );
@@ -79,10 +87,16 @@ const CartScreen = (props) => {
                     <td>
                       <Link
                         className='flex items-center'
-                        href={`/product/${item.id}`}
+                        href={`/product/${item.product_id}`}
                       >
                         <Image
-                          src={productDetails[index]?.product?.defaultImageUrl !== "Can't read input file!"? "data:image/png;base64," + productDetails[index]?.product?.defaultImageUrl: ""}
+                          src={
+                            productDetails[index]?.product?.defaultImageUrl !==
+                            "Can't read input file!"
+                              ? 'data:image/png;base64,' +
+                                productDetails[index]?.product?.defaultImageUrl
+                              : ''
+                          }
                           alt={item.name}
                           width={50}
                           height={50}
@@ -142,11 +156,11 @@ const CartScreen = (props) => {
   );
 };
 
-export async function getServerSideProps({req, res}) {
+export async function getServerSideProps({ req, res }) {
   const cookies = new Cookies(req, res);
-  const result = await InformationCart({cart: cookies.get('cart')});
-  console.log("result", result);
-  return {props: {data: result.data}};
-};
+  const result = await InformationCart({ cart: cookies.get('cart') });
+  console.log('result', result);
+  return { props: { data: result.data } };
+}
 
 export default dynamic(() => Promise.resolve(CartScreen), { ssr: false });

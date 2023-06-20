@@ -1,17 +1,27 @@
 import React, { useMemo } from 'react';
 import Head from 'next/head';
 import Link from 'next/link';
-import { useSelector } from 'react-redux';
-import { useSession } from 'next-auth/react';
+import { useDispatch, useSelector } from 'react-redux';
+import { signOut, useSession } from 'next-auth/react';
 import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { cartReset } from '@/redux/slices/cartSlice';
+import { Menu } from '@headlessui/react';
 
 function Layout({ title, children }) {
   const { status, data: session } = useSession();
   const cartItems = useSelector((state) => Object.values(state.cart.cartItems));
 
+  const dispatch = useDispatch();
+
   const cartItemCount = useMemo(() => {
     return cartItems.reduce((a, c) => a + c.quantity, 0);
-  }, [cartItems.length]);
+  }, [cartItems]);
+
+  const logoutClickHandler = () => {
+    dispatch(cartReset());
+    signOut();
+  };
   return (
     <>
       <Head>
@@ -21,13 +31,12 @@ function Layout({ title, children }) {
           content='Learn how to build a personal website using Next.js'
         />
         <link rel='icon' href='/favicon.ico' />
-        <ToastContainer position='bottom-center' limit={1} />
       </Head>
+      <ToastContainer position='bottom-center' limit={1} />
       <div className={'flex min-h-screen flex-col justify-between'}>
         <header>
           <nav className={'flex h-12 justify-between px-4 shadow-md'}>
-            <Link className={'text-lg font-bold'} href={'/'}>
-              {' '}
+            <Link className={'text-lg font-bold'} href={'/produt/list'}>
               DATN
             </Link>
             <div>
@@ -42,7 +51,32 @@ function Layout({ title, children }) {
               {status === 'loading' ? (
                 'Loading'
               ) : session?.user ? (
-                session.user.name
+                <Menu as='div' className='relative inline-block'>
+                  <Menu.Button className='text-blue-600'>
+                    {session.user.username}
+                  </Menu.Button>
+                  <Menu.Items className='absolute right-0 w-56 origin-top-right bg-white  shadow-lg '>
+                    <Menu.Item>
+                      <Link className='dropdown-link' href='/profile'>
+                        Profile
+                      </Link>
+                    </Menu.Item>
+                    <Menu.Item>
+                      <Link className='dropdown-link' href='/order-history'>
+                        Order History
+                      </Link>
+                    </Menu.Item>
+                    <Menu.Item>
+                      <Link
+                        className='dropdown-link'
+                        href='#'
+                        onClick={logoutClickHandler}
+                      >
+                        Logout
+                      </Link>
+                    </Menu.Item>
+                  </Menu.Items>
+                </Menu>
               ) : (
                 <Link href='/login' className='p-2'>
                   Login
